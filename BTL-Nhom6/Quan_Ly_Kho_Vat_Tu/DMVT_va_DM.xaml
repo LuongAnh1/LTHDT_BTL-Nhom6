@@ -1,0 +1,12 @@
+﻿<Window x:Class="BTL_Nhom6.Quan_Ly_Kho_Vat_Tu.DMVT_va_DM"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BTL_Nhom6.Quan_Ly_Kho_Vat_Tu"
+        mc:Ignorable="d"
+        Title="DMVT_va_DM" Height="450" Width="800">
+    <Grid>
+        
+    </Grid>
+</Window>
