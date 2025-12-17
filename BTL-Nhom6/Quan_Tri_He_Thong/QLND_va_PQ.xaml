@@ -307,9 +307,9 @@
             <Border Grid.Row="1" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Margin="32,0,32,24">
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource ActiveTabButtonStyle}"/>
-                    <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource TabButtonStyle}"/>
+                    <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource TabButtonStyle}"  Click="Button_QLHSKN_Click"/>
                     <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource TabButtonStyle}" Click="Button_TDMK_va_TTCN_Click"/>
-                    <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Margin="0"/>
+                    <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
                 </StackPanel>
             </Border>
 

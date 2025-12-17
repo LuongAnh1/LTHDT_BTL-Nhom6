@@ -3,10 +3,564 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BTL_Nhom6.Quan_Tri_He_Thong"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="QLHSKN" Height="450" Width="800">
+        Title="Quản lý Hồ sơ Kỹ năng" 
+        Height="768" Width="1366"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontSize="14"
+        Background="#F0F2F5">
+
+    <Window.Resources>
+        <!-- 1. Style cho Nút Menu thường -->
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="15,0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Margin="0,2">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3D5166"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- 2. Style cho Nút Menu đang Active -->
+        <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#357ABD"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 3. Style cho Tab Navigation -->
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="4,12"/>
+            <Setter Property="Margin" Value="0,0,24,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="#374151"/>
+                                <Setter Property="BorderBrush" Value="#D1D5DB"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActiveTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
+            <Setter Property="Foreground" Value="#2563EB"/>
+            <Setter Property="BorderBrush" Value="#2563EB"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <!-- Style cho Button hành động nhỏ (Edit/Delete) -->
+        <Style x:Key="IconActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="2,0"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/>
+            <!-- Sidebar -->
+            <ColumnDefinition Width="*"/>
+            <!-- Content -->
+        </Grid.ColumnDefinitions>
+
+        <!-- === SIDEBAR (Giữ nguyên từ code cũ) === -->
+        <Border Grid.Column="0" Background="#2D3E50">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="25,30,20,30">
+                    <materialDesign:PackIcon Kind="CogOutline" Width="30" Height="30" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="Admin" Foreground="White" FontSize="20" FontWeight="Bold" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <Separator Grid.Row="0" VerticalAlignment="Bottom" Background="#55FFFFFF" Margin="20,0"/>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,20,10,0">
+                    <StackPanel>
+                        <Button Style="{StaticResource MenuButtonStyle}" Click="Button_Home_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Home" Width="22" Height="22" VerticalAlignment="Center"/>
+                                <TextBlock Text="Trang chủ" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource ActiveMenuButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AccountMultiple" Width="22" Height="22" VerticalAlignment="Center"/>
+                                <TextBlock Text="Quản trị hệ thống" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource MenuButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Security" Width="22" Height="22" VerticalAlignment="Center"/>
+                                <TextBlock Text="Phân quyền &amp; Vai trò" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource MenuButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Devices" Width="22" Height="22" VerticalAlignment="Center"/>
+                                <TextBlock Text="Quản lý thiết bị" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource MenuButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CalendarClock" Width="22" Height="22" VerticalAlignment="Center"/>
+                                <TextBlock Text="Quản lý quy trình bảo trì" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource MenuButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="PackageVariant" Width="22" Height="22" VerticalAlignment="Center"/>
+                                <TextBlock Text="Quản lý kho" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource MenuButtonStyle}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ChartBar" Width="22" Height="22" VerticalAlignment="Center"/>
+                                <TextBlock Text="Báo cáo &amp; Thống kê" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Margin="10,0,10,20">
+                    <Separator Background="#55FFFFFF" Margin="10,10,10,15"/>
+                    <Button Style="{StaticResource MenuButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="AccountCircleOutline" Width="22" Height="22" VerticalAlignment="Center"/>
+                            <TextBlock Text="admin" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource MenuButtonStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Logout" Width="22" Height="22" VerticalAlignment="Center"/>
+                            <TextBlock Text="Đăng xuất" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- === MAIN CONTENT === -->
+        <Grid Grid.Column="1" Background="#FFFFFF">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header -->
+                <RowDefinition Height="Auto"/>
+                <!-- Tabs -->
+                <RowDefinition Height="*"/>
+                <!-- Content Body -->
+            </Grid.RowDefinitions>
+
+            <!-- 1. HEADER & WINDOW CONTROLS -->
+            <Grid Grid.Row="0">
+                <TextBlock Text="Quản trị hệ thống" 
+                           FontSize="24" FontWeight="Bold" Foreground="#1F2937" 
+                           Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+
+                <!-- Control Buttons -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,5,0">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+                            <Setter Property="Width" Value="32"/>
+                            <Setter Property="Height" Value="32"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="2,0"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <Button ToolTip="Thu nhỏ" Click="Button_Minimize_Click">
+                        <materialDesign:PackIcon Kind="Minus" Width="18" Height="18" Foreground="#555"/>
+                    </Button>
+                    <Button x:Name="btnMaximize" ToolTip="Phóng to" Click="Button_Maximize_Click">
+                        <materialDesign:PackIcon x:Name="iconMaximize" Kind="WindowMaximize" Width="16" Height="16" Foreground="#555"/>
+                    </Button>
+                    <Button ToolTip="Đóng" Click="Button_Close_Click">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+                                <Setter Property="Width" Value="32"/>
+                                <Setter Property="Height" Value="32"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="2,0,0,0"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#FF4444"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <materialDesign:PackIcon Kind="Close" Width="18" Height="18" Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- 2. TABS -->
+            <Border Grid.Row="1" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Margin="32,0,32,24">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click" />
+                    <!-- Tab này đang Active -->
+                    <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource ActiveTabButtonStyle}"/>
+                    <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource TabButtonStyle}" Click="Button_TDMK_va_TTCN_Click"/>
+                    <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 3. CONTENT BODY (2 CỘT) -->
+            <Grid Grid.Row="2" Margin="32,0,32,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <!-- Cột Trái: Danh sách kỹ năng -->
+                    <ColumnDefinition Width="32"/>
+                    <!-- Gap -->
+                    <ColumnDefinition Width="7*"/>
+                    <!-- Cột Phải: Gán kỹ năng -->
+                </Grid.ColumnDefinitions>
+
+                <!-- === CỘT TRÁI: DANH SÁCH KỸ NĂNG === -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header Cột Trái -->
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="ClipboardList" Foreground="#2563EB" Width="24" Height="24"/>
+                            <TextBlock Text="Danh sách kỹ năng" FontSize="18" FontWeight="Bold" Foreground="#1F2937" Margin="8,0,0,0"/>
+                        </StackPanel>
+                        <Button HorizontalAlignment="Right" Background="#1E40AF" BorderThickness="0" Height="32" Padding="12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Thêm kỹ năng mới" Foreground="White" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <!-- Table (Mô phỏng bằng Border & Grid) -->
+                    <Border Grid.Row="1" Background="White" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <!-- Table Header -->
+                                <Border Background="#F3F4F6" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="12">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="TÊN KỸ NĂNG" FontWeight="SemiBold" Foreground="#374151" FontSize="12"/>
+                                        <TextBlock Grid.Column="1" Text="MÔ TẢ" FontWeight="SemiBold" Foreground="#374151" FontSize="12"/>
+                                        <TextBlock Grid.Column="2" Text="HÀNH ĐỘNG" FontWeight="SemiBold" Foreground="#374151" FontSize="12" HorizontalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Row 1 -->
+                                <Border BorderBrush="#F3F4F6" BorderThickness="0,0,0,1" Padding="12" Background="White">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Bảo trì điện" FontWeight="Medium" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="Sửa chữa hệ thống điện công nghiệp" Foreground="#6B7280" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="#2563EB">
+                                                <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
+                                            </Button>
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="#EF4444">
+                                                <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Row 2 -->
+                                <Border BorderBrush="#F3F4F6" BorderThickness="0,0,0,1" Padding="12" Background="White">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Vận hành máy CNC" FontWeight="Medium" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="Vận hành và giám sát máy tiện CNC" Foreground="#6B7280" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="#2563EB">
+                                                <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
+                                            </Button>
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="#EF4444">
+                                                <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Row 3 -->
+                                <Border BorderBrush="#F3F4F6" BorderThickness="0,0,0,1" Padding="12" Background="White">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="An toàn lao động" FontWeight="Medium" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="Chứng chỉ an toàn và quy trình" Foreground="#6B7280" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="#2563EB">
+                                                <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
+                                            </Button>
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="#EF4444">
+                                                <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Row 4 -->
+                                <Border BorderBrush="#F3F4F6" BorderThickness="0,0,0,1" Padding="12" Background="White">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.5*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Hàn kỹ thuật cao" FontWeight="Medium" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="Kỹ thuật hàn TIG/MIG" Foreground="#6B7280" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="#2563EB">
+                                                <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
+                                            </Button>
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="#EF4444">
+                                                <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+
+                <!-- === CỘT PHẢI: GÁN KỸ NĂNG === -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header Cột Phải -->
+                    <StackPanel Grid.Row="0" Margin="0,0,0,16">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="AccountDetails" Foreground="#2563EB" Width="24" Height="24"/>
+                                <TextBlock Text="Gán kỹ năng cho Kỹ thuật viên" FontSize="18" FontWeight="Bold" Foreground="#1F2937" Margin="8,0,0,0"/>
+                            </StackPanel>
+
+                            <!-- Combobox Tìm kiếm KTV -->
+                            <ComboBox HorizontalAlignment="Right" Width="250"
+                                      Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                      materialDesign:TextFieldAssist.LeadingIcon="AccountSearch"
+                                      materialDesign:HintAssist.Hint="Chọn Kỹ thuật viên"
+                                      Background="White" Height="40" Padding="8,6">
+                                <ComboBoxItem Content="Trần Minh C (Kỹ thuật viên điện)" />
+                                <ComboBoxItem Content="Nguyễn Văn A (Quản trị viên)" />
+                                <ComboBoxItem Content="Võ Văn F (Giám sát an toàn)" />
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Form Gán Kỹ Năng -->
+                    <Border Grid.Row="1" Background="#F9FAFB" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="8" Padding="20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Table Header -->
+                            <Grid Grid.Row="0" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1.5*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="CHỌN" FontWeight="Bold" Foreground="#6B7280" FontSize="12" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="TÊN KỸ NĂNG" FontWeight="Bold" Foreground="#6B7280" FontSize="12"/>
+                                <TextBlock Grid.Column="2" Text="MỨC ĐỘ THÀNH THẠO" FontWeight="Bold" Foreground="#6B7280" FontSize="12"/>
+                            </Grid>
+
+                            <!-- List Items -->
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,-8,0" Padding="0,0,8,0">
+                                <StackPanel>
+                                    <!-- Item 1: Checked -->
+                                    <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="#E5E7EB" Margin="0,0,0,12" Padding="12">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="BorderBrush" Value="#93C5FD"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Grid.Column="0" IsChecked="True" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Bảo trì điện" FontWeight="SemiBold" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Column="2" SelectedIndex="1" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="#F9FAFB">
+                                                <ComboBoxItem Content="Cơ bản"/>
+                                                <ComboBoxItem Content="Trung cấp"/>
+                                                <ComboBoxItem Content="Nâng cao"/>
+                                            </ComboBox>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Item 2: Unchecked & Disabled look -->
+                                    <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="#E5E7EB" Margin="0,0,0,12" Padding="12" Opacity="0.7">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Grid.Column="0" IsChecked="False" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Vận hành máy CNC" FontWeight="Medium" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Column="2" IsEnabled="False" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="#F3F4F6">
+                                                <ComboBoxItem Content="Cơ bản"/>
+                                                <ComboBoxItem Content="Trung cấp"/>
+                                                <ComboBoxItem Content="Nâng cao"/>
+                                            </ComboBox>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Item 3: Checked -->
+                                    <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="#E5E7EB" Margin="0,0,0,12" Padding="12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Grid.Column="0" IsChecked="True" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="An toàn lao động" FontWeight="SemiBold" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Column="2" SelectedIndex="2" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="#F9FAFB">
+                                                <ComboBoxItem Content="Cơ bản"/>
+                                                <ComboBoxItem Content="Trung cấp"/>
+                                                <ComboBoxItem Content="Nâng cao"/>
+                                            </ComboBox>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Item 4: Unchecked -->
+                                    <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="#E5E7EB" Margin="0,0,0,12" Padding="12" Opacity="0.7">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Grid.Column="0" IsChecked="False" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Hàn kỹ thuật cao" FontWeight="Medium" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Column="2" IsEnabled="False" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="#F3F4F6">
+                                                <ComboBoxItem Content="Cơ bản"/>
+                                                <ComboBoxItem Content="Trung cấp"/>
+                                                <ComboBoxItem Content="Nâng cao"/>
+                                            </ComboBox>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Item 5: Checked -->
+                                    <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="#E5E7EB" Margin="0,0,0,12" Padding="12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <CheckBox Grid.Column="0" IsChecked="True" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Sửa chữa thủy lực" FontWeight="SemiBold" Foreground="#1F2937" VerticalAlignment="Center"/>
+                                            <ComboBox Grid.Column="2" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="#F9FAFB">
+                                                <ComboBoxItem Content="Cơ bản"/>
+                                                <ComboBoxItem Content="Trung cấp"/>
+                                                <ComboBoxItem Content="Nâng cao"/>
+                                            </ComboBox>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
+
+                            <!-- Footer Button -->
+                            <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                                <Separator Background="#E5E7EB" Margin="0,0,0,16"/>
+                                <Button HorizontalAlignment="Right" Background="#16A34A" BorderThickness="0" Height="40" Width="140">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Lưu kỹ năng" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
     </Grid>
-</Window>
+</Window> 

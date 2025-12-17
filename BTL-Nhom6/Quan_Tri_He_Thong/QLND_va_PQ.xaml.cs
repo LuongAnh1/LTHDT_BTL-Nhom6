@@ -34,6 +34,46 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
                 MessageBox.Show("Lỗi khi quay về trang chủ: " + ex.Message);
             }
         }
+        // Chuyển tới trang Quản lý hồ sơ kỹ năng
+        private void Button_QLHSKN_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Khởi tạo form
+                var homeTDMK_va_TTCN = new QLHSKN();
+
+                // Gán trạng thái (Normal/Maximized) của cửa sổ hiện tại cho cửa sổ mới
+                homeTDMK_va_TTCN.WindowState = this.WindowState;
+                homeTDMK_va_TTCN.Show();
+
+                // Đóng form hiện tại 
+                this.Close();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Lỗi khi quay về trang chủ: " + ex.Message);
+            }
+        }
+        // Chuyển tới trang Nhật kỹ và sao lưu dữ liệu 
+        private void Button_NK_va_SLDL_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                // Khởi tạo form
+                var homeTDMK_va_TTCN = new NK_va_SLDL();
+
+                // Gán trạng thái (Normal/Maximized) của cửa sổ hiện tại cho cửa sổ mới
+                homeTDMK_va_TTCN.WindowState = this.WindowState;
+                homeTDMK_va_TTCN.Show();
+
+                // Đóng form hiện tại 
+                this.Close();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Lỗi khi quay về trang chủ: " + ex.Message);
+            }
+        }
         // Quay lại trang chủ
         private void Button_Home_Click(object sender, RoutedEventArgs e)
         {
@@ -80,6 +120,7 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
                 iconMaximize.Kind = PackIconKind.WindowMaximize;
             }
         }
+
 
     }
 }
