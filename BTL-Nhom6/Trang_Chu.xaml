@@ -4,6 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        
+        xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
+        
         mc:Ignorable="d"
         Title="Trang Chủ - Quản lý bảo trì" 
         Height="768" Width="1366"
@@ -192,55 +195,8 @@
                            HorizontalAlignment="Left"/>
 
                 <!-- Cụm nút điều khiển -->
-                <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Right" 
-                            VerticalAlignment="Top" 
-                            Margin="0,5,5,0">
-
-                    <StackPanel.Resources>
-                        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
-                            <Setter Property="Width" Value="32"/>
-                            <Setter Property="Height" Value="32"/>
-                            <Setter Property="Padding" Value="0"/>
-                            <Setter Property="Margin" Value="2,0"/>
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="BorderThickness" Value="0"/>
-                        </Style>
-                    </StackPanel.Resources>
-
-                    <!-- Nút 1: Thu nhỏ -->
-                    <Button ToolTip="Thu nhỏ" Click="Button_Minimize_Click">
-                        <materialDesign:PackIcon Kind="Minus" Width="18" Height="18" Foreground="{StaticResource TextSecondaryBrush}"/>
-                    </Button>
-
-                    <!-- Nút 2: Phóng to / Khôi phục -->
-                    <Button x:Name="btnMaximize" ToolTip="Phóng to" Click="Button_Maximize_Click">
-                        <materialDesign:PackIcon x:Name="iconMaximize" Kind="WindowMaximize" Width="16" Height="16" Foreground="{StaticResource TextSecondaryBrush}"/>
-                    </Button>
-
-                    <!-- Nút 3: Đóng -->
-                    <Button ToolTip="Đóng" Click="Button_Close_Click">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
-                                <Setter Property="Width" Value="32"/>
-                                <Setter Property="Height" Value="32"/>
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="Margin" Value="2,0,0,0"/>
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource DeleteIconBrush}"/>
-                                        <!-- Nền đỏ khi di chuột -->
-                                        <Setter Property="Foreground" Value="White"/>
-                                        <!-- Icon trắng khi di chuột -->
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <materialDesign:PackIcon Kind="Close" Width="18" Height="18" Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"/>
-                    </Button>
-
-                </StackPanel>
+                <!-- Sử dụng UserControl tái sử dụng -->
+                <uc:WindowControlBar />
             </Grid>
 
             <!-- 2.2 Content Area (Placeholder) -->
