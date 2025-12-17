@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BTL_Nhom6.Helper
 {
-    // Class tĩnh đẻe lưu thông tin người đang đăng nhập trong suốt phiên làm việc
+    // Class tĩnh để lưu thông tin người đang đăng nhập trong suốt phiên làm việc
     public static class UserSession
     {
         public static int CurrentUserID { get; set; }

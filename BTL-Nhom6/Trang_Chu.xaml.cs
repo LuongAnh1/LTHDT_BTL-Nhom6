@@ -30,23 +30,5 @@ namespace BTL_Nhom6
         {
             NavigationHelper.Navigate(this, new Dang_Nhap());
         }
-
-        // --- Xử lý sự kiện Window ---
-        private void Button_Close_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void Button_Minimize_Click(object sender, RoutedEventArgs e)
-        {
-            this.WindowState = WindowState.Minimized;
-        }
-
-        private void Button_Maximize_Click(object sender, RoutedEventArgs e)
-        {
-            bool isNormal = this.WindowState == WindowState.Normal;
-            this.WindowState = isNormal ? WindowState.Maximized : WindowState.Normal;
-            iconMaximize.Kind = isNormal ? PackIconKind.WindowRestore : PackIconKind.WindowMaximize;
-        }
     }
 }
