@@ -141,6 +141,7 @@
       <DependentUpon>Dang_Nhap.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helper\DatabaseHelper.cs" />
+    <Compile Include="Helper\NavigationHelper.cs" />
     <Compile Include="Helper\UserSession.cs.cs" />
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CNPCV.xaml.cs">
       <DependentUpon>CNPCV.xaml</DependentUpon>

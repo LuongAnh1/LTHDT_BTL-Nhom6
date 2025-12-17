@@ -179,7 +179,7 @@
                             <TextBlock Text="admin" Margin="15,0,0,0" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button Style="{StaticResource MenuButtonStyle}">
+                    <Button Style="{StaticResource MenuButtonStyle}" Click="Button_Logout_Click">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Logout" Width="22" Height="22" VerticalAlignment="Center"/>
                             <TextBlock Text="Đăng xuất" Margin="15,0,0,0" VerticalAlignment="Center"/>
