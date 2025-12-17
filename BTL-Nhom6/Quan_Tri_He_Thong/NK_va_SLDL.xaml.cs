@@ -1,112 +1,47 @@
 ﻿using MaterialDesignThemes.Wpf;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+// Import namespace của Helper
+using BTL_Nhom6.Helper;
 
 namespace BTL_Nhom6.Quan_Tri_He_Thong
 {
-    /// <summary>
-    /// Interaction logic for NK_va_SLDL.xaml
-    /// </summary>
     public partial class NK_va_SLDL : Window
     {
         public NK_va_SLDL()
         {
             InitializeComponent();
         }
+
         // --- Xử lý sự kiện Button ---
-        // Chuyển tới trang Quản lý người dùng và phân quyền
+        // Sử dụng hàm Helper để chuyển đến form Nhập kho và xuất số liệu dữ liệu
+        // Chuyển đến form Quản lý người dùng và phân quyền
         private void Button_QLND_va_PQ_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Khởi tạo form
-                var homeQLND_va_PQ = new QLND_va_PQ();
-
-                // Gán trạng thái (Normal/Maximized) của cửa sổ hiện tại cho cửa sổ mới
-                homeQLND_va_PQ.WindowState = this.WindowState;
-                homeQLND_va_PQ.Show();
-
-                // Đóng form hiện tại 
-                this.Close();
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Lỗi khi quay về trang chủ: " + ex.Message);
-            }
+            // Gọi hàm Helper: truyền vào (cửa sổ hiện tại, cửa sổ mới)
+            NavigationHelper.Navigate(this, new QLND_va_PQ());
         }
-        // Chuyển tới trang Quan lý hồ sơ kỹ năng 
+
+        // Chuyển đến form Quản lý hồ sơ kỹ năng
         private void Button_QLHSKN_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Khởi tạo form
-                var homeQLHSKN = new QLHSKN();
-
-                // Gán trạng thái (Normal/Maximized) của cửa sổ hiện tại cho cửa sổ mới
-                homeQLHSKN.WindowState = this.WindowState;
-                homeQLHSKN.Show();
-
-                // Đóng form hiện tại 
-                this.Close();
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Lỗi khi quay về trang chủ: " + ex.Message);
-            }
+            NavigationHelper.Navigate(this, new QLHSKN());
         }
-        // Chuyển tới trang Thay đổi mật khẩu và thông tin cá nhân 
+        // Chuyển đến form Thay đổi mật khẩu và thông tin cá nhân
         private void Button_TDMK_va_TTCN_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Khởi tạo form
-                var homeTDMK_va_TTCN = new TDMK_va_TTCN();
-
-                // Gán trạng thái (Normal/Maximized) của cửa sổ hiện tại cho cửa sổ mới
-                homeTDMK_va_TTCN.WindowState = this.WindowState;
-                homeTDMK_va_TTCN.Show();
-
-                // Đóng form hiện tại 
-                this.Close();
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Lỗi khi quay về trang chủ: " + ex.Message);
-            }
+            NavigationHelper.Navigate(this, new TDMK_va_TTCN());
         }
-        // Quay lại trang chủ
+        // Chuyển đến form Trang chủ
         private void Button_Home_Click(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                // Khởi tạo form Trang Chủ (nằm ở namespace gốc BTL_Nhom6)
-                var homeWindow = new Trang_Chu();
-
-                // Gán trạng thái (Normal/Maximized) của cửa sổ hiện tại cho cửa sổ mới
-                homeWindow.WindowState = this.WindowState;
-                // Hiển thị Trang Chủ
-                homeWindow.Show();
-
-                // Đóng form hiện tại (Quản trị hệ thống)
-                this.Close();
-            }
-            catch (System.Exception ex)
-            {
-                MessageBox.Show("Lỗi khi quay về trang chủ: " + ex.Message);
-            }
+            NavigationHelper.Navigate(this, new Trang_Chu());
         }
-
+        // Nút đăng xuất
+        private void Button_Logout_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.Navigate(this, new Dang_Nhap());
+        }
         // --- Xử lý sự kiện Window ---
         private void Button_Close_Click(object sender, RoutedEventArgs e)
         {
@@ -120,18 +55,9 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
 
         private void Button_Maximize_Click(object sender, RoutedEventArgs e)
         {
-            if (this.WindowState == WindowState.Normal)
-            {
-                this.WindowState = WindowState.Maximized;
-                iconMaximize.Kind = PackIconKind.WindowRestore;
-            }
-            else
-            {
-                this.WindowState = WindowState.Normal;
-                iconMaximize.Kind = PackIconKind.WindowMaximize;
-            }
+            bool isNormal = this.WindowState == WindowState.Normal;
+            this.WindowState = isNormal ? WindowState.Maximized : WindowState.Normal;
+            iconMaximize.Kind = isNormal ? PackIconKind.WindowRestore : PackIconKind.WindowMaximize;
         }
-
-
     }
 }
