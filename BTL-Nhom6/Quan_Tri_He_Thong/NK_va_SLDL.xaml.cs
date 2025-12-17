@@ -31,11 +31,11 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
             try
             {
                 // Khởi tạo form
-                var homeTDMK_va_TTCN = new QLND_va_PQ();
+                var homeQLND_va_PQ = new QLND_va_PQ();
 
                 // Gán trạng thái (Normal/Maximized) của cửa sổ hiện tại cho cửa sổ mới
-                homeTDMK_va_TTCN.WindowState = this.WindowState;
-                homeTDMK_va_TTCN.Show();
+                homeQLND_va_PQ.WindowState = this.WindowState;
+                homeQLND_va_PQ.Show();
 
                 // Đóng form hiện tại 
                 this.Close();
@@ -51,11 +51,11 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
             try
             {
                 // Khởi tạo form
-                var homeTDMK_va_TTCN = new QLHSKN();
+                var homeQLHSKN = new QLHSKN();
 
                 // Gán trạng thái (Normal/Maximized) của cửa sổ hiện tại cho cửa sổ mới
-                homeTDMK_va_TTCN.WindowState = this.WindowState;
-                homeTDMK_va_TTCN.Show();
+                homeQLHSKN.WindowState = this.WindowState;
+                homeQLHSKN.Show();
 
                 // Đóng form hiện tại 
                 this.Close();

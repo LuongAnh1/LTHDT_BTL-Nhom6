@@ -11,9 +11,9 @@
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.Foreground="{StaticResource TextPrimaryBrush}"
         TextElement.FontSize="14"
-        Background="#F0F2F5">
+        Background="{StaticResource AppBackgroundBrush}">
 
     <Window.Resources>
         <!-- 1. Style cho Nút Menu thường -->
@@ -24,7 +24,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="15,0"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource TextWhiteBrush}"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -37,7 +37,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#3D5166"/>
+                                <Setter Property="Background" Value="{StaticResource MenuHoverBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -47,10 +47,10 @@
 
         <!-- 2. Style cho Nút Menu đang Active -->
         <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#357ABD"/>
+                    <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -60,7 +60,7 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0,0,0,2"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="Padding" Value="4,12"/>
@@ -76,8 +76,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="#374151"/>
-                                <Setter Property="BorderBrush" Value="#D1D5DB"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderMediumBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -86,8 +86,8 @@
         </Style>
 
         <Style x:Key="ActiveTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
-            <Setter Property="Foreground" Value="#2563EB"/>
-            <Setter Property="BorderBrush" Value="#2563EB"/>
+            <Setter Property="Foreground" Value="{StaticResource HighlightBlueBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource HighlightBlueBrush}"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
     </Window.Resources>
@@ -101,7 +101,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- === SIDEBAR === -->
-        <Border Grid.Column="0" Background="#2D3E50">
+        <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -111,11 +111,11 @@
 
                 <!-- Header Admin -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="25,30,20,30">
-                    <materialDesign:PackIcon Kind="CogOutline" Width="30" Height="30" Foreground="White" VerticalAlignment="Center"/>
-                    <TextBlock Text="Admin" Foreground="White" FontSize="20" FontWeight="Bold" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                    <materialDesign:PackIcon Kind="CogOutline" Width="30" Height="30" Foreground="{StaticResource TextWhiteBrush}" VerticalAlignment="Center"/>
+                    <TextBlock Text="Admin" Foreground="{StaticResource TextWhiteBrush}" FontSize="20" FontWeight="Bold" Margin="15,0,0,0" VerticalAlignment="Center"/>
                 </StackPanel>
 
-                <Separator Grid.Row="0" VerticalAlignment="Bottom" Background="#55FFFFFF" Margin="20,0"/>
+                <Separator Grid.Row="0" VerticalAlignment="Bottom" Background="{StaticResource SeparatorBrush}" Margin="20,0"/>
 
                 <!-- Menu List -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,20,10,0">
@@ -167,7 +167,7 @@
 
                 <!-- Footer User -->
                 <StackPanel Grid.Row="2" Margin="10,0,10,20">
-                    <Separator Background="#55FFFFFF" Margin="10,10,10,15"/>
+                    <Separator Background="{StaticResource SeparatorBrush}" Margin="10,10,10,15"/>
                     <Button Style="{StaticResource MenuButtonStyle}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="AccountCircleOutline" Width="22" Height="22" VerticalAlignment="Center"/>
@@ -185,7 +185,7 @@
         </Border>
 
         <!-- === MAIN CONTENT === -->
-        <Grid Grid.Column="1" Background="#FFFFFF">
+        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Title Bar -->
@@ -195,18 +195,17 @@
                 <!-- Content Area -->
             </Grid.RowDefinitions>
 
-            <!-- 1. Title Bar (ĐÃ SỬA VỊ TRÍ) -->
+            <!-- 1. Title Bar -->
             <Grid Grid.Row="0">
-                <!-- TextBlock có Margin riêng để canh lề trái -->
                 <TextBlock Text="Thay đổi Mật khẩu &amp; Thông tin cá nhân" 
                            FontSize="24" 
                            FontWeight="Bold" 
-                           Foreground="#1F2937" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
                            Margin="32,24,0,10" 
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left"/>
 
-                <!-- StackPanel nút điều khiển neo sát góc phải trên cùng -->
+                <!-- StackPanel nút điều khiển -->
                 <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Right" 
                             VerticalAlignment="Top" 
@@ -225,12 +224,12 @@
 
                     <!-- Nút Thu nhỏ -->
                     <Button ToolTip="Thu nhỏ" Click="Button_Minimize_Click">
-                        <materialDesign:PackIcon Kind="Minus" Width="18" Height="18" Foreground="#555"/>
+                        <materialDesign:PackIcon Kind="Minus" Width="18" Height="18" Foreground="{StaticResource TextSecondaryBrush}"/>
                     </Button>
 
                     <!-- Nút Phóng to -->
                     <Button x:Name="btnMaximize" ToolTip="Phóng to" Click="Button_Maximize_Click">
-                        <materialDesign:PackIcon x:Name="iconMaximize" Kind="WindowMaximize" Width="16" Height="16" Foreground="#555"/>
+                        <materialDesign:PackIcon x:Name="iconMaximize" Kind="WindowMaximize" Width="16" Height="16" Foreground="{StaticResource TextSecondaryBrush}"/>
                     </Button>
 
                     <!-- Nút Đóng -->
@@ -244,7 +243,7 @@
                                 <Setter Property="Background" Value="Transparent"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#FF4444"/>
+                                        <Setter Property="Background" Value="{StaticResource DeleteIconBrush}"/>
                                         <Setter Property="Foreground" Value="White"/>
                                     </Trigger>
                                 </Style.Triggers>
@@ -256,7 +255,7 @@
             </Grid>
 
             <!-- 2. Tabs Navigation -->
-            <Border Grid.Row="1" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Margin="32,0,32,24">
+            <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click"/>
                     <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource TabButtonStyle}" Click="Button_QLHSKN_Click"/>
@@ -276,58 +275,58 @@
 
                     <!-- FORM TRÁI: THÔNG TIN CÁ NHÂN -->
                     <StackPanel Grid.Column="0">
-                        <Border BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,24">
+                        <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,24">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Account" Foreground="#2563EB" Width="24" Height="24"/>
-                                <TextBlock Text="Thông tin cá nhân" FontSize="18" FontWeight="Bold" Foreground="#1F2937" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                <materialDesign:PackIcon Kind="Account" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
+                                <TextBlock Text="Thông tin cá nhân" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Background="#F9FAFB" BorderBrush="#F3F4F6" BorderThickness="1" CornerRadius="8" Padding="24">
+                        <Border Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="24">
                             <StackPanel>
-                                <TextBlock Text="Tên đăng nhập" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Tên đăng nhập" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <TextBox Text="admin_user" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="AccountCircle"
                                          materialDesign:TextFieldAssist.LeadingIconSize="20"
-                                         Background="#F3F4F6" BorderBrush="#D1D5DB"
+                                         Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                <TextBlock Text="Họ và tên" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Họ và tên" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <TextBox Text="Nguyễn Văn A" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="BadgeAccountHorizontal"
                                          materialDesign:TextFieldAssist.LeadingIconSize="20"
-                                         Background="#F3F4F6" BorderBrush="#D1D5DB"
+                                         Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                <TextBlock Text="Vai trò" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Vai trò" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <TextBox Text="Quản trị viên" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="ShieldAccount"
                                          materialDesign:TextFieldAssist.LeadingIconSize="20"
-                                         Background="#F3F4F6" BorderBrush="#D1D5DB"
+                                         Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                <Separator Background="#E5E7EB" Margin="0,8,0,16"/>
+                                <Separator Background="{StaticResource BorderLightBrush}" Margin="0,8,0,16"/>
 
-                                <TextBlock Text="SĐT" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="SĐT" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <TextBox x:Name="txtPhone" Text="0901234567"
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="Phone"
                                          materialDesign:TextFieldAssist.LeadingIconSize="20"
-                                         Background="White" BorderBrush="#D1D5DB"
+                                         Background="{StaticResource ContentBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                <TextBlock Text="Email" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Email" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <TextBox x:Name="txtEmail" Text="admin.a@company.com"
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="Email"
                                          materialDesign:TextFieldAssist.LeadingIconSize="20"
-                                         Background="White" BorderBrush="#D1D5DB"
+                                         Background="{StaticResource ContentBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,24"/>
 
-                                <Button HorizontalAlignment="Right" Background="#1E40AF" BorderBrush="{x:Null}" Height="40">
+                                <Button HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{x:Null}" Height="40">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Lưu thông tin" Foreground="White" FontSize="14" FontWeight="Medium"/>
@@ -339,45 +338,45 @@
 
                     <!-- FORM PHẢI: ĐỔI MẬT KHẨU -->
                     <StackPanel Grid.Column="2">
-                        <Border BorderBrush="#E5E7EB" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,24">
+                        <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,24">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="LockReset" Foreground="#2563EB" Width="24" Height="24"/>
-                                <TextBlock Text="Thay đổi mật khẩu" FontSize="18" FontWeight="Bold" Foreground="#1F2937" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                <materialDesign:PackIcon Kind="LockReset" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
+                                <TextBlock Text="Thay đổi mật khẩu" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Border>
 
-                        <Border Background="#F9FAFB" BorderBrush="#F3F4F6" BorderThickness="1" CornerRadius="8" Padding="24">
+                        <Border Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="24">
                             <StackPanel>
-                                <TextBlock Text="Mật khẩu hiện tại" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Mật khẩu hiện tại" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <PasswordBox x:Name="pbCurrentPass"
                                              Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                                              materialDesign:TextFieldAssist.LeadingIcon="Lock"
                                              materialDesign:TextFieldAssist.LeadingIconSize="20"
                                              materialDesign:HintAssist.Hint="Nhập mật khẩu hiện tại"
-                                             Background="White" BorderBrush="#D1D5DB"
+                                             Background="{StaticResource ContentBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                              Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                <TextBlock Text="Mật khẩu mới" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Mật khẩu mới" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <PasswordBox x:Name="pbNewPass"
                                              Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                                              materialDesign:TextFieldAssist.LeadingIcon="Key"
                                              materialDesign:TextFieldAssist.LeadingIconSize="20"
                                              materialDesign:HintAssist.Hint="Nhập mật khẩu mới"
-                                             Background="White" BorderBrush="#D1D5DB"
+                                             Background="{StaticResource ContentBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                              Height="45" VerticalContentAlignment="Center" Margin="0,0,0,4"/>
                                 <TextBlock Text="Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số." 
-                                           FontSize="12" Foreground="#6B7280" Margin="0,0,0,16"/>
+                                           FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,16"/>
 
-                                <TextBlock Text="Xác nhận mật khẩu mới" FontWeight="Medium" Foreground="#374151" Margin="0,0,0,6"/>
+                                <TextBlock Text="Xác nhận mật khẩu mới" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
                                 <PasswordBox x:Name="pbConfirmPass"
                                              Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                                              materialDesign:TextFieldAssist.LeadingIcon="CheckCircle"
                                              materialDesign:TextFieldAssist.LeadingIconSize="20"
                                              materialDesign:HintAssist.Hint="Nhập lại mật khẩu mới"
-                                             Background="White" BorderBrush="#D1D5DB"
+                                             Background="{StaticResource ContentBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                              Height="45" VerticalContentAlignment="Center" Margin="0,0,0,32"/>
 
-                                <Button HorizontalAlignment="Right" Background="#16A34A" BorderBrush="{x:Null}" Height="40">
+                                <Button HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderBrush="{x:Null}" Height="40">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="Upload" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Đổi mật khẩu" Foreground="White" FontSize="14" FontWeight="Medium"/>
@@ -390,4 +389,4 @@
             </ScrollViewer>
         </Grid>
     </Grid>
-</Window>
+</Window> 
