@@ -8,15 +8,65 @@
                 <!-- 1. Cấu hình màu chủ đạo (BundledTheme) -->
                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Lime" />
 
-                <!-- 2. SỬA LỖI TẠI ĐÂY: Dùng đường dẫn đúng cho bản 5.x -->
+                <!-- 2. Dùng đường dẫn đúng cho bản 5.x -->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- 3. Định nghĩa màu Custom (giống Tailwind CSS cũ của bạn) -->
+            <!-- 3. Định nghĩa màu Custom (giống Tailwind) -->
             <SolidColorBrush x:Key="SidebarBg" Color="#2d3e50"/>
             <SolidColorBrush x:Key="SidebarActiveBg" Color="#4a90e2"/>
             <SolidColorBrush x:Key="MainBg" Color="#f0f2f5"/>
             <SolidColorBrush x:Key="PrimaryButtonBg" Color="#1e40af"/>
+            
+            <!-- ================================================== -->
+            <!-- BẢNG MÀU DÙNG CHUNG (GLOBAL COLOR PALETTE)         -->
+            <!-- ================================================== -->
+
+            <!-- 1. Màu nền chính -->
+            <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F0F2F5"/>
+            <!-- Màu nền xám nhạt toàn app -->
+            <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#2D3E50"/>
+            <!-- Màu nền Sidebar bên trái -->
+            <SolidColorBrush x:Key="ContentBackgroundBrush" Color="#FFFFFF"/>
+            <!-- Màu nền nội dung chính (trắng) -->
+
+            <!-- 2. Màu chữ (Text) -->
+            <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1F2937"/>
+            <!-- Chữ đen đậm (Tiêu đề) -->
+            <SolidColorBrush x:Key="TextSecondaryBrush" Color="#6B7280"/>
+            <!-- Chữ xám (Tab chưa active) -->
+            <SolidColorBrush x:Key="TextWhiteBrush" Color="#FFFFFF"/>
+            <!-- Chữ trắng -->
+
+            <!-- 3. Màu nút bấm & Menu (Sidebar) -->
+            <SolidColorBrush x:Key="MenuHoverBrush" Color="#3D5166"/>
+            <!-- Hover vào menu -->
+            <SolidColorBrush x:Key="MenuActiveBrush" Color="#4A90E2"/>
+            <!-- Menu đang chọn -->
+            <SolidColorBrush x:Key="MenuActiveHoverBrush" Color="#357ABD"/>
+            <!-- Hover vào menu đang chọn -->
+
+            <!-- 4. Màu chủ đạo (Primary Action) -->
+            <SolidColorBrush x:Key="PrimaryBlueBrush" Color="#1E40AF"/>
+            <!-- Nút Thêm mới -->
+            <SolidColorBrush x:Key="HighlightBlueBrush" Color="#2563EB"/>
+            <!-- Tab đang chọn -->
+
+            <!-- 5. Màu trạng thái & Icon -->
+            <SolidColorBrush x:Key="EditIconBrush" Color="#3B82F6"/>
+            <!-- Màu xanh icon sửa -->
+            <SolidColorBrush x:Key="DeleteIconBrush" Color="#EF4444"/>
+            <!-- Màu đỏ icon xóa/đóng -->
+            <SolidColorBrush x:Key="SuccessGreenBrush" Color="#16A34A"/>
+            <!-- Màu xanh lá (Switch ON) -->
+
+            <!-- 6. Đường viền & Separator -->
+            <SolidColorBrush x:Key="BorderLightBrush" Color="#E5E7EB"/>
+            <!-- Viền nhạt -->
+            <SolidColorBrush x:Key="BorderMediumBrush" Color="#D1D5DB"/>
+            <!-- Viền đậm hơn chút -->
+            <SolidColorBrush x:Key="SeparatorBrush" Color="#55FFFFFF"/>
+            <!-- Đường kẻ mờ ở sidebar -->
         </ResourceDictionary>
     </Application.Resources>
 </Application>
