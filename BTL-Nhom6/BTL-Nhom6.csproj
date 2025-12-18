@@ -134,6 +134,9 @@
     <Compile Include="Bao_Cao_Thong_Ke\BCTTTB.xaml.cs">
       <DependentUpon>BCTTTB.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Bao_Cao_Thong_Ke\Home_BCTK.xaml.cs">
+      <DependentUpon>Home_BCTK.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Bao_Cao_Thong_Ke\TKTSL_va_SC.xaml.cs">
       <DependentUpon>TKTSL_va_SC.xaml</DependentUpon>
     </Compile>
@@ -141,6 +144,7 @@
       <DependentUpon>Dang_Nhap.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helper\DatabaseHelper.cs" />
+    <Compile Include="Helper\MenuEnums.cs" />
     <Compile Include="Helper\NavigationHelper.cs" />
     <Compile Include="Helper\UserSession.cs.cs" />
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CNPCV.xaml.cs">
@@ -208,6 +212,12 @@
     </Compile>
     <Compile Include="Trang_Chu.xaml.cs">
       <DependentUpon>Trang_Chu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\MainLayout.xaml.cs">
+      <DependentUpon>MainLayout.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\SidebarControl.xaml.cs">
+      <DependentUpon>SidebarControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\WindowControlBar.xaml.cs">
       <DependentUpon>WindowControlBar.xaml</DependentUpon>
@@ -281,6 +291,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Bao_Cao_Thong_Ke\BCTTTB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Bao_Cao_Thong_Ke\Home_BCTK.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -377,6 +391,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Trang_Chu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\MainLayout.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\SidebarControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -19,49 +19,6 @@
         Background="{StaticResource AppBackgroundBrush}">
 
     <Window.Resources>
-        <!-- ========================================================= -->
-        <!-- 1. CÁC STYLE GỐC (ĐÃ CẬP NHẬT RESOURCE MÀU)               -->
-        <!-- ========================================================= -->
-
-        <!-- Style cho Nút Menu thường -->
-        <Style x:Key="MenuButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="15,0"/>
-            <Setter Property="Foreground" Value="{StaticResource TextWhiteBrush}"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Margin="0,2">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              Margin="{TemplateBinding Padding}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource MenuHoverBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Style cho Nút Menu đang Active -->
-        <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-            <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
         <!-- Style cho Tab Navigation -->
         <Style x:Key="TabButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
@@ -153,112 +110,24 @@
 
     </Window.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>
-            <!-- Sidebar -->
-            <ColumnDefinition Width="*"/>
-            <!-- Content -->
-        </Grid.ColumnDefinitions>
-
-        <!-- === SIDEBAR === -->
-        <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
-            <Grid>
+    <!-- Sử dụng MainLayput làm bố cục chính -->
+    <uc:MainLayout ActiveItem="System">
+        <!-- Nội dung bên trong -->
+        <Grid>
+            <!-- === MAIN CONTENT === -->
+            <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <!-- Title Bar -->
                     <RowDefinition Height="Auto"/>
+                    <!-- Tabs -->
+                    <RowDefinition Height="*"/>
+                    <!-- Content Area -->
                 </Grid.RowDefinitions>
 
-                <!-- Header Admin -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="25,30,20,30">
-                    <materialDesign:PackIcon Kind="CogOutline" Width="30" Height="30" Foreground="{StaticResource TextWhiteBrush}" VerticalAlignment="Center"/>
-                    <TextBlock Text="Admin" Foreground="{StaticResource TextWhiteBrush}" FontSize="20" FontWeight="Bold" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <Separator Grid.Row="0" VerticalAlignment="Bottom" Background="{StaticResource SeparatorBrush}" Margin="20,0"/>
-
-                <!-- Menu List -->
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,20,10,0">
-                    <StackPanel>
-                        <Button Style="{StaticResource MenuButtonStyle}" Click="Button_Home_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Home" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Trang chủ" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource ActiveMenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="AccountMultiple" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Quản trị hệ thống" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Security" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Phân quyền &amp; Vai trò" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Devices" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Quản lý thiết bị" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="CalendarClock" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Quản lý quy trình bảo trì" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="PackageVariant" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Quản lý kho" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="ChartBar" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Báo cáo &amp; Thống kê" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </ScrollViewer>
-
-                <!-- Footer User -->
-                <StackPanel Grid.Row="2" Margin="10,0,10,20">
-                    <Separator Background="{StaticResource SeparatorBrush}" Margin="10,10,10,15"/>
-                    <Button Style="{StaticResource MenuButtonStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="AccountCircleOutline" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="admin" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Style="{StaticResource MenuButtonStyle}" Click="Button_Logout_Click">  
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Logout" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="Đăng xuất" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!-- === MAIN CONTENT === -->
-        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <!-- Title Bar -->
-                <RowDefinition Height="Auto"/>
-                <!-- Tabs -->
-                <RowDefinition Height="*"/>
-                <!-- Content Area -->
-            </Grid.RowDefinitions>
-
-            <!-- 1. Title Bar -->
-            <Grid Grid.Row="0">
-                <TextBlock Text="Quản lý hệ thống" 
+                <!-- 1. Title Bar -->
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Quản lý hệ thống" 
                            FontSize="24" 
                             FontWeight="Bold" 
                             Foreground="{StaticResource TextPrimaryBrush}" 
@@ -266,81 +135,81 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left"/>
 
-                <!-- Control Buttons -->
-                <!-- Sử dụng UserControl tái sử dụng -->
-                <uc:WindowControlBar />
-            </Grid>
+                    <!-- Control Buttons -->
+                    <!-- Sử dụng UserControl tái sử dụng -->
+                    <uc:WindowControlBar />
+                </Grid>
 
-            <!-- 2. Tabs Navigation -->
-            <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource ActiveTabButtonStyle}"/>
-                    <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource TabButtonStyle}"  Click="Button_QLHSKN_Click"/>
-                    <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource TabButtonStyle}" Click="Button_TDMK_va_TTCN_Click"/>
-                    <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
-                </StackPanel>
-            </Border>
+                <!-- 2. Tabs Navigation -->
+                <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource ActiveTabButtonStyle}"/>
+                        <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource TabButtonStyle}"  Click="Button_QLHSKN_Click"/>
+                        <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource TabButtonStyle}" Click="Button_TDMK_va_TTCN_Click"/>
+                        <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
+                    </StackPanel>
+                </Border>
 
-            <!-- 3. Form Content -->
-            <Grid Grid.Row="2" Margin="32,0,32,32">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <!-- Filters -->
-                    <RowDefinition Height="*"/>
-                    <!-- Table -->
-                </Grid.RowDefinitions>
+                <!-- 3. Form Content -->
+                <Grid Grid.Row="2" Margin="32,0,32,32">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Filters -->
+                        <RowDefinition Height="*"/>
+                        <!-- Table -->
+                    </Grid.RowDefinitions>
 
-                <!-- 3.1. Bộ lọc và Nút Thêm -->
-                <Grid Grid.Row="0" Margin="0,0,0,24">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                    <!-- 3.1. Bộ lọc và Nút Thêm -->
+                    <Grid Grid.Row="0" Margin="0,0,0,24">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="Filter" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,16,0"/>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="Filter" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,16,0"/>
 
-                        <!-- Vai trò -->
-                        <ComboBox Width="140" Margin="0,0,16,0"
+                            <!-- Vai trò -->
+                            <ComboBox Width="140" Margin="0,0,16,0"
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                   materialDesign:HintAssist.Hint="Vai trò"
                                   Background="White" BorderBrush="{StaticResource BorderMediumBrush}" Height="40" Padding="12,8">
-                            <ComboBoxItem Content="Vai trò"/>
-                            <ComboBoxItem Content="Quản trị viên"/>
-                            <ComboBoxItem Content="Nhân viên"/>
-                        </ComboBox>
+                                <ComboBoxItem Content="Vai trò"/>
+                                <ComboBoxItem Content="Quản trị viên"/>
+                                <ComboBoxItem Content="Nhân viên"/>
+                            </ComboBox>
 
-                        <!-- Tên vai trò -->
-                        <ComboBox Width="160" Margin="0,0,16,0"
+                            <!-- Tên vai trò -->
+                            <ComboBox Width="160" Margin="0,0,16,0"
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                   materialDesign:HintAssist.Hint="Tên vai trò"
                                   Background="White" BorderBrush="{StaticResource BorderMediumBrush}" Height="40" Padding="12,8">
-                            <ComboBoxItem Content="Tên vai trò"/>
-                            <ComboBoxItem Content="Quản lý kỹ thuật"/>
-                            <ComboBoxItem Content="Kỹ thuật viên điện"/>
-                        </ComboBox>
+                                <ComboBoxItem Content="Tên vai trò"/>
+                                <ComboBoxItem Content="Quản lý kỹ thuật"/>
+                                <ComboBoxItem Content="Kỹ thuật viên điện"/>
+                            </ComboBox>
 
-                        <!-- Tìm kiếm -->
-                        <TextBox Width="260"
+                            <!-- Tìm kiếm -->
+                            <TextBox Width="260"
                                  Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                  materialDesign:HintAssist.Hint="Tìm kiếm người dùng"
                                  materialDesign:TextFieldAssist.LeadingIcon="Search"
                                  materialDesign:TextFieldAssist.LeadingIconSize="20"
                                  Background="White" BorderBrush="{StaticResource BorderMediumBrush}" Height="40" 
                                  VerticalContentAlignment="Center" Padding="8,0"/>
-                    </StackPanel>
-
-                    <!-- Nút Thêm Mới -->
-                    <Button Grid.Column="1" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{x:Null}" Height="40" Padding="16,0">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <TextBlock Text="Thêm người dùng mới" Foreground="White" FontWeight="Bold" VerticalAlignment="Center"/>
                         </StackPanel>
-                    </Button>
-                </Grid>
 
-                <!-- 3.2. DataGrid (Bảng dữ liệu) -->
-                <DataGrid Grid.Row="1" x:Name="dgUsers"
+                        <!-- Nút Thêm Mới -->
+                        <Button Grid.Column="1" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{x:Null}" Height="40" Padding="16,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Thêm người dùng mới" Foreground="White" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <!-- 3.2. DataGrid (Bảng dữ liệu) -->
+                    <DataGrid Grid.Row="1" x:Name="dgUsers"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           SelectionMode="Single"
@@ -355,65 +224,66 @@
                           FontSize="14"
                           VerticalScrollBarVisibility="Auto">
 
-                    <DataGrid.Resources>
-                        <Style TargetType="DataGridCell">
-                            <Setter Property="Padding" Value="12,0"/>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="DataGridCell">
-                                        <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Setter Property="BorderThickness" Value="0"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <!-- Màu khi chọn dòng (dùng màu AppBg hoặc nhẹ hơn) -->
-                                    <Setter Property="Background" Value="{StaticResource AppBackgroundBrush}"/>
-                                    <Setter Property="Foreground" Value="Black"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.Resources>
+                        <DataGrid.Resources>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="Padding" Value="12,0"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="DataGridCell">
+                                            <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                                <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <!-- Màu khi chọn dòng (dùng màu AppBg hoặc nhẹ hơn) -->
+                                        <Setter Property="Background" Value="{StaticResource AppBackgroundBrush}"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.Resources>
 
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="Tên đăng nhập" Binding="{Binding Username}" Width="Auto" MinWidth="130" Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <DataGridTextColumn Header="Họ và tên" Binding="{Binding FullName}" Width="*" MinWidth="150" Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <DataGridTextColumn Header="Tên vai trò" Binding="{Binding RoleName}" Width="Auto" MinWidth="160" Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <DataGridTextColumn Header="Vai trò" Binding="{Binding RoleGroup}" Width="Auto" MinWidth="120" Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <DataGridTextColumn Header="SĐT" Binding="{Binding Phone}" Width="Auto" MinWidth="110" Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*" MinWidth="200" Foreground="{StaticResource TextPrimaryBrush}"/>
-                        <DataGridTextColumn Header="Mật khẩu" Binding="{Binding PasswordMask}" Width="Auto" MinWidth="100" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Tên đăng nhập" Binding="{Binding Username}" Width="Auto" MinWidth="130" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <DataGridTextColumn Header="Họ và tên" Binding="{Binding FullName}" Width="*" MinWidth="150" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <DataGridTextColumn Header="Tên vai trò" Binding="{Binding RoleName}" Width="Auto" MinWidth="160" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <DataGridTextColumn Header="Vai trò" Binding="{Binding RoleGroup}" Width="Auto" MinWidth="120" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <DataGridTextColumn Header="SĐT" Binding="{Binding Phone}" Width="Auto" MinWidth="110" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*" MinWidth="200" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <DataGridTextColumn Header="Mật khẩu" Binding="{Binding PasswordMask}" Width="Auto" MinWidth="100" Foreground="{StaticResource TextPrimaryBrush}"/>
 
-                        <!-- Cột Hành động -->
-                        <DataGridTemplateColumn Header="Hành động" Width="Auto">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <!-- Edit -->
-                                        <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Sửa" Width="30" Height="30" Foreground="{StaticResource EditIconBrush}">
-                                            <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
-                                        </Button>
+                            <!-- Cột Hành động -->
+                            <DataGridTemplateColumn Header="Hành động" Width="Auto">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <!-- Edit -->
+                                            <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Sửa" Width="30" Height="30" Foreground="{StaticResource EditIconBrush}">
+                                                <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
+                                            </Button>
 
-                                        <!-- Toggle Switch -->
-                                        <CheckBox IsChecked="{Binding IsActive}" 
+                                            <!-- Toggle Switch -->
+                                            <CheckBox IsChecked="{Binding IsActive}" 
                                                   Style="{StaticResource IOSSwitchStyle}"
                                                   ToolTip="Kích hoạt"
                                                   Margin="12,0"/>
 
-                                        <!-- Delete -->
-                                        <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Xóa" Width="30" Height="30" Foreground="{StaticResource DeleteIconBrush}">
-                                            <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                                            <!-- Delete -->
+                                            <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="Xóa" Width="30" Height="30" Foreground="{StaticResource DeleteIconBrush}">
+                                                <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
             </Grid>
         </Grid>
-    </Grid>
+    </uc:MainLayout>
 </Window>
