@@ -7,7 +7,7 @@ namespace BTL_Nhom6.Helper
     public class DatabaseHelper
     {
         // Thay đổi thông tin này khớp với MySQL của bạn
-        private static string _connectionString = "Server=localhost;Database=csdl;User Id=root;Password=anh29112005;Port=3306;";
+        private static string _connectionString = "Server=localhost;Database=csdl;User Id=root;Password=A10king2005;Port=3306;";
 
         // Hàm lấy Connection (để dùng cho các lệnh truy vấn sau này)
         public static MySqlConnection GetConnection()
