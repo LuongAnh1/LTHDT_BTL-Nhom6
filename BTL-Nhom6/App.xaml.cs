@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using BTL_Nhom6.Helper; // Nhớ using namespace chứa DatabaseHelper
+using BTL_Nhom6.Helper; // Namespace chứa DatabaseHelper và DatabaseTriggerHelper
 
 namespace BTL_Nhom6
 {
@@ -15,7 +15,7 @@ namespace BTL_Nhom6
 
             if (ketNoiThanhCong)
             {
-                // 2. Nếu OK -> Mở màn hình Đăng nhập
+                // Nếu OK -> Mở màn hình Đăng nhập
                 Dang_Nhap loginWindow = new Dang_Nhap();
                 loginWindow.Show();
             }
