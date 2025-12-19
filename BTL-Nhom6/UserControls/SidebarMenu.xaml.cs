@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using BTL_Nhom6.Helper;
+using BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc;
 using BTL_Nhom6.Quan_Tri_He_Thong; // Namespace chứa NavigationHelper
 // using BTL_Nhom6.Views; // Mở comment nếu các Window nằm trong thư mục Views
 
@@ -52,7 +53,7 @@ namespace BTL_Nhom6.UserControls
                     nextWindow = new QLND_va_PQ();
                     break;
                 case "QLTTDM":
-                    MessageBox.Show("Chức năng Quản lý thông tin danh mục đang phát triển");
+                    nextWindow = new QLVTPB();
                     break;
                 case "QLTB":
                     MessageBox.Show("Chức năng Quản lý thiết bị đang phát triển");

@@ -19,6 +19,7 @@
         Background="{StaticResource AppBackgroundBrush}">
 
     <Grid>
+        <!-- Chia lưới giưã thanh bar và phần nội dung-->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="270"/>
             <!-- Cột Sidebar -->
@@ -27,7 +28,9 @@
         </Grid.ColumnDefinitions>
 
         <!-- 1. SIDEBAR -->
+        <!-- Xác định CurentItem trong file UserControls/SidebarMenu -->
         <uc:SidebarMenu Grid.Column="0" CurrentItem="QTHT"/>
+
         <!-- BẮT ĐẦU NỘI DUNG RIÊNG CỦA TRANG (BODY) -->
         <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
             <Grid.RowDefinitions>
