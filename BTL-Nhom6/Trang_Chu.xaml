@@ -21,7 +21,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="270"/>
             <!-- Cột Sidebar -->
             <ColumnDefinition Width="*"/>
             <!-- Cột Nội dung chính -->

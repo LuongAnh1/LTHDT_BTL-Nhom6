@@ -1,12 +1,9 @@
 ﻿<UserControl x:Class="BTL_Nhom6.UserControls.SidebarMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d" 
-             x:Name="ucSidebar"
-             d:DesignHeight="768" d:DesignWidth="260">
+             xmlns:local="clr-namespace:BTL_Nhom6.UserControls"
+             x:Name="ucSidebar">
 
     <Border Background="{StaticResource SidebarBackgroundBrush}">
         <Grid>
@@ -24,133 +21,52 @@
 
             <Separator Grid.Row="0" VerticalAlignment="Bottom" Background="{StaticResource SeparatorBrush}" Margin="20,0"/>
 
-            <!-- 2. MENU ITEMS -->
+            <!-- 2. MENU ITEMS (Đã rút gọn) -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,20,10,0">
                 <StackPanel>
 
-                    <!-- Nút: Trang chủ -->
-                    <Button Tag="Home" Click="Button_Menu_Click">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-                                <Style.Triggers>
-                                    <!-- Trigger: Nếu CurrentItem = "Home" thì đổi màu nền Active -->
-                                    <DataTrigger Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="Home">
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
-                                    </DataTrigger>
-                                    <!-- Trigger: Nếu Active + Hover chuột thì đổi màu Hover Active -->
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="Home"/>
-                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Home" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="Trang chủ" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                    <!-- Cấu trúc mới áp dụng cho tất cả các nút -->
+                    <!-- Chúng ta bind CurrentActiveTag vào CurrentItem của Sidebar cha -->
 
-                    <!-- Nút: Quản trị hệ thống -->
-                    <Button Tag="System" Click="Button_Menu_Click">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="System">
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
-                                    </DataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="System"/>
-                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="AccountMultiple" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="Quản trị hệ thống" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                    <local:SidebarItem Title="Trang chủ" 
+                                       Icon="Home" 
+                                       NavTag="Home"
+                                       CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
+                                       Click="Button_Menu_Click"/>
 
-                    <!-- Nút: Phân quyền -->
-                    <Button Tag="Roles" Click="Button_Menu_Click">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="Roles">
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
-                                    </DataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="Roles"/>
-                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Security" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="Phân quyền &amp; Vai trò" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                    <local:SidebarItem Title="Quản trị hệ thống" 
+                                       Icon="AccountMultiple" 
+                                       NavTag="QTHT"
+                                       CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
+                                       Click="Button_Menu_Click"/>
 
-                    <!-- Nút: Quản lý thiết bị -->
-                    <Button Tag="Devices" Click="Button_Menu_Click">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="Devices">
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
-                                    </DataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="Devices"/>
-                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Devices" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="Quản lý thiết bị" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                    <local:SidebarItem Title="Quản lý thông tin danh mục" 
+                                       Icon="Category" 
+                                       NavTag="QLTTDM"
+                                       CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
+                                       Click="Button_Menu_Click"/>
 
-                    <!-- Nút: Bảo trì -->
-                    <Button Tag="Maintenance" Click="Button_Menu_Click">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="Maintenance">
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
-                                    </DataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ucSidebar, Path=CurrentItem}" Value="Maintenance"/>
-                                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
-                                        </MultiDataTrigger.Conditions>
-                                        <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="CalendarClock" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="Quản lý quy trình bảo trì" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
+                    <local:SidebarItem Title="Quản lý thiết bị" 
+                                       Icon="Devices" 
+                                       NavTag="QLTB"
+                                       CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
+                                       Click="Button_Menu_Click"/>
 
-                    <!-- Các nút khác tương tự... -->
+                    <local:SidebarItem Title="Quản lý quy trình bảo trì" 
+                                       Icon="CalendarClock" 
+                                       NavTag="QLQTBT"
+                                       CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
+                                       Click="Button_Menu_Click"/>
+                    <local:SidebarItem Title="Quản lý kho vật tư" 
+                                       Icon="Restore" 
+                                       NavTag="QLKVT"
+                                       CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
+                                       Click="Button_Menu_Click"/>
+                    <local:SidebarItem Title="Báo cáo thống kê" 
+                                        Icon="Form" 
+                                        NavTag="BCTK"
+                                        CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
+                                        Click="Button_Menu_Click"/>
 
                 </StackPanel>
             </ScrollViewer>

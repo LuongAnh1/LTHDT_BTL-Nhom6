@@ -31,57 +31,47 @@ namespace BTL_Nhom6.UserControls
         // ============================================================
         private void Button_Menu_Click(object sender, RoutedEventArgs e)
         {
-            // Lấy nút vừa bấm
-            Button btn = sender as Button;
-            if (btn == null || btn.Tag == null) return;
+            // 1. Ép kiểu sender về SidebarItem
+            var item = sender as SidebarItem;
+            if (item == null || string.IsNullOrEmpty(item.NavTag)) return;
 
-            string tag = btn.Tag.ToString();
+            string tag = item.NavTag;
 
-            // Lấy cửa sổ hiện tại đang chứa UserControl này
+            // Các phần xử lý logic chuyển trang giữ nguyên như cũ
+            if (CurrentItem == tag) return;
+
             Window currentWindow = Window.GetWindow(this);
             Window nextWindow = null;
 
-            // Kiểm tra xem user có đang bấm vào chính trang hiện tại không
-            // Nếu đúng thì không làm gì cả (để tránh reload lại trang)
-            if (CurrentItem == tag) return;
-
-            // Dựa vào Tag để khởi tạo Window tương ứng
-            // LƯU Ý: Bạn cần thay thế tên Class Window (ví dụ: MainWindow, DevicesWindow...) 
-            // cho đúng với tên class thực tế trong dự án của bạn.
             switch (tag)
             {
                 case "Home":
-                    nextWindow = new Trang_Chu(); // Ví dụ: Trang chủ
+                    nextWindow = new Trang_Chu();
                     break;
-
-                case "System":
-                    // nextWindow = new QuanTriHeThongWindow(); 
-                    nextWindow = new QLND_va_PQ(); // Ví dụ: Trang chủ
+                case "QTHT":
+                    nextWindow = new QLND_va_PQ();
                     break;
-
-                case "Roles":
-                    // nextWindow = new PhanQuyenWindow();
-                    MessageBox.Show("Chức năng Phân quyền đang phát triển");
+                case "QLTTDM":
+                    MessageBox.Show("Chức năng Quản lý thông tin danh mục đang phát triển");
                     break;
-
-                case "Devices":
-                    // nextWindow = new QuanLyThietBiWindow();
+                case "QLTB":
                     MessageBox.Show("Chức năng Quản lý thiết bị đang phát triển");
                     break;
-
-                case "Maintenance":
-                    // nextWindow = new BaoTriWindow();
+                case "QLQTBT":
                     MessageBox.Show("Chức năng Bảo trì đang phát triển");
                     break;
-
+                case "QLKVT":
+                    MessageBox.Show("Chức năng Quản lý kho vật tư đang phát triển");
+                    break;
+                case "BCTK":
+                    MessageBox.Show("Chức năng Báo cáo thống kê đang phát triển");
+                    break;
                 default:
                     break;
             }
 
-            // Thực hiện điều hướng nếu nextWindow đã được khởi tạo
             if (nextWindow != null)
             {
-                // Gọi hàm helper bạn đã cung cấp
                 NavigationHelper.Navigate(currentWindow, nextWindow);
             }
         }

@@ -77,7 +77,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- 1. SIDEBAR -->
-        <uc:SidebarMenu Grid.Column="0" CurrentItem="System"/>
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="QTHT"/>
 
         <!-- 2. CONTENT AREA -->
         <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
