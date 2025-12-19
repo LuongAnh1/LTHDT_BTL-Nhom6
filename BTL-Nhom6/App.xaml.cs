@@ -16,7 +16,7 @@ namespace BTL_Nhom6
             if (ketNoiThanhCong)
             {
                 // 2. Nếu OK -> Mở màn hình Đăng nhập
-                Dang_Nhap loginWindow = new Dang_Nhap();
+                Trang_Chu loginWindow = new Trang_Chu();
                 loginWindow.Show();
             }
             else

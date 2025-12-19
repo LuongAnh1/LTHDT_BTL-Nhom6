@@ -19,82 +19,8 @@
         Background="{StaticResource AppBackgroundBrush}">
 
     <Window.Resources>
-        <!-- 1. Style cho Nút Menu thường -->
-        <Style x:Key="MenuButtonStyle" TargetType="Button">
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Padding" Value="15,0"/>
-            <Setter Property="Foreground" Value="{StaticResource TextWhiteBrush}"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="8" Margin="0,2">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                              Margin="{TemplateBinding Padding}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource MenuHoverBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- 2. Style cho Nút Menu đang Active -->
-        <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
-            <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <!-- 3. Style cho Tab Navigation -->
-        <Style x:Key="TabButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0,0,0,2"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
-            <Setter Property="FontWeight" Value="Medium"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Padding" Value="4,12"/>
-            <Setter Property="Margin" Value="0,0,24,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border BorderThickness="{TemplateBinding BorderThickness}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                Background="Transparent">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-                                <Setter Property="BorderBrush" Value="{StaticResource BorderMediumBrush}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="ActiveTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
-            <Setter Property="Foreground" Value="{StaticResource HighlightBlueBrush}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource HighlightBlueBrush}"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-        </Style>
-
         <!-- Style cho Button hành động nhỏ (Edit/Delete) -->
+        <!-- Style này chỉ dùng riêng cho trang này nên để ở Window.Resources là hợp lý -->
         <Style x:Key="IconActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
             <Setter Property="Width" Value="30"/>
             <Setter Property="Height" Value="30"/>
@@ -103,97 +29,11 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="260"/>
-            <!-- Sidebar -->
-            <ColumnDefinition Width="*"/>
-            <!-- Content -->
-        </Grid.ColumnDefinitions>
+    <!-- SỬ DỤNG MAIN LAYOUT -->
+    <uc:MainLayout SidebarCurrentItem="System">
 
-        <!-- === SIDEBAR === -->
-        <Border Grid.Column="0" Background="{StaticResource SidebarBackgroundBrush}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="25,30,20,30">
-                    <materialDesign:PackIcon Kind="CogOutline" Width="30" Height="30" Foreground="{StaticResource TextWhiteBrush}" VerticalAlignment="Center"/>
-                    <TextBlock Text="Admin" Foreground="{StaticResource TextWhiteBrush}" FontSize="20" FontWeight="Bold" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                </StackPanel>
-
-                <Separator Grid.Row="0" VerticalAlignment="Bottom" Background="{StaticResource SeparatorBrush}" Margin="20,0"/>
-
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="10,20,10,0">
-                    <StackPanel>
-                        <Button Style="{StaticResource MenuButtonStyle}" Click="Button_Home_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Home" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Trang chủ" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource ActiveMenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="AccountMultiple" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Quản trị hệ thống" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Security" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Phân quyền &amp; Vai trò" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Devices" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Quản lý thiết bị" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="CalendarClock" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Quản lý quy trình bảo trì" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="PackageVariant" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Quản lý kho" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource MenuButtonStyle}">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="ChartBar" Width="22" Height="22" VerticalAlignment="Center"/>
-                                <TextBlock Text="Báo cáo &amp; Thống kê" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </ScrollViewer>
-
-                <StackPanel Grid.Row="2" Margin="10,0,10,20">
-                    <Separator Background="{StaticResource SeparatorBrush}" Margin="10,10,10,15"/>
-                    <Button Style="{StaticResource MenuButtonStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="AccountCircleOutline" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="admin" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                    <Button Style="{StaticResource MenuButtonStyle}" Click="Button_Logout_Click">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Logout" Width="22" Height="22" VerticalAlignment="Center"/>
-                            <TextBlock Text="Đăng xuất" Margin="15,0,0,0" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!-- === MAIN CONTENT === -->
-        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
+        <!-- BẮT ĐẦU NỘI DUNG TRANG (BODY) -->
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Header -->
@@ -210,7 +50,6 @@
                            Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
                 <!-- Control Buttons -->
-                <!-- Sử dụng UserControl tái sử dụng -->
                 <uc:WindowControlBar />
             </Grid>
 
@@ -261,7 +100,7 @@
                     <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel>
-                                <!-- Table Header (Sử dụng AppBackgroundBrush cho nền header) -->
+                                <!-- Table Header -->
                                 <Border Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="12">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -391,7 +230,7 @@
                         </Grid>
                     </StackPanel>
 
-                    <!-- Form Gán Kỹ Năng - Sử dụng AppBackgroundBrush làm nền form -->
+                    <!-- Form Gán Kỹ Năng -->
                     <Border Grid.Row="1" Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -421,7 +260,6 @@
                                             <Style TargetType="Border">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                        <!-- Hardcode màu này vì không có trong Palette, hoặc có thể dùng MenuActiveBrush -->
                                                         <Setter Property="BorderBrush" Value="#93C5FD"/>
                                                     </Trigger>
                                                 </Style.Triggers>
@@ -532,5 +370,5 @@
                 </Grid>
             </Grid>
         </Grid>
-    </Grid>
+    </uc:MainLayout>
 </Window>
