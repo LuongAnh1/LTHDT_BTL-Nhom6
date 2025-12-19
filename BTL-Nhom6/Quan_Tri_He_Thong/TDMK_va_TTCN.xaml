@@ -25,7 +25,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- === 1. SIDEBAR === -->
-        <uc:SidebarMenu Grid.Column="0" CurrentItem="System"/>
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="QTHT"/>
 
         <!-- === 2. MAIN CONTENT AREA === -->
         <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
@@ -40,7 +40,7 @@
 
             <!-- 2.1. Title Bar -->
             <Grid Grid.Row="0">
-                <TextBlock Text="Thay đổi Mật khẩu &amp; Thông tin cá nhân" 
+                <TextBlock Text="Quản trị hệ thống" 
                            FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
                            Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
