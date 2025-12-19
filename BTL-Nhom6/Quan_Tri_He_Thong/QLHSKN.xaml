@@ -29,11 +29,19 @@
         </Style>
     </Window.Resources>
 
-    <!-- SỬ DỤNG MAIN LAYOUT -->
-    <uc:MainLayout SidebarCurrentItem="System">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <!-- Cột Sidebar -->
+            <ColumnDefinition Width="*"/>
+            <!-- Cột Content -->
+        </Grid.ColumnDefinitions>
+
+        <!-- 1. SIDEBAR -->
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="System"/>
 
         <!-- BẮT ĐẦU NỘI DUNG TRANG (BODY) -->
-        <Grid>
+        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Header -->
@@ -370,5 +378,5 @@
                 </Grid>
             </Grid>
         </Grid>
-    </uc:MainLayout>
+    </Grid>
 </Window>

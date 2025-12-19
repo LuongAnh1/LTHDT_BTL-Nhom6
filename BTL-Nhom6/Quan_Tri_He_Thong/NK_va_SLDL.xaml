@@ -18,12 +18,18 @@
         TextElement.FontSize="14"
         Background="{StaticResource AppBackgroundBrush}">
 
-    <!-- SỬ DỤNG MAIN LAYOUT -->
-    <!-- SidebarCurrentItem="System" để báo cho Sidebar biết đang ở mục System -->
-    <uc:MainLayout SidebarCurrentItem="System">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <!-- Cột Sidebar -->
+            <ColumnDefinition Width="*"/>
+            <!-- Cột Content -->
+        </Grid.ColumnDefinitions>
 
+        <!-- 1. SIDEBAR -->
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="System"/>
         <!-- BẮT ĐẦU NỘI DUNG RIÊNG CỦA TRANG (BODY) -->
-        <Grid>
+        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -288,5 +294,5 @@
                 </Grid>
             </Grid>
         </Grid>
-    </uc:MainLayout>
+    </Grid>
 </Window>
