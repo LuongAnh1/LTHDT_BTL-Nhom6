@@ -137,12 +137,16 @@
                             <ComboBoxItem Content="Quản lý kỹ thuật"/>
                             <ComboBoxItem Content="Kỹ thuật viên điện"/>
                         </ComboBox>
-                        <TextBox Width="260" Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                        <TextBox x:Name="txtSearch" Width="260" Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                  materialDesign:HintAssist.Hint="Tìm kiếm người dùng" materialDesign:TextFieldAssist.LeadingIcon="Search"
                                  Background="White" Height="40" VerticalContentAlignment="Center" Padding="8,0"/>
                     </StackPanel>
 
-                    <Button Grid.Column="1" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{x:Null}" Height="40" Padding="16,0">
+                    <Button x:Name="btnAddUser" 
+                            Click="btnAddUser_Click" 
+                            Grid.Column="1" 
+                            Background="{StaticResource PrimaryBlueBrush}" 
+                            BorderBrush="{x:Null}" Height="40" Padding="16,0">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="20" Height="20" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBlock Text="Thêm người dùng mới" Foreground="White" FontWeight="Bold" VerticalAlignment="Center"/>
@@ -152,6 +156,7 @@
 
                 <!-- DataGrid (Giờ đây dgUsers đã hợp lệ) -->
                 <DataGrid Grid.Row="1" x:Name="dgUsers"
+                          IsReadOnly="True"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
                           HeadersVisibility="Column"
@@ -199,11 +204,22 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Button Style="{StaticResource MaterialDesignIconButton}" Width="30" Height="30" Foreground="{StaticResource EditIconBrush}">
+                                        <!-- Nút Sửa -->
+                                        <Button Style="{StaticResource MaterialDesignIconButton}" Width="30" Height="30" Foreground="{StaticResource EditIconBrush}"
+                    Click="btnEditRow_Click">
+                                            <!-- Thêm Click -->
                                             <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
                                         </Button>
-                                        <CheckBox IsChecked="{Binding IsActive}" Style="{StaticResource IOSSwitchStyle}" Margin="12,0"/>
-                                        <Button Style="{StaticResource MaterialDesignIconButton}" Width="30" Height="30" Foreground="{StaticResource DeleteIconBrush}">
+
+                                        <!-- Nút Switch Trạng thái -->
+                                        <CheckBox IsChecked="{Binding IsActive}" Style="{StaticResource IOSSwitchStyle}" Margin="12,0"
+                      Click="chkStatus_Click"/>
+                                        <!-- Thêm Click -->
+
+                                        <!-- Nút Xóa -->
+                                        <Button Style="{StaticResource MaterialDesignIconButton}" Width="30" Height="30" Foreground="{StaticResource DeleteIconBrush}"
+                    Click="btnDeleteRow_Click">
+                                            <!-- Thêm Click -->
                                             <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
                                         </Button>
                                     </StackPanel>
