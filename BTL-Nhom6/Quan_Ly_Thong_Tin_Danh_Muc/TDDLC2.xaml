@@ -39,13 +39,9 @@
         <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <!-- Header -->
                 <RowDefinition Height="Auto"/>
-                <!-- Main Tabs -->
                 <RowDefinition Height="Auto"/>
-                <!-- Sub Tabs -->
                 <RowDefinition Height="*"/>
-                <!-- Table Content -->
             </Grid.RowDefinitions>
 
             <!-- Nút điều khiển Window -->
@@ -70,19 +66,9 @@
 
             <!-- 3. SUB TABS -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="32,0,32,20">
-                <Button Content="Trạng thái thiết bị" 
-                    Style="{StaticResource TabButtonStyle}" 
-                    FontSize="13" Padding="0,8" Margin="0" 
-                    Click="Button_TrangThai_Click"/>
-
-                <Button Content="Đơn vị tính" 
-                    Style="{StaticResource ActiveTabButtonStyle}" 
-                    FontSize="13" Padding="0,8" Margin="32,0,0,0" />
-
-                <Button Content="Các lỗi thường gặp" 
-                    Style="{StaticResource TabButtonStyle}" 
-                    FontSize="13" Padding="0,8" Margin="32,0,0,0"
-                    Click="Button_Loi_Click"/>
+                <Button Content="Trạng thái thiết bị" Style="{StaticResource TabButtonStyle}" FontSize="13" Padding="0,8" Margin="0" Click="Button_TrangThai_Click"/>
+                <Button Content="Đơn vị tính" Style="{StaticResource ActiveTabButtonStyle}" FontSize="13" Padding="0,8" Margin="32,0,0,0" />
+                <Button Content="Các lỗi thường gặp" Style="{StaticResource TabButtonStyle}" FontSize="13" Padding="0,8" Margin="32,0,0,0" Click="Button_Loi_Click"/>
             </StackPanel>
 
             <!-- 4. TABLE AREA -->
@@ -92,11 +78,11 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Toolbar (Search by ID & Name) -->
+                <!-- TOOLBAR - ĐÃ SỬA CĂN GIỮA LOGO -->
                 <Grid Grid.Row="0" Margin="0,0,0,16">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <materialDesign:PackIcon Kind="ScaleBalance" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
-                        <TextBlock Text="Danh sách Đơn vị tính" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        <materialDesign:PackIcon Kind="ScaleBalance" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24" VerticalAlignment="Center"/>
+                        <TextBlock Text="Danh sách đơn vị tính" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
 
                         <!-- Tìm mã -->
                         <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="24,0,0,0" Width="170" Height="36">
