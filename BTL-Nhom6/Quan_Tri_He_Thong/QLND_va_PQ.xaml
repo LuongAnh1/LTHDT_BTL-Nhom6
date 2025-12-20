@@ -4,9 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        
         xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
-        
         mc:Ignorable="d"
         Title="Quản lý Người dùng" 
         Height="768" Width="1366"
@@ -69,7 +67,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
         </Style>
 
-        <!-- Style Toggle Switch -->
+        <!-- Style Toggle Switch IOS -->
         <Style x:Key="IOSSwitchStyle" TargetType="CheckBox">
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -107,7 +105,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
     </Window.Resources>
 
     <!-- Sử dụng MainLayput làm bố cục chính -->
@@ -212,13 +209,12 @@
                     <DataGrid Grid.Row="1" x:Name="dgUsers"
                           AutoGenerateColumns="False"
                           CanUserAddRows="False"
-                          SelectionMode="Single"
-                          SelectionUnit="FullRow"
                           HeadersVisibility="Column"
                           GridLinesVisibility="Horizontal"
                           HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
                           Background="White"
-                          BorderThickness="0"
+                          BorderThickness="1"
+                          BorderBrush="{StaticResource BorderLightBrush}"
                           ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
                           RowHeight="55"
                           FontSize="14"

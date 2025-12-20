@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="BTL_Nhom6.UserControls.SidebarItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             x:Name="ucItem">
+
+    <!-- Button chính -->
+    <Button Click="MainButton_Click" Tag="{Binding NavTag, ElementName=ucItem}">
+        <Button.Style>
+            <!-- Sử dụng lại Style MenuButtonStyle từ Resource của bạn -->
+            <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                <Style.Triggers>
+                    <!-- Trigger: Khi IsActive = True (được tính toán ở code-behind) -->
+                    <DataTrigger Binding="{Binding IsActive, ElementName=ucItem}" Value="True">
+                        <Setter Property="Background" Value="{StaticResource MenuActiveBrush}"/>
+                    </DataTrigger>
+
+                    <!-- Trigger: Active + Hover -->
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsActive, ElementName=ucItem}" Value="True"/>
+                            <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Background" Value="{StaticResource MenuActiveHoverBrush}"/>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Button.Style>
+
+        <!-- Nội dung nút -->
+        <StackPanel Orientation="Horizontal">
+            <materialDesign:PackIcon Kind="{Binding Icon, ElementName=ucItem}" 
+                                     Width="22" Height="22" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding Title, ElementName=ucItem}" 
+                       Margin="15,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+    </Button>
+</UserControl>  
