@@ -81,21 +81,21 @@
                         <Border Background="White" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="24">
                             <StackPanel>
                                 <TextBlock Text="Tên đăng nhập" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <TextBox Text="admin_user" IsReadOnly="True" 
+                                <TextBox x:Name="txtUsername" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="AccountCircle"
                                          Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
                                 <TextBlock Text="Họ và tên" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <TextBox Text="Nguyễn Văn A" IsReadOnly="True" 
+                                <TextBox x:Name="txtDisplayFullName" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="BadgeAccountHorizontal"
                                          Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
                                 <TextBlock Text="Vai trò" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <TextBox Text="Quản trị viên" IsReadOnly="True" 
+                                <TextBox x:Name="txtRoleName" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="ShieldAccount"
                                          Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
@@ -117,7 +117,7 @@
                                          Background="White" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,24"/>
 
-                                <Button HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{x:Null}" Height="40">
+                                <Button Click="BtnSaveInfo_Click" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{x:Null}" Height="40">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Lưu thông tin" Foreground="White" FontSize="14" FontWeight="Medium"/>
@@ -164,7 +164,7 @@
                                              Background="White" BorderBrush="{StaticResource BorderMediumBrush}"
                                              Height="45" VerticalContentAlignment="Center" Margin="0,0,0,32"/>
 
-                                <Button HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderBrush="{x:Null}" Height="40">
+                                <Button Click="BtnChangePass_Click" HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderBrush="{x:Null}" Height="40">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="Upload" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Đổi mật khẩu" Foreground="White" FontSize="14" FontWeight="Medium"/>

@@ -67,6 +67,9 @@
     <Reference Include="MySql.Data, Version=9.5.0.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.9.5.0\lib\net462\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="MySqlBackup, Version=2.6.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySqlBackup.NET.2.6.5\lib\net462\MySqlBackup.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
@@ -145,6 +148,8 @@
     <Compile Include="Helper\NavigationHelper.cs" />
     <Compile Include="Helper\UserSession.cs.cs" />
     <Compile Include="Models\Role.cs" />
+    <Compile Include="Models\Skill.cs" />
+    <Compile Include="Models\TechnicianSkillViewModel.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CNPCV.xaml.cs">
       <DependentUpon>CNPCV.xaml</DependentUpon>
@@ -209,6 +214,9 @@
     <Compile Include="Quan_Tri_He_Thong\QLND_va_PQ.xaml.cs">
       <DependentUpon>QLND_va_PQ.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Quan_Tri_He_Thong\SkillWindow.xaml.cs">
+      <DependentUpon>SkillWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Quan_Tri_He_Thong\TDMK_va_TTCN.xaml.cs">
       <DependentUpon>TDMK_va_TTCN.xaml</DependentUpon>
     </Compile>
@@ -218,8 +226,10 @@
     <Compile Include="Quen_Mat_Khau.xaml.cs">
       <DependentUpon>Quen_Mat_Khau.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\RoleService.cs" />
-    <Compile Include="Services\UserServiec.cs" />
+    <Compile Include="Services\SkillService.cs" />
+    <Compile Include="Services\UserService.cs" />
     <Compile Include="Trang_Chu.xaml.cs">
       <DependentUpon>Trang_Chu.xaml</DependentUpon>
     </Compile>
@@ -396,6 +406,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Tri_He_Thong\QLND_va_PQ.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Tri_He_Thong\SkillWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

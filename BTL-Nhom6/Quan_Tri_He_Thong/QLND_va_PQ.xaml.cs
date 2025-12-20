@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
 using System.Collections.Generic; // Thêm thư viện này để dùng List
+using System.Linq; // Bắt buộc để dùng hàm .Where()
 
 namespace BTL_Nhom6.Quan_Tri_He_Thong
 {
@@ -77,20 +78,48 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
         {
             try
             {
-                // Lấy từ khóa tìm kiếm
+                // 1. Lấy từ khóa tìm kiếm
                 string keyword = txtSearch.Text;
 
-                // Lấy RoleID từ ComboBox (xử lý an toàn nếu null)
+                // 2. Lấy RoleID từ ComboBox (xử lý an toàn nếu null)
                 int roleID = 0;
                 if (cboRoleName.SelectedValue != null && int.TryParse(cboRoleName.SelectedValue.ToString(), out int id))
                 {
                     roleID = id;
                 }
 
-                // Gọi Service User (Lưu ý: Bạn phải cập nhật hàm GetAllUsers thêm tham số roleID như câu trả lời trước nhé)
+                // 3. Lấy Tag của nhóm vai trò (RoleGroup) từ ComboBox
+                string selectedGroupTag = "All"; // Mặc định là tất cả
+                if (cboRoleGroup.SelectedItem is ComboBoxItem item && item.Tag != null)
+                {
+                    selectedGroupTag = item.Tag.ToString();
+                }
+
+                // 4. Gọi Service User để lấy danh sách (đã lọc keyword và roleID từ SQL)
                 var listUsers = _userService.GetAllUsers(keyword, roleID);
 
-                // Gán dữ liệu
+                // 5. LỌC TIẾP THEO ROLE GROUP (Xử lý trên Ram)
+                // Logic này dựa vào thuộc tính RoleGroup trong Model User của bạn
+                if (selectedGroupTag != "All")
+                {
+                    if (selectedGroupTag == "Admin")
+                    {
+                        // Lọc lấy Quản trị viên
+                        listUsers = listUsers.Where(u => u.RoleGroup == "Quản trị viên").ToList();
+                    }
+                    else if (selectedGroupTag == "Staff")
+                    {
+                        // Lọc lấy Nhân viên
+                        listUsers = listUsers.Where(u => u.RoleGroup == "Nhân viên").ToList();
+                    }
+                    else if (selectedGroupTag == "Customer")
+                    {
+                        // Lọc lấy Khách hàng
+                        listUsers = listUsers.Where(u => u.RoleGroup == "Khách hàng").ToList();
+                    }
+                }
+
+                // 6. Gán dữ liệu đã lọc vào DataGrid
                 dgUsers.ItemsSource = listUsers;
             }
             catch (Exception ex)
