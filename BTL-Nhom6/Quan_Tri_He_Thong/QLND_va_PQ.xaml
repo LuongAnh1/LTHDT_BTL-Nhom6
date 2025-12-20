@@ -125,21 +125,34 @@
 
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="Filter" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,16,0"/>
-                        <ComboBox Width="140" Margin="0,0,16,0" Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                  materialDesign:HintAssist.Hint="Vai trò" Background="White" Height="40" Padding="12,8">
-                            <ComboBoxItem Content="Vai trò"/>
-                            <ComboBoxItem Content="Quản trị viên"/>
-                            <ComboBoxItem Content="Nhân viên"/>
+                        
+                        <ComboBox x:Name="cboRoleGroup" 
+                                  Width="140" Margin="0,0,16,0" 
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  materialDesign:HintAssist.Hint="Vai trò" 
+                                  Background="White" Height="40" Padding="12,8"
+                                  SelectionChanged="Filter_SelectionChanged">
+                            <!-- Thêm sự kiện -->
+                            <ComboBoxItem Content="Tất cả" Tag="All"/>
+                            <ComboBoxItem Content="Quản trị viên" Tag="Admin"/>
+                            <ComboBoxItem Content="Nhân viên" Tag="Staff"/>
                         </ComboBox>
-                        <ComboBox Width="160" Margin="0,0,16,0" Style="{StaticResource MaterialDesignOutlinedComboBox}"
-                                  materialDesign:HintAssist.Hint="Tên vai trò" Background="White" Height="40" Padding="12,8">
-                            <ComboBoxItem Content="Tên vai trò"/>
-                            <ComboBoxItem Content="Quản lý kỹ thuật"/>
-                            <ComboBoxItem Content="Kỹ thuật viên điện"/>
+
+                        <ComboBox x:Name="cboRoleName" 
+                                  Width="160" Margin="0,0,16,0" 
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  materialDesign:HintAssist.Hint="Tên vai trò" 
+                                  Background="White" Height="40" Padding="12,8"
+                                  SelectionChanged="cboRoleName_SelectionChanged">
                         </ComboBox>
-                        <TextBox x:Name="txtSearch" Width="260" Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                 materialDesign:HintAssist.Hint="Tìm kiếm người dùng" materialDesign:TextFieldAssist.LeadingIcon="Search"
-                                 Background="White" Height="40" VerticalContentAlignment="Center" Padding="8,0"/>
+
+                        <TextBox x:Name="txtSearch" Width="260" 
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 materialDesign:HintAssist.Hint="Tìm kiếm người dùng" 
+                                 materialDesign:TextFieldAssist.LeadingIcon="Search"
+                                 Background="White" Height="40" 
+                                 VerticalContentAlignment="Center" Padding="8,0"
+                                 TextChanged="TxtSearch_TextChanged"/>
                     </StackPanel>
 
                     <Button x:Name="btnAddUser" 
