@@ -182,6 +182,12 @@
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC.xaml.cs">
       <DependentUpon>TDDLC.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC2.xaml.cs">
+      <DependentUpon>TDDLC2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC3.xaml.cs">
+      <DependentUpon>TDDLC3.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Quan_Lý_Thiet_Bi\DC_va_BG.xaml.cs">
       <DependentUpon>DC_va_BG.xaml</DependentUpon>
     </Compile>
@@ -354,6 +360,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
