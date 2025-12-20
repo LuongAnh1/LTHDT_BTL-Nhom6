@@ -46,7 +46,7 @@ namespace BTL_Nhom6
                 txtUsername.IsEnabled = true;
                 lblPassHint.Visibility = Visibility.Collapsed;
                 spacerPass.Visibility = Visibility.Visible;
-                chkActive.IsChecked = true;
+                chkActive.IsChecked = false;
             }
             else // CHẾ ĐỘ SỬA
             {

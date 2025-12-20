@@ -99,7 +99,7 @@
                 <!-- Toggle Status -->
                 <StackPanel Orientation="Horizontal" Margin="4,0,0,0">
                     <TextBlock Text="Trạng thái hoạt động" VerticalAlignment="Center" Margin="0,0,16,0" FontWeight="SemiBold"/>
-                    <CheckBox x:Name="chkActive" IsChecked="True" 
+                    <CheckBox x:Name="chkActive" IsChecked="False" 
                                 Style="{StaticResource IOSSwitchStyle}" 
                                 ToolTip="Bật để cho phép đăng nhập"/>
                 </StackPanel>
