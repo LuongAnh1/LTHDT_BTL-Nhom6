@@ -18,24 +18,10 @@ namespace BTL_Nhom6
             _userService = new UserService();
             _currentUser = userToEdit;
 
-            LoadRoles();
             LoadFormState();
 
             // Cho phép kéo thả cửa sổ khi click chuột trái giữ
             this.MouseLeftButtonDown += (s, e) => this.DragMove();
-        }
-
-        private void LoadRoles()
-        {
-            // Nếu có lỗi kết nối thì catch để không crash app
-            try
-            {
-                cboRoles.ItemsSource = _userService.GetAllRoles();
-            }
-            catch
-            {
-                MessageBox.Show("Không tải được danh sách Quyền hạn!");
-            }
         }
 
         private void LoadFormState()

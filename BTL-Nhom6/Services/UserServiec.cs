@@ -10,41 +10,11 @@ namespace BTL_Nhom6.Services
     public class UserService
     {
         // 1. Lấy danh sách Roles
-        public List<Role> GetAllRoles()
-        {
-            List<Role> list = new List<Role>();
-
-            using (MySqlConnection conn = DatabaseHelper.GetConnection())
-            {
-                try
-                {
-                    conn.Open();
-                    string sql = "SELECT RoleID, RoleName FROM Roles";
-                    MySqlCommand cmd = new MySqlCommand(sql, conn);
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(new Role()
-                            {
-                                // SỬA: Dùng Convert.ToInt32(reader["TenCot"]) thay vì GetInt32("TenCot")
-                                RoleID = Convert.ToInt32(reader["RoleID"]),
-                                RoleName = reader["RoleName"].ToString()
-                            });
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Lỗi lấy Role: " + ex.Message);
-                }
-            }
-            return list;
-        }
+        // Đã lấy ở RoleService.cs
 
         // 2. Lấy danh sách Users
         // Cập nhật hàm GetAllUsers để lấy thêm IsActive và hỗ trợ Tìm kiếm
-        public List<User> GetAllUsers(string keyword = "")
+        public List<User> GetAllUsers(string keyword = "", int roleID = 0)
         {
             List<User> list = new List<User>();
             using (MySqlConnection conn = DatabaseHelper.GetConnection())
@@ -52,16 +22,19 @@ namespace BTL_Nhom6.Services
                 try
                 {
                     conn.Open();
-                    // Câu truy vấn có thêm điều kiện tìm kiếm và cột IsActive
+                    // Thêm điều kiện: (@rid = 0 OR u.RoleID = @rid)
+                    // Nghĩa là nếu truyền vào 0 thì bỏ qua điều kiện này, nếu khác 0 thì lọc chính xác
                     string sql = @"SELECT u.*, r.RoleName 
-                                   FROM Users u 
-                                   JOIN Roles r ON u.RoleID = r.RoleID
-                                   WHERE (@key = '' OR u.FullName LIKE @search OR u.Username LIKE @search)
-                                   ORDER BY u.UserID DESC";
+                           FROM Users u 
+                           JOIN Roles r ON u.RoleID = r.RoleID
+                           WHERE (@key = '' OR u.FullName LIKE @search OR u.Username LIKE @search)
+                           AND (@rid = 0 OR u.RoleID = @rid)
+                           ORDER BY u.UserID DESC";
 
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
                     cmd.Parameters.AddWithValue("@key", keyword);
                     cmd.Parameters.AddWithValue("@search", "%" + keyword + "%");
+                    cmd.Parameters.AddWithValue("@rid", roleID); // Tham số mới
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -71,15 +44,14 @@ namespace BTL_Nhom6.Services
                             {
                                 UserID = Convert.ToInt32(reader["UserID"]),
                                 Username = reader["Username"].ToString(),
-                                PasswordHash = reader["PasswordHash"] != DBNull.Value ? reader["PasswordHash"].ToString() : "",
+                                // PasswordHash không cần hiển thị lên grid thì có thể bỏ qua hoặc để trống để bảo mật
+                                PasswordHash = "",
                                 FullName = reader["FullName"] != DBNull.Value ? reader["FullName"].ToString() : "",
                                 Phone = reader["Phone"] != DBNull.Value ? reader["Phone"].ToString() : "",
                                 Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : "",
                                 RoleID = Convert.ToInt32(reader["RoleID"]),
                                 RoleName = reader["RoleName"].ToString(),
-
-                                // Lấy cột IsActive (Nếu null thì mặc định là true)
-                                IsActive = reader["IsActive"] != DBNull.Value && Convert.ToBoolean(reader["IsActive"])
+                                IsActive = reader["IsActive"] != DBNull.Value && Convert.ToBoolean(reader["IsActive"]),
                             });
                         }
                     }
@@ -91,7 +63,6 @@ namespace BTL_Nhom6.Services
             }
             return list;
         }
-
         // 3. Thêm User mới (Cập nhật thêm IsActive)
         public bool AddUser(User u)
         {
