@@ -177,5 +177,91 @@ namespace BTL_Nhom6.Services
                 catch { return false; }
             }
         }
+
+        // 7. Lấy thông tin chi tiết 1 User theo ID
+        public User GetUserById(int userId)
+        {
+            User u = null;
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                // Join bảng Roles để lấy tên Role
+                string sql = @"SELECT u.*, r.RoleName 
+                               FROM Users u 
+                               JOIN Roles r ON u.RoleID = r.RoleID 
+                               WHERE u.UserID = @ID";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@ID", userId);
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        u = new User
+                        {
+                            UserID = Convert.ToInt32(reader["UserID"]),
+                            Username = reader["Username"].ToString(),
+                            FullName = reader["FullName"].ToString(),
+                            Phone = reader["Phone"] != DBNull.Value ? reader["Phone"].ToString() : "",
+                            Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : "",
+                            RoleID = Convert.ToInt32(reader["RoleID"]),
+                            // Nếu User model có thuộc tính RoleName (NotMapped)
+                            // RoleName = reader["RoleName"].ToString() 
+                            // Lưu ý: PasswordHash thường không load lên giao diện để bảo mật
+                        };
+                        // Nếu class User chưa có RoleName, bạn có thể gán tạm vào biến nào đó hoặc sửa Model
+                    }
+                }
+            }
+            return u;
+        }
+
+        // 8. Cập nhật thông tin cá nhân (SĐT, Email)
+        public bool UpdatePersonalInfo(int userId, string phone, string email)
+        {
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string sql = "UPDATE Users SET Phone = @Phone, Email = @Email WHERE UserID = @ID";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Phone", phone);
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@ID", userId);
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // 9. Đổi mật khẩu
+        public bool ChangePassword(int userId, string currentPass, string newPass)
+        {
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // 1. Kiểm tra mật khẩu cũ có đúng không
+                // Lưu ý: Cần mã hóa currentPass trước khi so sánh với DB (nếu DB lưu Hash)
+                // Giả sử dùng MD5 đơn giản (Bạn nên dùng hàm Hash giống lúc Login)
+                string currentPassHash = currentPass;
+
+                string checkSql = "SELECT COUNT(*) FROM Users WHERE UserID = @ID AND PasswordHash = @Pass";
+                MySqlCommand checkCmd = new MySqlCommand(checkSql, conn);
+                checkCmd.Parameters.AddWithValue("@ID", userId);
+                checkCmd.Parameters.AddWithValue("@Pass", currentPassHash);
+
+                int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                if (count == 0) return false; // Sai mật khẩu cũ
+
+                // 2. Cập nhật mật khẩu mới
+                string newPassHash = newPass;
+                string updateSql = "UPDATE Users SET PasswordHash = @NewPass WHERE UserID = @ID";
+                MySqlCommand updateCmd = new MySqlCommand(updateSql, conn);
+                updateCmd.Parameters.AddWithValue("@NewPass", newPassHash);
+                updateCmd.Parameters.AddWithValue("@ID", userId);
+
+                return updateCmd.ExecuteNonQuery() > 0;
+            }
+        }
     }
 }
