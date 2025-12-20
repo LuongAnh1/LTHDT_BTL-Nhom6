@@ -46,7 +46,7 @@ namespace BTL_Nhom6
                 txtUsername.IsEnabled = true;
                 lblPassHint.Visibility = Visibility.Collapsed;
                 spacerPass.Visibility = Visibility.Visible;
-                chkActive.IsChecked = false;
+                // chkActive.IsChecked = false;
             }
             else // CHẾ ĐỘ SỬA
             {
@@ -58,7 +58,7 @@ namespace BTL_Nhom6
                 txtPhone.Text = _currentUser.Phone;
                 txtEmail.Text = _currentUser.Email;
                 cboRoles.SelectedValue = _currentUser.RoleID;
-                chkActive.IsChecked = _currentUser.IsActive;
+                // chkActive.IsChecked = _currentUser.IsActive;
 
                 // Hiển thị dòng nhắc nhở về mật khẩu
                 lblPassHint.Visibility = Visibility.Visible;
