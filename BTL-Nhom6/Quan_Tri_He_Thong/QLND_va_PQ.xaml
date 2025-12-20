@@ -136,6 +136,7 @@
                             <ComboBoxItem Content="Tất cả" Tag="All"/>
                             <ComboBoxItem Content="Quản trị viên" Tag="Admin"/>
                             <ComboBoxItem Content="Nhân viên" Tag="Staff"/>
+                            <ComboBoxItem Content="Khách hàng" Tag="Customer"/>
                         </ComboBox>
 
                         <ComboBox x:Name="cboRoleName" 
