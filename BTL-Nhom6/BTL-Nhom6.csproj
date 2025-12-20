@@ -144,6 +144,8 @@
     <Compile Include="Helper\DatabaseHelper.cs" />
     <Compile Include="Helper\NavigationHelper.cs" />
     <Compile Include="Helper\UserSession.cs.cs" />
+    <Compile Include="Models\Role.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CNPCV.xaml.cs">
       <DependentUpon>CNPCV.xaml</DependentUpon>
     </Compile>
@@ -204,9 +206,13 @@
     <Compile Include="Quan_Tri_He_Thong\TDMK_va_TTCN.xaml.cs">
       <DependentUpon>TDMK_va_TTCN.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Quan_Tri_He_Thong\UserWindow.xaml.cs">
+      <DependentUpon>UserWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Quen_Mat_Khau.xaml.cs">
       <DependentUpon>Quen_Mat_Khau.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\UserServiece.cs" />
     <Compile Include="Trang_Chu.xaml.cs">
       <DependentUpon>Trang_Chu.xaml</DependentUpon>
     </Compile>
@@ -379,6 +385,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Tri_He_Thong\TDMK_va_TTCN.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Tri_He_Thong\UserWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
