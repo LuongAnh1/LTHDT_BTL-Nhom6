@@ -216,11 +216,11 @@
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,16,0">
                                             <!-- Nút Sửa -->
                                             <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                Width="32" Height="32" 
-                                Foreground="{StaticResource EditIconBrush}"
-                                ToolTip="Chỉnh sửa thông tin"
-                                Click="BtnEdit_Click"
-                                Tag="{Binding}">
+                                                    Width="32" Height="32" 
+                                                    Foreground="{StaticResource EditIconBrush}"
+                                                    ToolTip="Chỉnh sửa thông tin"
+                                                    Click="BtnEdit_Click"
+                                                    Tag="{Binding}">
                                                 <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
                                             </Button>
 
@@ -229,11 +229,11 @@
 
                                             <!-- Nút Xóa -->
                                             <Button Style="{StaticResource MaterialDesignIconButton}" 
-                                Width="32" Height="32" 
-                                Foreground="{StaticResource DeleteIconBrush}"
-                                ToolTip="Xóa vị trí này"
-                                Click="BtnDelete_Click"
-                                Tag="{Binding}">
+                                                    Width="32" Height="32" 
+                                                    Foreground="{StaticResource DeleteIconBrush}"
+                                                    ToolTip="Xóa vị trí này"
+                                                    Click="BtnDelete_Click"
+                                                    Tag="{Binding}">
                                                 <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
                                             </Button>
                                         </StackPanel>

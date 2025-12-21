@@ -16,6 +16,8 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         // Khởi tạo Service
         private LocationService _locationService = new LocationService();
         private List<Location> _allLocations;
+        private DeviceService _deviceService = new DeviceService();
+
 
         public QLVTPB()
         {
@@ -72,26 +74,57 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
-            if (btn != null && btn.Tag is Location selectedLocation)
-            {
-                var result = MessageBox.Show($"Bạn có chắc muốn xóa '{selectedLocation.LocationName}'?",
-                                             "Xác nhận",
-                                             MessageBoxButton.YesNo,
-                                             MessageBoxImage.Warning);
+            if (btn == null || !(btn.Tag is Location selectedLocation))
+                return;
 
-                if (result == MessageBoxResult.Yes)
+            try
+            {
+                // 1. KIỂM TRA LOCATION CÒN DEVICE KHÔNG
+                int deviceCount = _deviceService.CountDevicesByLocation(selectedLocation.LocationID);
+
+                if (deviceCount > 0)
                 {
-                    try
-                    {
-                        _locationService.DeleteLocation(selectedLocation.LocationID);
-                        LoadData(); // Load lại bảng sau khi xóa
-                        MessageBox.Show("Xóa thành công!");
-                    }
-                    catch (System.Exception ex)
-                    {
-                        MessageBox.Show("Lỗi khi xóa (có thể do vị trí này đang chứa phòng con): " + ex.Message);
-                    }
+                    MessageBox.Show(
+                        $"Không thể xóa vị trí '{selectedLocation.LocationName}'.\n" +
+                        $"Hiện đang có {deviceCount} thiết bị thuộc vị trí này.\n\n" +
+                        "Vui lòng chuyển hoặc xóa các thiết bị trước.",
+                        "Không thể xóa",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning
+                    );
+                    return;
                 }
+
+                // 2. HỎI XÁC NHẬN XÓA
+                var result = MessageBox.Show(
+                    $"Bạn có chắc muốn xóa '{selectedLocation.LocationName}'?",
+                    "Xác nhận",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
+
+                if (result != MessageBoxResult.Yes)
+                    return;
+
+                // 3. THỰC HIỆN XÓA
+                _locationService.DeleteLocation(selectedLocation.LocationID);
+                LoadData();
+
+                MessageBox.Show(
+                    "Xóa vị trí thành công!",
+                    "Thông báo",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Lỗi khi xóa vị trí: " + ex.Message,
+                    "Lỗi",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
             }
         }
 
