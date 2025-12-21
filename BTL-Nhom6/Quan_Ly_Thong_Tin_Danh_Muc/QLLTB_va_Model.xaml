@@ -95,7 +95,9 @@
 
             <!-- HEADER -->
             <Grid Grid.Row="0">
-                <TextBlock Text="Quản lý Loại &amp; Model thiết bị" FontSize="24" FontWeight="Bold" Margin="32,24,0,10" VerticalAlignment="Center"/>
+                <TextBlock Text="Quản lý Loại &amp; Model thiết bị" 
+                           FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
+                           Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <uc:WindowControlBar />
             </Grid>
 
@@ -104,7 +106,7 @@
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Quản lý vị trí phòng ban" Style="{StaticResource TabButtonStyle}" Click="Button_QLVTPB_Click"/>
                     <Button Content="Quản lý loại thiết bị &amp; Model" Style="{StaticResource ActiveTabButtonStyle}"/>
-                    <Button Content="Nhà cung cấp &amp; Báo giá" Style="{StaticResource TabButtonStyle}" Click="Button_NCC_Click"/>
+                    <Button Content="Nhà cung cấp &amp; Báo giá linh kiện" Style="{StaticResource TabButtonStyle}" Click="Button_NCC_Click"/>
                     <Button Content="Từ điển dữ liệu chung" Style="{StaticResource TabButtonStyle}" Click="Button_TDDL_Click"/>
                 </StackPanel>
             </Border>

@@ -60,16 +60,16 @@
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
                 <StackPanel Orientation="Horizontal">
                     <!-- Tab 1 -->
-                    <Button Content="Quản lý vị trí phòng ban" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="0" Click="Button_QLVTPB_Click"/>
+                    <Button Content="Quản lý vị trí phòng ban" Style="{StaticResource TabButtonStyle}" Click="Button_QLVTPB_Click"/>
 
                     <!-- Tab 2 -->
-                    <Button Content="Quản lý loại thiết bị &amp; Model" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_QLLTB_Click"/>
+                    <Button Content="Quản lý loại thiết bị &amp; Model" Style="{StaticResource TabButtonStyle}" Click="Button_QLLTB_Click"/>
 
                     <!-- Tab 3: Đây là trang hiện tại nên để ActiveTabButtonStyle và không cần Click -->
-                    <Button Content="Nhà cung cấp &amp; Báo giá linh kiện" Style="{StaticResource ActiveTabButtonStyle}" Padding="0,8" Margin="32,0,0,0"/>
+                    <Button Content="Nhà cung cấp &amp; Báo giá linh kiện" Style="{StaticResource ActiveTabButtonStyle}"/>
 
                     <!-- Tab 4 -->
-                    <Button Content="Từ điển dữ liệu chung" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_TDDL_Click"/>
+                    <Button Content="Từ điển dữ liệu chung" Style="{StaticResource TabButtonStyle}" Click="Button_TDDL_Click"/>
                 </StackPanel>
             </Border>
 
