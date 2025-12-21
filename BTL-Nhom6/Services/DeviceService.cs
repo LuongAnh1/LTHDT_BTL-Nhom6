@@ -123,6 +123,20 @@ namespace BTL_Nhom6.Services
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
         }
+        
+        // 6. Đếm số thiết bị thuộc về một Location
+        public int CountDevicesByLocation(int locationId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string sql = "SELECT COUNT(*) FROM Devices WHERE LocationID = @LocID";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@LocID", locationId);
+
+                return Convert.ToInt32(cmd.ExecuteScalar());
+            }
+        }
 
         // Hàm phụ trợ add tham số (để đỡ viết lại code)
         private void AddParameters(MySqlCommand cmd, Device dev)
