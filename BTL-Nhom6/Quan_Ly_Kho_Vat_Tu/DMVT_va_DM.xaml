@@ -178,15 +178,6 @@
                               CellStyle="{StaticResource CustomDataGridCell}"
                               RowStyle="{StaticResource MaterialDesignDataGridRow}">
 
-                        <!-- Dữ liệu mẫu (Design Time) - Xóa phần này khi Binding C# -->
-                        <x:Array Type="system:String" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-                            <sys:String>Item1</sys:String>
-                            <sys:String>Item2</sys:String>
-                            <sys:String>Item3</sys:String>
-                            <sys:String>Item4</sys:String>
-                        </x:Array>
-                        <!-- Kết thúc dữ liệu mẫu -->
-
                         <DataGrid.Columns>
                             <!-- 1. Mã DM -->
                             <DataGridTextColumn Header="MÃ DM" Binding="{Binding MaDM}" Width="100" IsReadOnly="True" ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}">
