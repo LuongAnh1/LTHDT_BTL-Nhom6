@@ -1,12 +1,304 @@
-﻿<Window x:Class="BTL_Nhom6.Quan_Lý_Thiet_Bi.TDBH"
+﻿<Window x:Class="BTL_Nhom6.Quan_Ly_Thiet_Bi.TDBH"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BTL_Nhom6.Quan_Lý_Thiet_Bi"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
         mc:Ignorable="d"
-        Title="TDBH" Height="450" Width="800">
+        Title="Theo dõi bảo hành" 
+        Height="768" Width="1366"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{StaticResource TextPrimaryBrush}"
+        TextElement.FontSize="14"
+        Background="{StaticResource AppBackgroundBrush}">
+
+    <Window.Resources>
+        <!-- Màu sắc từ HTML -->
+        <SolidColorBrush x:Key="HtmlBlue" Color="#3b82f6"/>
+        <SolidColorBrush x:Key="HtmlGreen" Color="#22c55e"/>
+        <SolidColorBrush x:Key="HtmlRed" Color="#ef4444"/>
+        <SolidColorBrush x:Key="HtmlYellow" Color="#f59e0b"/>
+        <SolidColorBrush x:Key="HtmlGrayBg" Color="#f0f2f5"/>
+    </Window.Resources>
+
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 1. SIDEBAR (Giữ nguyên) -->
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="QLTB"/>
+
+        <!-- 2. MAIN CONTENT -->
+        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header Text -->
+                <RowDefinition Height="Auto"/>
+                <!-- Tabs -->
+                <RowDefinition Height="*"/>
+                <!-- Scrollable Content -->
+            </Grid.RowDefinitions>
+
+            <!-- 1. HEADER -->
+            <Grid Grid.Row="0">
+                <TextBlock Text="Quản lý thiết bị" 
+   FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
+   Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <uc:WindowControlBar />
+            </Grid>
+
+            <!-- 2.2 TABS NAVIGATION (Cập nhật Active Tab) -->
+            <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Hồ sơ thiết bị &amp; QR" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="0" Click="Button_HSTB_Click"/>
+                    <Button Content="Tra cứu tài sản" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_TraCuu_Click"/>
+                    <Button Content="Theo dõi bảo hành" Style="{StaticResource ActiveTabButtonStyle}" Padding="0,8" Margin="32,0,0,0"/>
+                    <Button Content="Điều chuyển &amp; Bàn giao" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_DieuChuyen_Click"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 2.3 MAIN SCROLLABLE CONTENT (Nội dung mới từ HTML) -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="32,0,32,32">
+
+                    <!-- SECTION 1: BỘ LỌC (FILTER CARD) -->
+                    <Border Background="White" CornerRadius="8" Padding="24" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Margin="0,0,0,24">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.5*"/>
+                                <!-- Ngày -->
+                                <ColumnDefinition Width="30"/>
+                                <!-- Gap -->
+                                <ColumnDefinition Width="1*"/>
+                                <!-- NCC -->
+                                <ColumnDefinition Width="30"/>
+                                <!-- Gap -->
+                                <ColumnDefinition Width="Auto"/>
+                                <!-- Buttons -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Column 1: Phạm vi ngày -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Phạm vi ngày hết hạn" FontWeight="Medium" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,8"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <DatePicker Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                                                Height="42" Padding="10,0" materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"/>
+
+                                    <TextBlock Grid.Column="1" Text="-" VerticalAlignment="Center" Margin="10,0" Foreground="Gray"/>
+
+                                    <DatePicker Grid.Column="2" Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                                                Height="42" Padding="10,0" materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Column 2: Nhà cung cấp -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Nhà cung cấp" FontWeight="Medium" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13" Margin="0,0,0,8"/>
+                                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="42" Padding="10,0"
+                                          VerticalContentAlignment="Center" materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                          SelectedIndex="0">
+                                    <ComboBoxItem Content="Tất cả nhà cung cấp"/>
+                                    <ComboBoxItem Content="Công ty A"/>
+                                    <ComboBoxItem Content="Công ty B"/>
+                                    <ComboBoxItem Content="Nhà cung cấp C"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <!-- Column 3: Buttons -->
+                            <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Bottom">
+                                <!-- Column 3: Buttons -->
+                                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Bottom">
+                                    <!-- Button Lọc - Đã sửa CornerRadius="4" -->
+                                    <Button Background="{StaticResource HtmlBlue}" BorderThickness="0" Height="42" Margin="0,0,10,0"
+            materialDesign:ButtonAssist.CornerRadius="4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="FilterVariant" Width="18" Height="18" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Lọc" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <!-- Button Xóa bộ lọc - Đã sửa CornerRadius="4" -->
+                                    <Button Background="#E5E7EB" Foreground="{StaticResource TextPrimaryBrush}" BorderThickness="0" Height="42"
+            materialDesign:ButtonAssist.CornerRadius="4">
+                                        <TextBlock Text="Xóa bộ lọc" FontWeight="SemiBold"/>
+                                    </Button>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- SECTION 2: DANH SÁCH THIẾT BỊ (DATA TABLE) -->
+                    <Border Background="White" CornerRadius="8" Padding="24" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <!-- Table Header & Action -->
+                            <Grid Margin="0,0,0,20">
+                                <TextBlock Text="Danh sách thiết bị sắp hết hạn bảo hành" FontSize="18" FontWeight="Bold" 
+                                           VerticalAlignment="Center" Foreground="{StaticResource TextPrimaryBrush}"/>
+
+                                <!-- Nút Xuất báo cáo - Đã sửa CornerRadius="4" -->
+                                <Button HorizontalAlignment="Right" Background="{StaticResource HtmlGreen}" BorderThickness="0" Height="40"
+        materialDesign:ButtonAssist.CornerRadius="4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="FileDownloadOutline" Width="18" Height="18" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Xuất báo cáo" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!-- Custom Table Structure -->
+                            <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="6" ClipToBounds="True">
+                                <StackPanel>
+                                    <!-- Header Row (Đã đổi nền tối #232E3E và chữ Trắng) -->
+                                    <Border Background="#232E3E" Padding="16,14" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"/>
+                                                <!-- Mã TB -->
+                                                <ColumnDefinition Width="2*"/>
+                                                <!-- Thiết bị -->
+                                                <ColumnDefinition Width="1.2*"/>
+                                                <!-- NCC -->
+                                                <ColumnDefinition Width="2*"/>
+                                                <!-- Địa điểm -->
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <!-- Liên hệ -->
+                                                <ColumnDefinition Width="140"/>
+                                                <!-- Ngày hết hạn -->
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="Mã thiết bị" FontWeight="SemiBold" Foreground="White"/>
+                                            <TextBlock Grid.Column="1" Text="Thiết bị" FontWeight="SemiBold" Foreground="White"/>
+                                            <TextBlock Grid.Column="2" Text="Nhà cung cấp" FontWeight="SemiBold" Foreground="White"/>
+                                            <TextBlock Grid.Column="3" Text="Địa điểm nhà cung cấp" FontWeight="SemiBold" Foreground="White"/>
+                                            <TextBlock Grid.Column="4" Text="Liên hệ" FontWeight="SemiBold" Foreground="White"/>
+                                            <TextBlock Grid.Column="5" Text="Ngày hết hạn" FontWeight="SemiBold" Foreground="White"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Row 1: Red Date -->
+                                    <Border Background="White" Padding="16,14" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.2*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="140"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="TB-00123" FontFamily="Consolas" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Máy tính Dell OptiPlex 7090" FontWeight="Medium" VerticalAlignment="Center" Margin="0,0,10,0" TextWrapping="Wrap"/>
+                                            <TextBlock Grid.Column="2" Text="Công ty A" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="3" Text="123 Đường ABC, Q.1, TP.HCM" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="4" Text="anh.nguyen@ctya.com" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="5" Text="15/08/2024" FontWeight="Bold" Foreground="{StaticResource HtmlRed}" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Row 2: Red Date -->
+                                    <Border Background="White" Padding="16,14" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.2*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="140"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="TB-00125" FontFamily="Consolas" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Màn hình LG 27UL850-W" FontWeight="Medium" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="2" Text="Công ty A" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="3" Text="123 Đường ABC, Q.1, TP.HCM" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="4" Text="anh.nguyen@ctya.com" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="5" Text="15/08/2024" FontWeight="Bold" Foreground="{StaticResource HtmlRed}" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Row 3: Yellow Date -->
+                                    <Border Background="White" Padding="16,14" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.2*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="140"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="TB-00201" FontFamily="Consolas" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Máy in HP LaserJet Pro M404dn" FontWeight="Medium" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="2" Text="Công ty B" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="3" Text="456 Đường XYZ, Hà Nội" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="4" Text="090xxxxxxx" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="5" Text="20/09/2024" FontWeight="Bold" Foreground="{StaticResource HtmlYellow}" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Row 4: Yellow Date -->
+                                    <Border Background="White" Padding="16,14" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.2*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="140"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="TB-00350" FontFamily="Consolas" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Server Dell PowerEdge R740" FontWeight="Medium" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="2" Text="Nhà cung cấp C" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="3" Text="789 Đường KLM, Đà Nẵng" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="4" Text="support@ncc-c.vn" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="5" Text="01/10/2024" FontWeight="Bold" Foreground="{StaticResource HtmlYellow}" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Row 5: Normal Date -->
+                                    <Border Background="White" Padding="16,14">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.2*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="140"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="TB-00410" FontFamily="Consolas" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Bộ định tuyến Cisco 4331" FontWeight="Medium" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="2" Text="Công ty A" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="3" Text="123 Đường ABC, Q.1, TP.HCM" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                                            <TextBlock Grid.Column="4" Text="anh.nguyen@ctya.com" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="5" Text="15/11/2024" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>
