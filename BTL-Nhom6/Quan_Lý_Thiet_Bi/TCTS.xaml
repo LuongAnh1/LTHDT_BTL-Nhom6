@@ -126,27 +126,26 @@
                                 </StackPanel>
 
                                 <!-- Nút Áp dụng bộ lọc đã được tăng kích thước -->
+                                <!-- Nút Áp dụng bộ lọc đã được sửa bo góc -->
                                 <Button Grid.Row="1" Grid.Column="6" Margin="0,20,0,0" 
-                                    Height="50"  
-                                    Background="{StaticResource PrimaryBlueBrush}" 
-                                    BorderThickness="0"
-                                    materialDesign:ButtonAssist.CornerRadius="8"
-                                    Cursor="Hand">
+        Height="50"  
+        Background="{StaticResource PrimaryBlueBrush}" 
+        BorderThickness="0"
+        materialDesign:ButtonAssist.CornerRadius="4" 
+        Cursor="Hand">
                                     <StackPanel Orientation="Horizontal">
-                                        <!-- Tăng kích thước kính lúp từ 18 lên 24 -->
                                         <materialDesign:PackIcon Kind="Search" 
-                                             Foreground="White" 
-                                             VerticalAlignment="Center" 
-                                             Margin="0,0,10,0" 
-                                             Width="24" 
-                                             Height="24"/>
+             Foreground="White" 
+             VerticalAlignment="Center" 
+             Margin="0,0,10,0" 
+             Width="24" 
+             Height="24"/>
 
-                                        <!-- Tăng cỡ chữ lên 16 và để Bold -->
                                         <TextBlock Text="ÁP DỤNG BỘ LỌC" 
-                                               Foreground="White" 
-                                               VerticalAlignment="Center" 
-                                               FontWeight="Bold" 
-                                               FontSize="16"/>
+               Foreground="White" 
+               VerticalAlignment="Center" 
+               FontWeight="Bold" 
+               FontSize="16"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>

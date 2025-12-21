@@ -158,7 +158,7 @@
                          materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"/>
                                 </StackPanel>
 
-                                <!-- BUTTON XÁC NHẬN (PHIÊN BẢN CHUẨN - KHÔNG LỖI) -->
+                                <!-- BUTTON XÁC NHẬN (ĐÃ GIẢM ĐỘ BO GÓC) -->
                                 <Button Grid.Row="4" Grid.Column="2" 
         HorizontalAlignment="Right" 
         Background="{StaticResource PrimaryBlueBrush}" 
@@ -166,7 +166,7 @@
         Height="45" 
         Width="Auto" 
         Padding="20,0" 
-        materialDesign:ButtonAssist.CornerRadius="6"
+        materialDesign:ButtonAssist.CornerRadius="4" 
         Effect="{DynamicResource MaterialDesignShadowDepth1}">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="ContentSaveCheck" 
