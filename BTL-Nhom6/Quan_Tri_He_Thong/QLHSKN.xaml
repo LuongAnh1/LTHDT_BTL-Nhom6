@@ -86,32 +86,112 @@
                            FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
                            Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
-                    <!-- Control Buttons -->
-                    <!-- Sử dụng UserControl tái sử dụng -->
-                    <uc:WindowControlBar />
+                <!-- Control Buttons -->
+                <uc:WindowControlBar />
+            </Grid>
+
+            <!-- 2. TABS -->
+            <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click" />
+                    <!-- Tab này đang Active -->
+                    <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource ActiveTabButtonStyle}"/>
+                    <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource TabButtonStyle}" Click="Button_TDMK_va_TTCN_Click"/>
+                    <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 3. CONTENT BODY (2 CỘT) -->
+            <!-- 3. CONTENT BODY (2 CỘT) -->
+            <Grid Grid.Row="2" Margin="32,0,32,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <!-- Cột Trái -->
+                    <ColumnDefinition Width="32"/>
+                    <!-- Gap -->
+                    <ColumnDefinition Width="7*"/>
+                    <!-- Cột Phải -->
+                </Grid.ColumnDefinitions>
+
+                <!-- === CỘT TRÁI: DANH SÁCH KỸ NĂNG === -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Header -->
+                        <RowDefinition Height="*"/>
+                        <!-- List -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Header Cột Trái -->
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <materialDesign:PackIcon Kind="ClipboardList" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
+                            <TextBlock Text="Danh sách kỹ năng" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0"/>
+                        </StackPanel>
+                        <Button Click="BtnAddSkill_Click" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="32" Padding="12,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Thêm kỹ năng mới" Foreground="White" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <!-- SỬA LỖI 1: Thêm Grid.Row="1" vào ListView bên dưới -->
+                    <ListView Grid.Row="1" Name="lvSkills" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0,0,0,8"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="12" Background="White">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <!-- Tăng tỉ lệ cột đầu lên một chút nếu cần -->
+                                            <ColumnDefinition Width="1.8*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="80"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- CỘT 1: TÊN KỸ NĂNG -->
+                                        <!-- Thêm Margin phải (10) để tạo khoảng cách -->
+                                        <!-- Thêm TextTrimming để hiện dấu ... nếu quá dài -->
+                                        <!-- Thêm ToolTip để khi rê chuột vào thì thấy tên đầy đủ -->
+                                        <TextBlock Grid.Column="0" 
+                                                   Text="{Binding SkillName}" 
+                                                   FontWeight="Medium" 
+                                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                                   VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis" 
+                                                   Margin="0,0,10,0"
+                                                   ToolTip="{Binding SkillName}"/>
+
+                                        <!-- CỘT 2: MÔ TẢ -->
+                                        <TextBlock Grid.Column="1" 
+                                                   Text="{Binding Description}" 
+                                                   Foreground="{StaticResource TextSecondaryBrush}" 
+                                                   TextTrimming="CharacterEllipsis" 
+                                                   VerticalAlignment="Center"
+                                                   ToolTip="{Binding Description}"/>
+
+                                        <!-- CỘT 3: HÀNH ĐỘNG -->
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource HighlightBlueBrush}" Click="BtnEditSkill_Click" Tag="{Binding SkillID}">
+                                                <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
+                                            </Button>
+                                            <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource DeleteIconBrush}" Click="BtnDeleteSkill_Click" Tag="{Binding SkillID}">
+                                                <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </Grid>
-
-                <!-- 2. TABS -->
-                <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click" />
-                        <!-- Tab này đang Active -->
-                        <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource ActiveTabButtonStyle}"/>
-                        <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource TabButtonStyle}" Click="Button_TDMK_va_TTCN_Click"/>
-                        <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- 3. CONTENT BODY (2 CỘT) -->
-                <Grid Grid.Row="2" Margin="32,0,32,32">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="5*"/>
-                        <!-- Cột Trái: Danh sách kỹ năng -->
-                        <ColumnDefinition Width="32"/>
-                        <!-- Gap -->
-                        <ColumnDefinition Width="7*"/>
-                        <!-- Cột Phải: Gán kỹ năng -->
-                    </Grid.ColumnDefinitions>
 
                     <!-- === CỘT TRÁI: DANH SÁCH KỸ NĂNG === -->
                     <Grid Grid.Column="0">
@@ -126,271 +206,95 @@
                                 <materialDesign:PackIcon Kind="ClipboardList" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
                                 <TextBlock Text="Danh sách kỹ năng" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0"/>
                             </StackPanel>
-                            <Button HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="32" Padding="12,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                    <TextBlock Text="Thêm kỹ năng mới" Foreground="White" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
-                        </Grid>
 
-                        <!-- Table (Mô phỏng bằng Border & Grid) -->
-                        <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <!-- Table Header (Sử dụng AppBackgroundBrush cho nền header) -->
-                                    <Border Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="12">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1.5*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                                <ColumnDefinition Width="80"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="TÊN KỸ NĂNG" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12"/>
-                                            <TextBlock Grid.Column="1" Text="MÔ TẢ" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12"/>
-                                            <TextBlock Grid.Column="2" Text="HÀNH ĐỘNG" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12" HorizontalAlignment="Center"/>
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Row 1 -->
-                                    <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="12" Background="White">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1.5*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                                <ColumnDefinition Width="80"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="Bảo trì điện" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" Text="Sửa chữa hệ thống điện công nghiệp" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource HighlightBlueBrush}">
-                                                    <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
-                                                </Button>
-                                                <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource DeleteIconBrush}">
-                                                    <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
-                                                </Button>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Row 2 -->
-                                    <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="12" Background="White">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1.5*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                                <ColumnDefinition Width="80"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="Vận hành máy CNC" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" Text="Vận hành và giám sát máy tiện CNC" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource HighlightBlueBrush}">
-                                                    <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
-                                                </Button>
-                                                <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource DeleteIconBrush}">
-                                                    <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
-                                                </Button>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Row 3 -->
-                                    <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="12" Background="White">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1.5*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                                <ColumnDefinition Width="80"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="An toàn lao động" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" Text="Chứng chỉ an toàn và quy trình" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource HighlightBlueBrush}">
-                                                    <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
-                                                </Button>
-                                                <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource DeleteIconBrush}">
-                                                    <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
-                                                </Button>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Row 4 -->
-                                    <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="12" Background="White">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1.5*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                                <ColumnDefinition Width="80"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="Hàn kỹ thuật cao" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" Text="Kỹ thuật hàn TIG/MIG" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource HighlightBlueBrush}">
-                                                    <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18"/>
-                                                </Button>
-                                                <Button Style="{StaticResource IconActionButton}" Foreground="{StaticResource DeleteIconBrush}">
-                                                    <materialDesign:PackIcon Kind="Delete" Width="18" Height="18"/>
-                                                </Button>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Border>
-                    </Grid>
-
-                    <!-- === CỘT PHẢI: GÁN KỸ NĂNG === -->
-                    <Grid Grid.Column="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <!-- Header Cột Phải -->
-                        <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                            <Grid>
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <materialDesign:PackIcon Kind="AccountDetails" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
-                                    <TextBlock Text="Gán kỹ năng cho Kỹ thuật viên" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0"/>
-                                </StackPanel>
-
-                                <!-- Combobox Tìm kiếm KTV -->
-                                <ComboBox HorizontalAlignment="Right" Width="250"
+                            <!-- Combobox Tìm kiếm KTV -->
+                            <ComboBox x:Name="cboUsers" SelectionChanged="cboUsers_SelectionChanged"
+                                      HorizontalAlignment="Right" Width="250"
                                       Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                       materialDesign:TextFieldAssist.LeadingIcon="AccountSearch"
                                       materialDesign:HintAssist.Hint="Chọn Kỹ thuật viên"
                                       Background="White" Height="40" Padding="8,6">
-                                    <ComboBoxItem Content="Trần Minh C (Kỹ thuật viên điện)" />
-                                    <ComboBoxItem Content="Nguyễn Văn A (Quản trị viên)" />
-                                    <ComboBoxItem Content="Võ Văn F (Giám sát an toàn)" />
-                                </ComboBox>
+                            </ComboBox>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Form Gán Kỹ Năng -->
+                    <Border Grid.Row="1" Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- Header Table -->
+                                <RowDefinition Height="*"/>
+                                <!-- ListView (Cần giãn hết cỡ) -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Footer Button -->
+                            </Grid.RowDefinitions>
+
+                            <!-- Table Header -->
+                            <Grid Grid.Row="0" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="1.5*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="CHỌN" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="TÊN KỸ NĂNG" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                                <TextBlock Grid.Column="2" Text="MỨC ĐỘ THÀNH THẠO" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
                             </Grid>
-                        </StackPanel>
 
-                        <!-- Form Gán Kỹ Năng - Sử dụng AppBackgroundBrush làm nền form -->
-                        <Border Grid.Row="1" Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-
-                                <!-- Table Header -->
-                                <Grid Grid.Row="0" Margin="0,0,0,12">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="50"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="1.5*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="CHỌN" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" HorizontalAlignment="Center"/>
-                                    <TextBlock Grid.Column="1" Text="TÊN KỸ NĂNG" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
-                                    <TextBlock Grid.Column="2" Text="MỨC ĐỘ THÀNH THẠO" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
-                                </Grid>
-
-                                <!-- List Items -->
-                                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,-8,0" Padding="0,0,8,0">
-                                    <StackPanel>
-                                        <!-- Item 1: Checked -->
-                                        <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="0,0,0,12" Padding="12">
+                            <!-- SỬA LỖI 2: Thêm Grid.Row="1" vào ListView bên dưới -->
+                            <ListView Grid.Row="1" Name="lvTechSkills" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0,0,0,12"/>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <!-- Binding Opacity -->
+                                        <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Padding="12">
                                             <Border.Style>
                                                 <Style TargetType="Border">
                                                     <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <!-- Hardcode màu này vì không có trong Palette, hoặc có thể dùng MenuActiveBrush -->
-                                                            <Setter Property="BorderBrush" Value="#93C5FD"/>
-                                                        </Trigger>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="False">
+                                                            <Setter Property="Opacity" Value="0.6"/>
+                                                        </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="50"/>
-                                                    <ColumnDefinition Width="2*"/>
-                                                    <ColumnDefinition Width="1.5*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <CheckBox Grid.Column="0" IsChecked="True" HorizontalAlignment="Center"/>
-                                                <TextBlock Grid.Column="1" Text="Bảo trì điện" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                                <ComboBox Grid.Column="2" SelectedIndex="1" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="{StaticResource AppBackgroundBrush}">
-                                                    <ComboBoxItem Content="Cơ bản"/>
-                                                    <ComboBoxItem Content="Trung cấp"/>
-                                                    <ComboBoxItem Content="Nâng cao"/>
-                                                </ComboBox>
-                                            </Grid>
-                                        </Border>
 
-                                        <!-- Item 2: Unchecked & Disabled look -->
-                                        <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="0,0,0,12" Padding="12" Opacity="0.7">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="50"/>
                                                     <ColumnDefinition Width="2*"/>
                                                     <ColumnDefinition Width="1.5*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <CheckBox Grid.Column="0" IsChecked="False" HorizontalAlignment="Center"/>
-                                                <TextBlock Grid.Column="1" Text="Vận hành máy CNC" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                                <ComboBox Grid.Column="2" IsEnabled="False" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="{StaticResource AppBackgroundBrush}">
-                                                    <ComboBoxItem Content="Cơ bản"/>
-                                                    <ComboBoxItem Content="Trung cấp"/>
-                                                    <ComboBoxItem Content="Nâng cao"/>
-                                                </ComboBox>
-                                            </Grid>
-                                        </Border>
 
-                                        <!-- Item 3: Checked -->
-                                        <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="0,0,0,12" Padding="12">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="50"/>
-                                                    <ColumnDefinition Width="2*"/>
-                                                    <ColumnDefinition Width="1.5*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <CheckBox Grid.Column="0" IsChecked="True" HorizontalAlignment="Center"/>
-                                                <TextBlock Grid.Column="1" Text="An toàn lao động" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                                <ComboBox Grid.Column="2" SelectedIndex="2" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="{StaticResource AppBackgroundBrush}">
-                                                    <ComboBoxItem Content="Cơ bản"/>
-                                                    <ComboBoxItem Content="Trung cấp"/>
-                                                    <ComboBoxItem Content="Nâng cao"/>
-                                                </ComboBox>
-                                            </Grid>
-                                        </Border>
+                                                <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding SkillName}" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
 
-                                        <!-- Item 4: Unchecked -->
-                                        <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="0,0,0,12" Padding="12" Opacity="0.7">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="50"/>
-                                                    <ColumnDefinition Width="2*"/>
-                                                    <ColumnDefinition Width="1.5*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <CheckBox Grid.Column="0" IsChecked="False" HorizontalAlignment="Center"/>
-                                                <TextBlock Grid.Column="1" Text="Hàn kỹ thuật cao" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                                <ComboBox Grid.Column="2" IsEnabled="False" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="{StaticResource AppBackgroundBrush}">
-                                                    <ComboBoxItem Content="Cơ bản"/>
-                                                    <ComboBoxItem Content="Trung cấp"/>
-                                                    <ComboBoxItem Content="Nâng cao"/>
+                                                <ComboBox Grid.Column="2" 
+                                                          ItemsSource="{Binding LevelOptions}"
+                                                          SelectedItem="{Binding Level}"
+                                                          IsEnabled="{Binding IsSelected}"
+                                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                                          Height="35" Padding="8,5" Background="{StaticResource AppBackgroundBrush}">
                                                 </ComboBox>
                                             </Grid>
                                         </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
 
-                                        <!-- Item 5: Checked -->
-                                        <Border Background="White" CornerRadius="6" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="0,0,0,12" Padding="12">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="50"/>
-                                                    <ColumnDefinition Width="2*"/>
-                                                    <ColumnDefinition Width="1.5*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <CheckBox Grid.Column="0" IsChecked="True" HorizontalAlignment="Center"/>
-                                                <TextBlock Grid.Column="1" Text="Sửa chữa thủy lực" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                                <ComboBox Grid.Column="2" SelectedIndex="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="35" Padding="8,5" Background="{StaticResource AppBackgroundBrush}">
-                                                    <ComboBoxItem Content="Cơ bản"/>
-                                                    <ComboBoxItem Content="Trung cấp"/>
-                                                    <ComboBoxItem Content="Nâng cao"/>
-                                                </ComboBox>
-                                            </Grid>
-                                        </Border>
+                            <!-- Footer Button -->
+                            <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                                <Separator Background="{StaticResource BorderLightBrush}" Margin="0,0,0,16"/>
+                                <Button Click="BtnSaveUserSkills_Click" HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderThickness="0" Height="40" Width="140">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Lưu kỹ năng" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                     </StackPanel>
                                 </ScrollViewer>
 

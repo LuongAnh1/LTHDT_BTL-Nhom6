@@ -14,7 +14,11 @@
         // --- CÁC THUỘC TÍNH BỔ SUNG CHO XAML ---
 
         // 1. RoleGroup: Để phân nhóm (Ví dụ: Nếu RoleName chứa "Admin" thì là Quản trị, còn lại là Nhân viên)
-        public string RoleGroup => (RoleName != null && RoleName.ToLower().Contains("admin")) ? "Quản trị viên" : "Nhân viên";
+        public string RoleGroup =>
+                    (string.IsNullOrEmpty(Username)) ? "Nhân viên" : // Kiểm tra Username
+                    (Username.Trim().ToLower().StartsWith("admin")) ? "Quản trị viên" :
+                    (Username.Trim().ToLower().StartsWith("customer")) ? "Khách hàng" :
+                    "Nhân viên";
 
         // 2. PasswordMask: Để hiển thị dấu sao thay vì hash
         public string PasswordMask => "••••••••";

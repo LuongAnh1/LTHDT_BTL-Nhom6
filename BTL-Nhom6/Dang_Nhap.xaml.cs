@@ -1,4 +1,5 @@
 ﻿using BTL_Nhom6.Helper;       // Gọi đến DatabaseHelper và UserSession
+using BTL_Nhom6.Services;     // Gọi đến LoggerService
 using MySql.Data.MySqlClient; // Cần thư viện MySql.Data từ NuGet
 using System;
 using System.Windows;
@@ -51,53 +52,63 @@ namespace BTL_Nhom6
 
             try
             {
-                // 2. Kết nối Database
                 using (var conn = DatabaseHelper.GetConnection())
                 {
                     conn.Open();
 
-                    // Câu lệnh SQL kiểm tra đăng nhập
-                    // Lưu ý: PasswordHash trong DB của bạn nếu đang lưu pass thường (ví dụ "123") thì so sánh trực tiếp.
-                    // Nếu đã mã hóa (MD5/SHA) thì bạn cần mã hóa biến 'password' trước khi so sánh.
-                    string sql = "SELECT UserID, Username, FullName, RoleID FROM Users WHERE Username = @user AND PasswordHash = @pass";
+                    // 2. Cập nhật SQL: Lấy thêm cột IsActive để kiểm tra xem có bị khóa không
+                    string sql = "SELECT UserID, Username, FullName, RoleID, IsActive FROM Users WHERE Username = @user AND PasswordHash = @pass";
 
                     using (var cmd = new MySqlCommand(sql, conn))
                     {
-                        // Thêm tham số để tránh lỗi SQL Injection
                         cmd.Parameters.AddWithValue("@user", username);
-                        // Nếu muốn mã hóa
-                        // cmd.Parameters.AddWithValue("@pass", CreateMD5(password));
-                        // Nếu không mã hóa
+                        // Lưu ý: Nếu database đã mã hóa pass thì nhớ mã hóa biến password ở đây trước khi truyền vào
                         cmd.Parameters.AddWithValue("@pass", password);
 
                         using (var reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
+                                // --- KIỂM TRA TRẠNG THÁI HOẠT ĐỘNG ---
+                                // (Dựa trên cột IsActive bạn đã thêm ở các bước trước)
+                                bool isActive = true; // Mặc định là true nếu DB cũ chưa có cột này
+
+                                // Kiểm tra xem cột IsActive có tồn tại trong kết quả trả về không để tránh lỗi
+                                try { isActive = Convert.ToBoolean(reader["IsActive"]); } catch { }
+
+                                if (!isActive)
+                                {
+                                    MessageBox.Show("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ Quản trị viên!", "Truy cập bị từ chối", MessageBoxButton.OK, MessageBoxImage.Stop);
+                                    return; // Dừng lại, không cho đăng nhập
+                                }
+
                                 // --- ĐĂNG NHẬP THÀNH CÔNG ---
 
                                 // 3. Lưu thông tin vào Session
                                 UserSession.CurrentUserID = reader.GetInt32("UserID");
                                 UserSession.CurrentUserName = reader.GetString("Username");
                                 UserSession.CurrentRoleID = reader.GetInt32("RoleID");
-                                // Kiểm tra null cho FullName vì trong DB cột này không NOT NULL
+
                                 if (!reader.IsDBNull(reader.GetOrdinal("FullName")))
                                 {
                                     UserSession.CurrentFullName = reader.GetString("FullName");
                                 }
 
-                                // MessageBox.Show($"Đăng nhập thành công!\nXin chào: {UserSession.CurrentFullName ?? username}", "Thông báo");
+                                // ============================================================
+                                // [QUAN TRỌNG] GHI LOG HỆ THỐNG
+                                // Phải gọi sau khi đã gán UserSession.CurrentUserName để log biết ai đang đăng nhập
+                                // ============================================================
+                                LoggerService.WriteLog("Đăng nhập vào hệ thống");
 
-                                // 4. Mở màn hình chính (MainWindow)
+
+                                // 4. Mở màn hình chính
                                 Trang_Chu main = new Trang_Chu();
                                 main.Show();
 
-                                // Đóng cửa sổ đăng nhập hiện tại
                                 this.Close();
                             }
                             else
                             {
-                                // --- ĐĂNG NHẬP THẤT BẠI ---
                                 MessageBox.Show("Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
@@ -106,7 +117,7 @@ namespace BTL_Nhom6
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi kết nối cơ sở dữ liệu: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Lỗi kết nối: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -82,52 +82,24 @@
                     <uc:WindowControlBar />
                 </Grid>
 
-                <!-- 2. Tabs Navigation -->
-                <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click"/>
-                        <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource TabButtonStyle}" Click="Button_QLHSKN_Click"/>
-                        <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource ActiveTabButtonStyle}"/>
-                        <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
-                    </StackPanel>
-                </Border>
-
-                <!-- 3. Form Content -->
-                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="32,0,32,32">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="32"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- FORM TRÁI: THÔNG TIN CÁ NHÂN -->
-                        <StackPanel Grid.Column="0">
-                            <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,24">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="Account" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
-                                    <TextBlock Text="Thông tin cá nhân" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
-
-                            <Border Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="24">
-                                <StackPanel>
-                                    <TextBlock Text="Tên đăng nhập" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                    <TextBox Text="admin_user" IsReadOnly="True" 
+                        <Border Background="White" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="24">
+                            <StackPanel>
+                                <TextBlock Text="Tên đăng nhập" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                <TextBox x:Name="txtUsername" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="AccountCircle"
                                          Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                    <TextBlock Text="Họ và tên" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                    <TextBox Text="Nguyễn Văn A" IsReadOnly="True" 
+                                <TextBlock Text="Họ và tên" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                <TextBox x:Name="txtDisplayFullName" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="BadgeAccountHorizontal"
                                          Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                    <TextBlock Text="Vai trò" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                    <TextBox Text="Quản trị viên" IsReadOnly="True" 
+                                <TextBlock Text="Vai trò" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                <TextBox x:Name="txtRoleName" IsReadOnly="True" 
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="ShieldAccount"
                                          Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
@@ -149,29 +121,29 @@
                                          Background="White" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,24"/>
 
-                                    <Button HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{x:Null}" Height="40">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="Lưu thông tin" Foreground="White" FontSize="14" FontWeight="Medium"/>
-                                        </StackPanel>
-                                    </Button>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
+                                <Button Click="BtnSaveInfo_Click" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{x:Null}" Height="40">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Lưu thông tin" Foreground="White" FontSize="14" FontWeight="Medium"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
 
-                        <!-- FORM PHẢI: ĐỔI MẬT KHẨU -->
-                        <StackPanel Grid.Column="2">
-                            <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,24">
-                                <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="LockReset" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
-                                    <TextBlock Text="Thay đổi mật khẩu" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Border>
+                    <!-- CỘT PHẢI: ĐỔI MẬT KHẨU -->
+                    <StackPanel Grid.Column="2">
+                        <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,24">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="LockReset" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
+                                <TextBlock Text="Thay đổi mật khẩu" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
 
-                            <Border Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="24">
-                                <StackPanel>
-                                    <TextBlock Text="Mật khẩu hiện tại" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                    <PasswordBox x:Name="pbCurrentPass"
+                        <Border Background="White" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="24">
+                            <StackPanel>
+                                <TextBlock Text="Mật khẩu hiện tại" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                <PasswordBox x:Name="pbCurrentPass"
                                              Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                                              materialDesign:TextFieldAssist.LeadingIcon="Lock"
                                              materialDesign:HintAssist.Hint="Nhập mật khẩu hiện tại"
@@ -196,18 +168,17 @@
                                              Background="White" BorderBrush="{StaticResource BorderMediumBrush}"
                                              Height="45" VerticalContentAlignment="Center" Margin="0,0,0,32"/>
 
-                                    <Button HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderBrush="{x:Null}" Height="40">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon Kind="Upload" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                            <TextBlock Text="Đổi mật khẩu" Foreground="White" FontSize="14" FontWeight="Medium"/>
-                                        </StackPanel>
-                                    </Button>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                    </Grid>
-                </ScrollViewer>
-            </Grid>
+                                <Button Click="BtnChangePass_Click" HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderBrush="{x:Null}" Height="40">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Upload" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Đổi mật khẩu" Foreground="White" FontSize="14" FontWeight="Medium"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
         </Grid>
     </uc:MainLayout>
 </Window> 

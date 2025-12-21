@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
+using System.Collections.Generic; // Thêm thư viện này để dùng List
+using System.Linq; // Bắt buộc để dùng hàm .Where()
 
 namespace BTL_Nhom6.Quan_Tri_He_Thong
 {
@@ -16,32 +18,108 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
     public partial class QLND_va_PQ : Window
     {
         
-        private UserService _userService;
+        private UserService _userService = new UserService();
+        private RoleService _roleService = new RoleService();
 
         public QLND_va_PQ()
         {
             InitializeComponent();
-            _userService = new UserService();
 
             // Đăng ký sự kiện Loaded để khi mở form lên là load dữ liệu ngay
             this.Loaded += QLND_va_PQ_Loaded;
         }
-        // --- Xử lý dữ liệu ---
-        // 1. Hàm chạy khi Form vừa mở
+
         private void QLND_va_PQ_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadData();
-            // Gán sự kiện cho nút tìm kiếm và ô text tìm kiếm
-            txtSearch.TextChanged += TxtSearch_TextChanged;
+            LoadRolesComboBox(); // Gọi hàm load combobox
+            LoadData();          // Gọi hàm load lưới
         }
 
-        // 2. Hàm tải dữ liệu lên Grid
-        private void LoadData(string keyword = "")
+        // --- Xử lý dữ liệu ---
+        //// 1. Hàm chạy khi Form vừa mở
+        //private void QLND_va_PQ_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    LoadData();
+        //    // Gán sự kiện cho nút tìm kiếm và ô text tìm kiếm
+        //    txtSearch.TextChanged += TxtSearch_TextChanged;
+        //}
+        // --- Hàm Load ComboBox từ RoleService ---
+        private void LoadRolesComboBox()
         {
             try
             {
-                // Gọi Service lấy List<User>
-                var listUsers = _userService.GetAllUsers(keyword);
+                // 1. Gọi Service lấy danh sách Role
+                var roles = _roleService.GetAllRoles();
+
+                // 2. Tạo một Role "giả" để làm mục "Tất cả"
+                // Lưu ý: RoleID = 0 để sau này logic lọc hiểu là lấy tất cả
+                var allRole = new Role { RoleID = 0, RoleName = "Tất cả chức vụ" };
+
+                // 3. Chèn vào đầu danh sách
+                roles.Insert(0, allRole);
+
+                // 4. Gán vào ComboBox (đã đặt tên x:Name="cboRoleName" ở bước XAML trước)
+                cboRoleName.ItemsSource = roles;
+
+                // 5. Cấu hình hiển thị (nếu chưa set trong XAML)
+                cboRoleName.DisplayMemberPath = "RoleName";
+                cboRoleName.SelectedValuePath = "RoleID";
+
+                // 6. Chọn mặc định mục đầu tiên (Tất cả)
+                cboRoleName.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi load roles: " + ex.Message);
+            }
+        }
+        // 2. Hàm tải dữ liệu lên Grid
+        private void LoadData()
+        {
+            try
+            {
+                // 1. Lấy từ khóa tìm kiếm
+                string keyword = txtSearch.Text;
+
+                // 2. Lấy RoleID từ ComboBox (xử lý an toàn nếu null)
+                int roleID = 0;
+                if (cboRoleName.SelectedValue != null && int.TryParse(cboRoleName.SelectedValue.ToString(), out int id))
+                {
+                    roleID = id;
+                }
+
+                // 3. Lấy Tag của nhóm vai trò (RoleGroup) từ ComboBox
+                string selectedGroupTag = "All"; // Mặc định là tất cả
+                if (cboRoleGroup.SelectedItem is ComboBoxItem item && item.Tag != null)
+                {
+                    selectedGroupTag = item.Tag.ToString();
+                }
+
+                // 4. Gọi Service User để lấy danh sách (đã lọc keyword và roleID từ SQL)
+                var listUsers = _userService.GetAllUsers(keyword, roleID);
+
+                // 5. LỌC TIẾP THEO ROLE GROUP (Xử lý trên Ram)
+                // Logic này dựa vào thuộc tính RoleGroup trong Model User của bạn
+                if (selectedGroupTag != "All")
+                {
+                    if (selectedGroupTag == "Admin")
+                    {
+                        // Lọc lấy Quản trị viên
+                        listUsers = listUsers.Where(u => u.RoleGroup == "Quản trị viên").ToList();
+                    }
+                    else if (selectedGroupTag == "Staff")
+                    {
+                        // Lọc lấy Nhân viên
+                        listUsers = listUsers.Where(u => u.RoleGroup == "Nhân viên").ToList();
+                    }
+                    else if (selectedGroupTag == "Customer")
+                    {
+                        // Lọc lấy Khách hàng
+                        listUsers = listUsers.Where(u => u.RoleGroup == "Khách hàng").ToList();
+                    }
+                }
+
+                // 6. Gán dữ liệu đã lọc vào DataGrid
                 dgUsers.ItemsSource = listUsers;
             }
             catch (Exception ex)
@@ -50,10 +128,22 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
             }
         }
 
-        // 3. Xử lý tìm kiếm khi gõ phím
+        // Sự kiện khi chọn thay đổi trong ComboBox
+        private void cboRoleName_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LoadData();
+        }
+
+        // Sự kiện tìm kiếm
         private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
-            LoadData(txtSearch.Text);
+            LoadData();
+        }
+
+        // Hàm này xử lý sự kiện khi chọn Combobox (khớp tên với XAML báo lỗi)
+        private void Filter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LoadData();
         }
 
         // 4. Xử lý nút "Thêm người dùng mới"

@@ -10,41 +10,11 @@ namespace BTL_Nhom6.Services
     public class UserService
     {
         // 1. Lấy danh sách Roles
-        public List<Role> GetAllRoles()
-        {
-            List<Role> list = new List<Role>();
-
-            using (MySqlConnection conn = DatabaseHelper.GetConnection())
-            {
-                try
-                {
-                    conn.Open();
-                    string sql = "SELECT RoleID, RoleName FROM Roles";
-                    MySqlCommand cmd = new MySqlCommand(sql, conn);
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(new Role()
-                            {
-                                // SỬA: Dùng Convert.ToInt32(reader["TenCot"]) thay vì GetInt32("TenCot")
-                                RoleID = Convert.ToInt32(reader["RoleID"]),
-                                RoleName = reader["RoleName"].ToString()
-                            });
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Lỗi lấy Role: " + ex.Message);
-                }
-            }
-            return list;
-        }
+        // Đã lấy ở RoleService.cs
 
         // 2. Lấy danh sách Users
         // Cập nhật hàm GetAllUsers để lấy thêm IsActive và hỗ trợ Tìm kiếm
-        public List<User> GetAllUsers(string keyword = "")
+        public List<User> GetAllUsers(string keyword = "", int roleID = 0)
         {
             List<User> list = new List<User>();
             using (MySqlConnection conn = DatabaseHelper.GetConnection())
@@ -52,16 +22,19 @@ namespace BTL_Nhom6.Services
                 try
                 {
                     conn.Open();
-                    // Câu truy vấn có thêm điều kiện tìm kiếm và cột IsActive
+                    // Thêm điều kiện: (@rid = 0 OR u.RoleID = @rid)
+                    // Nghĩa là nếu truyền vào 0 thì bỏ qua điều kiện này, nếu khác 0 thì lọc chính xác
                     string sql = @"SELECT u.*, r.RoleName 
-                                   FROM Users u 
-                                   JOIN Roles r ON u.RoleID = r.RoleID
-                                   WHERE (@key = '' OR u.FullName LIKE @search OR u.Username LIKE @search)
-                                   ORDER BY u.UserID DESC";
+                           FROM Users u 
+                           JOIN Roles r ON u.RoleID = r.RoleID
+                           WHERE (@key = '' OR u.FullName LIKE @search OR u.Username LIKE @search)
+                           AND (@rid = 0 OR u.RoleID = @rid)
+                           ORDER BY u.UserID DESC";
 
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
                     cmd.Parameters.AddWithValue("@key", keyword);
                     cmd.Parameters.AddWithValue("@search", "%" + keyword + "%");
+                    cmd.Parameters.AddWithValue("@rid", roleID); // Tham số mới
 
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -71,15 +44,14 @@ namespace BTL_Nhom6.Services
                             {
                                 UserID = Convert.ToInt32(reader["UserID"]),
                                 Username = reader["Username"].ToString(),
-                                PasswordHash = reader["PasswordHash"] != DBNull.Value ? reader["PasswordHash"].ToString() : "",
+                                // PasswordHash không cần hiển thị lên grid thì có thể bỏ qua hoặc để trống để bảo mật
+                                PasswordHash = "",
                                 FullName = reader["FullName"] != DBNull.Value ? reader["FullName"].ToString() : "",
                                 Phone = reader["Phone"] != DBNull.Value ? reader["Phone"].ToString() : "",
                                 Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : "",
                                 RoleID = Convert.ToInt32(reader["RoleID"]),
                                 RoleName = reader["RoleName"].ToString(),
-
-                                // Lấy cột IsActive (Nếu null thì mặc định là true)
-                                IsActive = reader["IsActive"] != DBNull.Value && Convert.ToBoolean(reader["IsActive"])
+                                IsActive = reader["IsActive"] != DBNull.Value && Convert.ToBoolean(reader["IsActive"]),
                             });
                         }
                     }
@@ -91,7 +63,6 @@ namespace BTL_Nhom6.Services
             }
             return list;
         }
-
         // 3. Thêm User mới (Cập nhật thêm IsActive)
         public bool AddUser(User u)
         {
@@ -204,6 +175,92 @@ namespace BTL_Nhom6.Services
                     return cmd.ExecuteNonQuery() > 0;
                 }
                 catch { return false; }
+            }
+        }
+
+        // 7. Lấy thông tin chi tiết 1 User theo ID
+        public User GetUserById(int userId)
+        {
+            User u = null;
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                // Join bảng Roles để lấy tên Role
+                string sql = @"SELECT u.*, r.RoleName 
+                               FROM Users u 
+                               JOIN Roles r ON u.RoleID = r.RoleID 
+                               WHERE u.UserID = @ID";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@ID", userId);
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        u = new User
+                        {
+                            UserID = Convert.ToInt32(reader["UserID"]),
+                            Username = reader["Username"].ToString(),
+                            FullName = reader["FullName"].ToString(),
+                            Phone = reader["Phone"] != DBNull.Value ? reader["Phone"].ToString() : "",
+                            Email = reader["Email"] != DBNull.Value ? reader["Email"].ToString() : "",
+                            RoleID = Convert.ToInt32(reader["RoleID"]),
+                            // Nếu User model có thuộc tính RoleName (NotMapped)
+                            // RoleName = reader["RoleName"].ToString() 
+                            // Lưu ý: PasswordHash thường không load lên giao diện để bảo mật
+                        };
+                        // Nếu class User chưa có RoleName, bạn có thể gán tạm vào biến nào đó hoặc sửa Model
+                    }
+                }
+            }
+            return u;
+        }
+
+        // 8. Cập nhật thông tin cá nhân (SĐT, Email)
+        public bool UpdatePersonalInfo(int userId, string phone, string email)
+        {
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string sql = "UPDATE Users SET Phone = @Phone, Email = @Email WHERE UserID = @ID";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@Phone", phone);
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@ID", userId);
+
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // 9. Đổi mật khẩu
+        public bool ChangePassword(int userId, string currentPass, string newPass)
+        {
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // 1. Kiểm tra mật khẩu cũ có đúng không
+                // Lưu ý: Cần mã hóa currentPass trước khi so sánh với DB (nếu DB lưu Hash)
+                // Giả sử dùng MD5 đơn giản (Bạn nên dùng hàm Hash giống lúc Login)
+                string currentPassHash = currentPass;
+
+                string checkSql = "SELECT COUNT(*) FROM Users WHERE UserID = @ID AND PasswordHash = @Pass";
+                MySqlCommand checkCmd = new MySqlCommand(checkSql, conn);
+                checkCmd.Parameters.AddWithValue("@ID", userId);
+                checkCmd.Parameters.AddWithValue("@Pass", currentPassHash);
+
+                int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                if (count == 0) return false; // Sai mật khẩu cũ
+
+                // 2. Cập nhật mật khẩu mới
+                string newPassHash = newPass;
+                string updateSql = "UPDATE Users SET PasswordHash = @NewPass WHERE UserID = @ID";
+                MySqlCommand updateCmd = new MySqlCommand(updateSql, conn);
+                updateCmd.Parameters.AddWithValue("@NewPass", newPassHash);
+                updateCmd.Parameters.AddWithValue("@ID", userId);
+
+                return updateCmd.ExecuteNonQuery() > 0;
             }
         }
     }

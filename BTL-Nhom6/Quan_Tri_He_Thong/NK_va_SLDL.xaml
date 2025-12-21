@@ -175,52 +175,60 @@
 
                     <!-- Table -->
                     <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" ClipToBounds="True">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
+                        <!-- Sử dụng DataGrid để hiển thị dữ liệu động từ Code-behind -->
+                        <DataGrid x:Name="dgLogs" AutoGenerateColumns="False" IsReadOnly="True"
+              HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+              Background="White" VerticalScrollBarVisibility="Auto"
+              BorderThickness="0" CanUserAddRows="False">
 
-                            <Border Grid.Row="0" Background="#F9FAFB" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="12">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="1.5*"/>
-                                        <ColumnDefinition Width="1.2*"/>
-                                        <ColumnDefinition Width="1.2*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="THỜI GIAN" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
-                                    <TextBlock Grid.Column="1" Text="NGƯỜI DÙNG" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
-                                    <TextBlock Grid.Column="2" Text="HÀNH ĐỘNG" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
-                                    <TextBlock Grid.Column="3" Text="MÔ TẢ" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" FontSize="11"/>
-                                </Grid>
-                            </Border>
+                            <DataGrid.Resources>
+                                <!-- Style căn giữa Header cho đẹp -->
+                                <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                </Style>
+                            </DataGrid.Resources>
 
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <!-- Row 1 -->
-                                    <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="12" Background="White">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1.5*"/>
-                                                <ColumnDefinition Width="1.2*"/>
-                                                <ColumnDefinition Width="1.2*"/>
-                                                <ColumnDefinition Width="2*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="25/10/2023 10:30" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" Text="admin_user" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
-                                            <Border Grid.Column="2" Background="#DCFCE7" Style="{StaticResource StatusBadgeBorder}">
-                                                <TextBlock Text="Đăng nhập" FontSize="11" FontWeight="Medium" Foreground="{StaticResource SuccessGreenBrush}"/>
-                                            </Border>
-                                            <TextBlock Grid.Column="3" Text="Đăng nhập vào hệ thống thành công" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                        </Grid>
-                                    </Border>
-                                    <!-- Các row khác... -->
-                                </StackPanel>
-                            </ScrollViewer>
-                        </Grid>
+                            <DataGrid.Columns>
+                                <!-- Cột Thời gian -->
+                                <DataGridTextColumn Header="THỜI GIAN" Binding="{Binding Time}" Width="1.5*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Margin" Value="10,0"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Cột Người dùng -->
+                                <DataGridTextColumn Header="NGƯỜI DÙNG" Binding="{Binding UserName}" Width="1.2*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Margin" Value="10,0"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Cột Hành động -->
+                                <DataGridTextColumn Header="HÀNH ĐỘNG" Binding="{Binding Action}" Width="1.5*">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{StaticResource PrimaryBlueBrush}"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Margin" Value="10,0"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+
+                                <!-- Cột Mô tả (Nếu LogEntry có field này, nếu không thì bind Action tiếp hoặc để trống) -->
+                                <!-- Giả sử LogEntry của bạn chỉ có 3 trường, ta tạm bỏ qua cột Mô tả hoặc bind lại Action -->
+                            </DataGrid.Columns>
+                        </DataGrid>
                     </Border>
-
+                    
                     <!-- Pagination (Giữ nguyên) -->
                     <DockPanel Grid.Row="3" Margin="0,16,0,0">
                         <!-- Code pagination cũ... -->
@@ -257,7 +265,7 @@
                         <Border Grid.Column="0" Background="#EFF6FF" BorderBrush="#DBEAFE" BorderThickness="1" CornerRadius="8" Padding="20">
                             <StackPanel>
                                 <TextBlock Text="Lần sao lưu gần nhất" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource PrimaryBlueBrush}" Margin="0,0,0,4"/>
-                                <TextBlock Text="25/10/2023" FontSize="20" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                <TextBlock x:Name="txtLastBackupDate" Text="Chưa có dữ liệu" FontSize="20" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
                                 <TextBlock Text="16:00 PM • 128.5 MB" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,12"/>
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="CheckCircle" Foreground="{StaticResource SuccessGreenBrush}" Width="16" Height="16" VerticalAlignment="Center"/>
@@ -265,12 +273,18 @@
                                 </StackPanel>
                             </StackPanel>
                         </Border>
-                        <!-- Action Card... -->
+                        <!-- Block 1: Backup Database -->
                         <Border Grid.Column="2" Background="#F9FAFB" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
-                            <!-- Button Backup... -->
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Sao lưu toàn bộ cơ sở dữ liệu hiện tại" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" TextAlignment="Center" Margin="0,0,0,12"/>
-                                <Button Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="40">
+                                <!-- Đã thêm TextWrapping="Wrap" để chữ không bị cắt và tự xuống dòng -->
+                                <TextBlock Text="Sao lưu toàn bộ cơ sở dữ liệu hiện tại" 
+                                           FontSize="13" 
+                                           Foreground="{StaticResource TextSecondaryBrush}" 
+                                           TextAlignment="Center" 
+                                           TextWrapping="Wrap" 
+                                           Margin="0,0,0,12"/>
+
+                                <Button Click="BtnBackup_Click" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="40">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="Backup" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Backup Database" Foreground="White" FontSize="13" FontWeight="Medium"/>
@@ -282,14 +296,17 @@
 
                     <!-- Schedule Settings -->
                     <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
-                        <!-- Code Settings... -->
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <!-- Chia Grid thành 2 dòng -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- Dòng 1: Icon & Text -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Dòng 2: Controls -->
+                            </Grid.RowDefinitions>
+
+                            <!-- Dòng 1: Icon và Tiêu đề -->
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,12">
                                 <Border Background="#DBEAFE" CornerRadius="20" Width="36" Height="36">
                                     <materialDesign:PackIcon Kind="Update" Foreground="{StaticResource HighlightBlueBrush}" Width="20" Height="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                 </Border>
@@ -298,17 +315,34 @@
                                     <TextBlock Text="Tự động sao lưu dữ liệu định kỳ" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
                                 </StackPanel>
                             </StackPanel>
-                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                <ComboBox SelectedIndex="0" Margin="0,0,12,0" FontSize="13" Padding="8,6" Background="White" BorderBrush="{StaticResource BorderMediumBrush}" Style="{StaticResource MaterialDesignOutlinedComboBox}" Width="140">
+
+                            <!-- Dòng 2: ComboBox và Nút gạt (Đưa xuống dưới) -->
+                            <!-- HorizontalAlignment="Right" để đẩy các nút sang phải nhìn sẽ gọn hơn -->
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+
+                                <ComboBox SelectedIndex="0" 
+                      Margin="0,0,16,0" 
+                      FontSize="13" 
+                      Padding="8,6" 
+                      Background="White" 
+                      BorderBrush="{StaticResource BorderMediumBrush}" 
+                      Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                      Width="160">
                                     <ComboBoxItem Content="Hàng ngày (00:00)"/>
                                     <ComboBoxItem Content="Hàng tuần (CN)"/>
                                     <ComboBoxItem Content="Hàng tháng"/>
                                 </ComboBox>
-                                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" IsChecked="True" Background="{StaticResource HighlightBlueBrush}"/>
+
+                                <!-- Nút gạt đã bỏ tích V và icon content -->
+                                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
+                          IsChecked="True" 
+                          Background="{StaticResource HighlightBlueBrush}"
+                          Content="{x:Null}"
+                          materialDesign:ToggleButtonAssist.OnContent="{x:Null}"/>
                             </StackPanel>
                         </Grid>
                     </Border>
-
+                    
                     <!-- Backup History -->
                     <Grid Grid.Row="3">
                         <Grid.RowDefinitions>
