@@ -104,14 +104,28 @@
                         <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="20,0,0,0" Width="160" Height="36">
                             <Grid>
                                 <materialDesign:PackIcon Kind="Barcode" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
-                                <TextBox BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Mã phòng ban" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
+                                <TextBox x:Name="txtSearchCode"
+                                         BorderThickness="0"
+                                         Padding="32,6,10,6"
+                                         VerticalAlignment="Center"
+                                         materialDesign:HintAssist.Hint="Mã phòng ban"
+                                         Style="{StaticResource MaterialDesignTextBox}"
+                                         FontSize="13"
+                                         TextChanged="Search_TextChanged"/>
                             </Grid>
                         </Border>
 
                         <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="12,0,0,0" Width="250" Height="36">
                             <Grid>
                                 <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
-                                <TextBox BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Tên vị trí phòng ban" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
+                                <TextBox x:Name="txtSearchName"
+                                         BorderThickness="0"
+                                         Padding="32,6,10,6"
+                                         VerticalAlignment="Center"
+                                         materialDesign:HintAssist.Hint="Tên vị trí phòng ban"
+                                         Style="{StaticResource MaterialDesignTextBox}"
+                                         FontSize="13"
+                                         TextChanged="Search_TextChanged"/>
                             </Grid>
                         </Border>
                     </StackPanel>
