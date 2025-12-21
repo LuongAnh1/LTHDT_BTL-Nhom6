@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="BTL_Nhom6.UserControls.MainLayout"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
+             xmlns:enums="clr-namespace:BTL_Nhom6.Enums"
+             Name="LayoutRoot">
+
+    <Grid Background="{StaticResource AppBackgroundBrush}">
+        <!-- ĐÂY LÀ CHỖ BẠN ĐỊNH NGHĨA CỘT DÙNG CHUNG -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <!-- Cố định 270px cho Sidebar -->
+            <ColumnDefinition Width="*"/>
+            <!-- Phần còn lại cho nội dung -->
+        </Grid.ColumnDefinitions>
+
+        <!-- 1. SIDEBAR (Luôn nằm ở cột 0) -->
+        <!-- Binding ActiveItem từ Property của MainLayout xuống Sidebar -->
+        <uc:SidebarControl Grid.Column="0" 
+                           ActiveItem="{Binding ElementName=LayoutRoot, Path=ActiveItem}"/>
+
+        <!-- 2. NỘI DUNG CHÍNH (Nằm ở cột 1) -->
+        <!-- ContentPresenter là nơi nội dung của các Form sẽ hiện ra -->
+        <ContentPresenter Grid.Column="1" 
+                          Content="{Binding ElementName=LayoutRoot, Path=InnerContent}"/>
+    </Grid>
+</UserControl>

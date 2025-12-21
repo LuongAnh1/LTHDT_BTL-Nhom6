@@ -17,22 +17,63 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontSize="14"
         Background="{StaticResource AppBackgroundBrush}">
+    <!-- Thay Background tổng -->
 
-    <Grid>
-        <!-- Chia lưới giưã thanh bar và phần nội dung-->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="270"/>
-            <!-- Cột Sidebar -->
-            <ColumnDefinition Width="*"/>
-            <!-- Cột Content -->
-        </Grid.ColumnDefinitions>
+    <Window.Resources>
+        <!-- 3. Style cho Tab Navigation -->
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <!-- Thay chữ xám -->
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="4,12"/>
+            <Setter Property="Margin" Value="0,0,24,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderMediumBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-        <!-- 1. SIDEBAR -->
-        <!-- Xác định CurentItem trong file UserControls/SidebarMenu -->
-        <uc:SidebarMenu Grid.Column="0" CurrentItem="QTHT"/>
+        <Style x:Key="ActiveTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
+            <Setter Property="Foreground" Value="{StaticResource HighlightBlueBrush}"/>
+            <!-- Thay màu highlight -->
+            <Setter Property="BorderBrush" Value="{StaticResource HighlightBlueBrush}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
 
-        <!-- BẮT ĐẦU NỘI DUNG RIÊNG CỦA TRANG (BODY) -->
-        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
+        <!-- Style cho Badge (Trạng thái) -->
+        <Style x:Key="StatusBadgeBorder" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="10,2"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </Window.Resources>
+
+    <!-- Sử dụng MainLayput làm bố cục chính -->
+    <uc:MainLayout ActiveItem="System">
+        <!-- Nội dun bên trong-->
+        <Grid>
+        <!-- === MAIN CONTENT === -->
+            <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
+            <!-- Thay nền trắng -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -331,5 +372,6 @@
                 </Grid>
             </Grid>
         </Grid>
-    </Grid>
+        </Grid>
+    </uc:MainLayout>
 </Window>
