@@ -20,17 +20,16 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
             
         }
 
-        private void Button_TraCuu_Click(object sender, RoutedEventArgs e)
+        private void Button_DieuChuyen_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.Navigate(this, new DC_va_BG());
         }
 
-        private void Button_DieuChuyen_Click(object sender, RoutedEventArgs e)
+        private void Button_TraCuu_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.Navigate(this, new TCTS());
         }
 
-       
 
         // --- LOGIC CHỨC NĂNG (Thêm vào nếu trong XAML đã có sự kiện Click) ---
 
