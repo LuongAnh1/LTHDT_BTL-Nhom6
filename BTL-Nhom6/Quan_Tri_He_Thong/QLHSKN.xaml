@@ -19,6 +19,42 @@
         Background="{StaticResource AppBackgroundBrush}">
 
     <Window.Resources>
+        <!-- 3. Style cho Tab Navigation -->
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="4,12"/>
+            <Setter Property="Margin" Value="0,0,24,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderMediumBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActiveTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
+            <Setter Property="Foreground" Value="{StaticResource HighlightBlueBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource HighlightBlueBrush}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
         <!-- Style cho Button hành động nhỏ (Edit/Delete) -->
         <!-- Style này chỉ dùng riêng cho trang này nên để ở Window.Resources là hợp lý -->
         <Style x:Key="IconActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
@@ -29,31 +65,24 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="270"/>
-            <!-- Cột Sidebar -->
-            <ColumnDefinition Width="*"/>
-            <!-- Cột Content -->
-        </Grid.ColumnDefinitions>
+    <!-- Sử dụng MainLayput làm bố cục chính -->
+    <uc:MainLayout ActiveItem="System">
+        <!-- Nội dung bên trong-->
+        <Grid>
+            <!-- === MAIN CONTENT === -->
+            <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Header -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Tabs -->
+                    <RowDefinition Height="*"/>
+                    <!-- Content Body -->
+                </Grid.RowDefinitions>
 
-        <!-- 1. SIDEBAR -->
-        <uc:SidebarMenu Grid.Column="0" CurrentItem="QTHT"/>
-
-        <!-- BẮT ĐẦU NỘI DUNG TRANG (BODY) -->
-        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <!-- Header -->
-                <RowDefinition Height="Auto"/>
-                <!-- Tabs -->
-                <RowDefinition Height="*"/>
-                <!-- Content Body -->
-            </Grid.RowDefinitions>
-
-            <!-- 1. HEADER & WINDOW CONTROLS -->
-            <Grid Grid.Row="0">
-                <TextBlock Text="Quản trị hệ thống" 
+                <!-- 1. HEADER & WINDOW CONTROLS -->
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Quản trị hệ thống" 
                            FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
                            Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
@@ -164,19 +193,18 @@
                     </ListView>
                 </Grid>
 
-                <!-- === CỘT PHẢI: GÁN KỸ NĂNG === -->
-                <Grid Grid.Column="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                    <!-- === CỘT TRÁI: DANH SÁCH KỸ NĂNG === -->
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <!-- Header Cột Phải -->
-                    <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                        <Grid>
+                        <!-- Header Cột Trái -->
+                        <Grid Grid.Row="0" Margin="0,0,0,16">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <materialDesign:PackIcon Kind="AccountDetails" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
-                                <TextBlock Text="Gán kỹ năng cho Kỹ thuật viên" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0"/>
+                                <materialDesign:PackIcon Kind="ClipboardList" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
+                                <TextBlock Text="Danh sách kỹ năng" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0"/>
                             </StackPanel>
 
                             <!-- Combobox Tìm kiếm KTV -->
@@ -268,12 +296,23 @@
                                         <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Lưu kỹ năng" Foreground="White" FontSize="14" FontWeight="Bold"/>
                                     </StackPanel>
-                                </Button>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
+                                </ScrollViewer>
+
+                                <!-- Footer Button -->
+                                <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                                    <Separator Background="{StaticResource BorderLightBrush}" Margin="0,0,0,16"/>
+                                    <Button HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderThickness="0" Height="40" Width="140">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Lưu kỹ năng" Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>
-    </Grid>
+    </uc:MainLayout>
 </Window>

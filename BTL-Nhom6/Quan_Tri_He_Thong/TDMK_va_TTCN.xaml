@@ -16,67 +16,71 @@
         TextElement.FontSize="14"
         Background="{StaticResource AppBackgroundBrush}">
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="270"/>
-            <!-- Cột Sidebar -->
-            <ColumnDefinition Width="*"/>
-            <!-- Cột Content -->
-        </Grid.ColumnDefinitions>
-
-        <!-- === 1. SIDEBAR === -->
-        <uc:SidebarMenu Grid.Column="0" CurrentItem="QTHT"/>
-
-        <!-- === 2. MAIN CONTENT AREA === -->
-        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <!-- Title Bar -->
-                <RowDefinition Height="Auto"/>
-                <!-- Tabs Navigation -->
-                <RowDefinition Height="*"/>
-                <!-- Content Body (ScrollViewer) -->
-            </Grid.RowDefinitions>
-
-            <!-- 2.1. Title Bar -->
-            <Grid Grid.Row="0">
-                <TextBlock Text="Quản trị hệ thống" 
-                           FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
-                           Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-
-                <!-- Nút điều khiển cửa sổ (Close, Max, Min) -->
-                <uc:WindowControlBar />
-            </Grid>
-
-            <!-- 2.2. Tabs Navigation -->
-            <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
-                <StackPanel Orientation="Horizontal">
-                    <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click"/>
-                    <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource TabButtonStyle}" Click="Button_QLHSKN_Click"/>
-                    <!-- Tab hiện tại đang Active -->
-                    <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource ActiveTabButtonStyle}"/>
-                    <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
-                </StackPanel>
-            </Border>
-
-            <!-- 2.3. Form Content Body -->
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="32,0,32,32">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="32"/>
-                        <!-- Gap -->
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- CỘT TRÁI: THÔNG TIN CÁ NHÂN -->
-                    <StackPanel Grid.Column="0">
-                        <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,24">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Account" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
-                                <TextBlock Text="Thông tin cá nhân" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
+    <Window.Resources>
+        <!-- 3. Style cho Tab Navigation -->
+        <Style x:Key="TabButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="4,12"/>
+            <Setter Property="Margin" Value="0,0,24,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border BorderThickness="{TemplateBinding BorderThickness}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                Background="Transparent">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource BorderMediumBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActiveTabButtonStyle" TargetType="Button" BasedOn="{StaticResource TabButtonStyle}">
+            <Setter Property="Foreground" Value="{StaticResource HighlightBlueBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource HighlightBlueBrush}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </Window.Resources>
+    <!-- Sử dụng MainLayput làm bố cục chính -->
+    <uc:MainLayout ActiveItem="System">
+        <Grid>
+            <!-- === MAIN CONTENT === -->
+            <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Title Bar -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- Tabs -->
+                    <RowDefinition Height="*"/>
+                    <!-- Content Area -->
+                </Grid.RowDefinitions>
+
+                <!-- 1. Title Bar -->
+                <Grid Grid.Row="0">
+                    <TextBlock Text="Thay đổi Mật khẩu &amp; Thông tin cá nhân" 
+                           FontSize="24" 
+                           FontWeight="Bold" 
+                           Foreground="{StaticResource TextPrimaryBrush}" 
+                           Margin="32,24,0,10" 
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"/>
+
+                    <!-- StackPanel nút điều khiển -->
+                    <!-- Sử dụng UserControl tái sử dụng -->
+                    <uc:WindowControlBar />
+                </Grid>
 
                         <Border Background="White" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="8" Padding="24">
                             <StackPanel>
@@ -101,17 +105,17 @@
                                          Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                <Separator Background="{StaticResource BorderLightBrush}" Margin="0,8,0,16"/>
+                                    <Separator Background="{StaticResource BorderLightBrush}" Margin="0,8,0,16"/>
 
-                                <TextBlock Text="SĐT" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <TextBox x:Name="txtPhone" Text="0901234567"
+                                    <TextBlock Text="SĐT" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                    <TextBox x:Name="txtPhone" Text="0901234567"
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="Phone"
                                          Background="White" BorderBrush="{StaticResource BorderMediumBrush}"
                                          Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                <TextBlock Text="Email" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <TextBox x:Name="txtEmail" Text="admin.a@company.com"
+                                    <TextBlock Text="Email" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                    <TextBox x:Name="txtEmail" Text="admin.a@company.com"
                                          Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                          materialDesign:TextFieldAssist.LeadingIcon="Email"
                                          Background="White" BorderBrush="{StaticResource BorderMediumBrush}"
@@ -146,18 +150,18 @@
                                              Background="White" BorderBrush="{StaticResource BorderMediumBrush}"
                                              Height="45" VerticalContentAlignment="Center" Margin="0,0,0,16"/>
 
-                                <TextBlock Text="Mật khẩu mới" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <PasswordBox x:Name="pbNewPass"
+                                    <TextBlock Text="Mật khẩu mới" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                    <PasswordBox x:Name="pbNewPass"
                                              Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                                              materialDesign:TextFieldAssist.LeadingIcon="Key"
                                              materialDesign:HintAssist.Hint="Nhập mật khẩu mới"
                                              Background="White" BorderBrush="{StaticResource BorderMediumBrush}"
                                              Height="45" VerticalContentAlignment="Center" Margin="0,0,0,4"/>
-                                <TextBlock Text="Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số." 
-                                           FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,16" TextWrapping="Wrap"/>
+                                    <TextBlock Text="Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số." 
+                                           FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,16"/>
 
-                                <TextBlock Text="Xác nhận mật khẩu mới" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                <PasswordBox x:Name="pbConfirmPass"
+                                    <TextBlock Text="Xác nhận mật khẩu mới" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
+                                    <PasswordBox x:Name="pbConfirmPass"
                                              Style="{StaticResource MaterialDesignOutlinedPasswordBox}"
                                              materialDesign:TextFieldAssist.LeadingIcon="CheckCircle"
                                              materialDesign:HintAssist.Hint="Nhập lại mật khẩu mới"
@@ -176,5 +180,5 @@
                 </Grid>
             </ScrollViewer>
         </Grid>
-    </Grid>
-</Window>
+    </uc:MainLayout>
+</Window> 

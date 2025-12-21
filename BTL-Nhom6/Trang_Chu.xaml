@@ -15,25 +15,15 @@
         ResizeMode="CanResizeWithGrip"
         FontFamily="{DynamicResource MaterialDesignFont}"
         TextElement.Foreground="{StaticResource TextPrimaryBrush}"
-        TextElement.FontWeight="Regular"
+        TextElement.FontWeight="Regular"   
         TextElement.FontSize="14"
         Background="{StaticResource AppBackgroundBrush}">
-
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="270"/>
-            <!-- Cột Sidebar -->
-            <ColumnDefinition Width="*"/>
-            <!-- Cột Nội dung chính -->
-        </Grid.ColumnDefinitions>
-
-        <!-- === PHẦN 1: SIDEBAR (THANH MENU TRÁI) === -->
-        <!-- SỬ DỤNG USER CONTROL -->
-        <!-- Set CurrentItem="System" để nút có Tag="System" sáng lên -->
-        <uc:SidebarMenu Grid.Column="0" 
-                        CurrentItem="Home"/>
-        <!-- === PHẦN 2: MAIN CONTENT (BÊN PHẢI) === -->
-        <Grid Grid.Column="1" Background="{StaticResource AppBackgroundBrush}">
+    
+    <!-- Sử dụng MainLayput làm bố cục chính -->
+    <uc:MainLayout ActiveItem="Home">
+        <!-- === Nội dung bên trong === -->
+        <Grid>
+            <Grid Grid.Column="1" Background="{StaticResource AppBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Top Bar (Title & Window Controls) -->
@@ -73,5 +63,6 @@
                 </StackPanel>
             </Grid>
         </Grid>
-    </Grid>
+        </Grid>
+    </uc:MainLayout>
 </Window>
