@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace BTL_Nhom6.Quan_Lý_Thiet_Bi
+namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
 {
     /// <summary>
     /// Interaction logic for TCTS.xaml

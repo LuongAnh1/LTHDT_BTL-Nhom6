@@ -1,9 +1,9 @@
-﻿<Window x:Class="BTL_Nhom6.Quan_Lý_Thiet_Bi.TCTS"
+﻿<Window x:Class="BTL_Nhom6.Quan_Ly_Thiet_Bi.TCTS"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BTL_Nhom6.Quan_Lý_Thiet_Bi"
+        xmlns:local="clr-namespace:BTL_Nhom6.Quan_Ly_Thiet_Bi"
         mc:Ignorable="d"
         Title="TCTS" Height="450" Width="800">
     <Grid>
