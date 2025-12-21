@@ -1,18 +1,122 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 // Import namespace của Helper để sử dụng lớp điều hướng
 using BTL_Nhom6.Helper;
+using BTL_Nhom6.Models;
+using BTL_Nhom6.Services;
+using System.Windows.Media.Effects; // Thêm thư viện này để dùng BlurEffect
 
 namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
 {
-    /// <summary>
-    /// Interaction logic for QLVTPB.xaml
-    /// </summary>
     public partial class QLVTPB : Window
     {
+        // Khởi tạo Service
+        private LocationService _locationService = new LocationService();
+
         public QLVTPB()
         {
             InitializeComponent();
+            LoadData(); // Gọi hàm load dữ liệu khi mở form
+        }
+
+        // Hàm lấy dữ liệu từ DB và đổ vào DataGrid
+        private void LoadData()
+        {
+            try
+            {
+                var listLocations = _locationService.GetAllLocations();
+                dgLocations.ItemsSource = listLocations;
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+            }
+        }
+
+        //1. Sự kiện khi bấm nút Sửa
+        private void BtnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            // Lấy nút bấm và dữ liệu dòng tương ứng
+            Button btn = sender as Button;
+            if (btn != null && btn.Tag is Location selectedLocation)
+            {
+                // BƯỚC 1: TẠO HIỆU ỨNG MỜ
+                BlurEffect blurObj = new BlurEffect();
+                blurObj.Radius = 15;
+                this.Effect = blurObj;
+
+                // BƯỚC 2: MỞ FORM CON (Mode Sửa)
+                // Truyền đối tượng cần sửa vào constructor
+                LocationWindow form = new LocationWindow(selectedLocation);
+
+                bool? result = form.ShowDialog();
+
+                // BƯỚC 3: GỠ BỎ HIỆU ỨNG
+                this.Effect = null;
+
+                // BƯỚC 4: LOAD LẠI DỮ LIỆU
+                if (result == true)
+                {
+                    LoadData();
+                    MessageBox.Show("Cập nhật thông tin thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+
+        //2. Sự kiện khi bấm nút Xóa
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn != null && btn.Tag is Location selectedLocation)
+            {
+                var result = MessageBox.Show($"Bạn có chắc muốn xóa '{selectedLocation.LocationName}'?",
+                                             "Xác nhận",
+                                             MessageBoxButton.YesNo,
+                                             MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        _locationService.DeleteLocation(selectedLocation.LocationID);
+                        LoadData(); // Load lại bảng sau khi xóa
+                        MessageBox.Show("Xóa thành công!");
+                    }
+                    catch (System.Exception ex)
+                    {
+                        MessageBox.Show("Lỗi khi xóa (có thể do vị trí này đang chứa phòng con): " + ex.Message);
+                    }
+                }
+            }
+        }
+
+        //3.  Sự kiện nút Thêm mới (Góc trên phải giao diện)
+
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            // BƯỚC 1: TẠO HIỆU ỨNG MỜ
+            BlurEffect blurObj = new BlurEffect();
+            blurObj.Radius = 15;
+            this.Effect = blurObj;
+
+            // BƯỚC 2: MỞ FORM CON (Mode Thêm mới)
+            // Gọi constructor không tham số như đã định nghĩa ở LocationWindow
+            LocationWindow form = new LocationWindow();
+
+            // ShowDialog trả về true/false/null. 
+            // Nếu bên form con gọi this.DialogResult = true thì biến result sẽ là true.
+            bool? result = form.ShowDialog();
+
+            // BƯỚC 3: GỠ BỎ HIỆU ỨNG
+            this.Effect = null;
+
+            // BƯỚC 4: LOAD LẠI DỮ LIỆU NẾU LƯU THÀNH CÔNG
+            if (result == true)
+            {
+                LoadData();
+                MessageBox.Show("Thêm mới vị trí thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         // ==========================================================

@@ -147,6 +147,7 @@
     <Compile Include="Helper\DatabaseHelper.cs" />
     <Compile Include="Helper\NavigationHelper.cs" />
     <Compile Include="Helper\UserSession.cs.cs" />
+    <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="Models\TechnicianSkillViewModel.cs" />
@@ -174,6 +175,9 @@
     </Compile>
     <Compile Include="Quan_Ly_Kho_Vat_Tu\XKVT.xaml.cs">
       <DependentUpon>XKVT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\LocationWindow.xaml.cs">
+      <DependentUpon>LocationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\NCC_va_BGLK.xaml.cs">
       <DependentUpon>NCC_va_BGLK.xaml</DependentUpon>
@@ -226,6 +230,7 @@
     <Compile Include="Quen_Mat_Khau.xaml.cs">
       <DependentUpon>Quen_Mat_Khau.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SkillService.cs" />
@@ -354,6 +359,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Ly_Kho_Vat_Tu\XKVT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\LocationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
