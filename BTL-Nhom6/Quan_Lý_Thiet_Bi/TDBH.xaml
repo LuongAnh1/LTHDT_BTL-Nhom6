@@ -118,20 +118,23 @@
 
                             <!-- Column 3: Buttons -->
                             <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Bottom">
-                                <!-- Button Lọc -->
-                                <Button Background="{StaticResource HtmlBlue}" BorderThickness="0" Height="42" Margin="0,0,10,0"
-                                        materialDesign:ButtonAssist.CornerRadius="6">
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Kind="FilterVariant" Width="18" Height="18" Margin="0,0,8,0"/>
-                                        <TextBlock Text="Lọc" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Button>
+                                <!-- Column 3: Buttons -->
+                                <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Bottom">
+                                    <!-- Button Lọc - Đã sửa CornerRadius="4" -->
+                                    <Button Background="{StaticResource HtmlBlue}" BorderThickness="0" Height="42" Margin="0,0,10,0"
+            materialDesign:ButtonAssist.CornerRadius="4">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="FilterVariant" Width="18" Height="18" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Lọc" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Button>
 
-                                <!-- Button Xóa bộ lọc -->
-                                <Button Background="#E5E7EB" Foreground="{StaticResource TextPrimaryBrush}" BorderThickness="0" Height="42"
-                                        materialDesign:ButtonAssist.CornerRadius="6">
-                                    <TextBlock Text="Xóa bộ lọc" FontWeight="SemiBold"/>
-                                </Button>
+                                    <!-- Button Xóa bộ lọc - Đã sửa CornerRadius="4" -->
+                                    <Button Background="#E5E7EB" Foreground="{StaticResource TextPrimaryBrush}" BorderThickness="0" Height="42"
+            materialDesign:ButtonAssist.CornerRadius="4">
+                                        <TextBlock Text="Xóa bộ lọc" FontWeight="SemiBold"/>
+                                    </Button>
+                                </StackPanel>
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -144,8 +147,9 @@
                                 <TextBlock Text="Danh sách thiết bị sắp hết hạn bảo hành" FontSize="18" FontWeight="Bold" 
                                            VerticalAlignment="Center" Foreground="{StaticResource TextPrimaryBrush}"/>
 
+                                <!-- Nút Xuất báo cáo - Đã sửa CornerRadius="4" -->
                                 <Button HorizontalAlignment="Right" Background="{StaticResource HtmlGreen}" BorderThickness="0" Height="40"
-                                        materialDesign:ButtonAssist.CornerRadius="6">
+        materialDesign:ButtonAssist.CornerRadius="4">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="FileDownloadOutline" Width="18" Height="18" Margin="0,0,8,0"/>
                                         <TextBlock Text="Xuất báo cáo" FontWeight="SemiBold"/>

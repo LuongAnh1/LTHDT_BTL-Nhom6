@@ -59,7 +59,6 @@
                     <Button Content="Tra cứu tài sản" Style="{StaticResource ActiveTabButtonStyle}" Padding="0,8" Margin="32,0,0,0"/>
                     <Button Content="Theo dõi bảo hành" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_BaoHanh_Click"/>
                     <Button Content="Điều chuyển &amp; Bàn giao" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_BanGiao_Click"/>
-                    <Button Content="Kiểm kê thiết bị" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_KiemKe_Click"/>
                 </StackPanel>
             </Border>
 
@@ -126,24 +125,27 @@
                                     </ComboBox>
                                 </StackPanel>
 
-                                <!-- Nút Áp dụng bộ lọc đã được sửa chữ trắng -->
-                                <Button Grid.Row="1" Grid.Column="6" Margin="0,20,0,0" Height="45"
-                                    Background="{StaticResource PrimaryBlueBrush}" 
-                                    BorderThickness="0"
-                                    materialDesign:ButtonAssist.CornerRadius="6">
-                                <StackPanel Orientation="Horizontal">
-                                <!-- Thêm Foreground="White" cho Icon -->
-                                <materialDesign:PackIcon Kind="Search" 
-                                    Foreground="White" 
-                                    VerticalAlignment="Center" 
-                                    Margin="0,0,8,0" 
-                                    Width="18" Height="18"/>
+                                <!-- Nút Áp dụng bộ lọc đã được tăng kích thước -->
+                                <!-- Nút Áp dụng bộ lọc đã được sửa bo góc -->
+                                <Button Grid.Row="1" Grid.Column="6" Margin="0,20,0,0" 
+        Height="50"  
+        Background="{StaticResource PrimaryBlueBrush}" 
+        BorderThickness="0"
+        materialDesign:ButtonAssist.CornerRadius="4" 
+        Cursor="Hand">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Search" 
+             Foreground="White" 
+             VerticalAlignment="Center" 
+             Margin="0,0,10,0" 
+             Width="24" 
+             Height="24"/>
 
-                                <!-- Thêm Foreground="White" cho Chữ -->
-                                <TextBlock Text="Áp dụng bộ lọc" 
-                                    Foreground="White" 
-                                    VerticalAlignment="Center" 
-                                    FontWeight="SemiBold"/>
+                                        <TextBlock Text="ÁP DỤNG BỘ LỌC" 
+               Foreground="White" 
+               VerticalAlignment="Center" 
+               FontWeight="Bold" 
+               FontSize="16"/>
                                     </StackPanel>
                                 </Button>
                             </Grid>
