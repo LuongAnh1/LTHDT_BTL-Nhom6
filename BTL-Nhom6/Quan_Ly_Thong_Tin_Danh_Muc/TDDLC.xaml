@@ -38,13 +38,9 @@
         <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <!-- Header -->
                 <RowDefinition Height="Auto"/>
-                <!-- Main Tabs -->
                 <RowDefinition Height="Auto"/>
-                <!-- Sub Tabs -->
                 <RowDefinition Height="*"/>
-                <!-- Table Content -->
             </Grid.RowDefinitions>
 
             <!-- 1. HEADER -->
@@ -54,7 +50,6 @@
                            Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <uc:WindowControlBar />
             </Grid>
-
 
             <!-- 2. MAIN TABS -->
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
@@ -73,44 +68,30 @@
 
             <!-- 3. SUB TABS -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="32,0,32,20">
-                <!-- Thẳng hàng tuyệt đối với nút "Quản lý..." ở trên -->
-                <Button Content="Trạng thái thiết bị" 
-                    Style="{StaticResource ActiveTabButtonStyle}" 
-                    FontSize="13" Padding="0,8" Margin="0"/>
-
-                <!-- Khoảng cách 32px đều với hàng trên -->
-                <Button Content="Đơn vị tính" 
-                        Style="{StaticResource TabButtonStyle}" 
-                        FontSize="13" Padding="0,8" Margin="32,0,0,0" 
-                        Click="Button_DonViTinh_Click"/>
-
-                <!-- Khoảng cách 32px đều tuyệt đối -->
-                <Button Content="Các lỗi thường gặp" 
-                        Style="{StaticResource TabButtonStyle}" 
-                        FontSize="13" Padding="0,8" Margin="32,0,0,0"
-                         Click="Button_LoiThuongGap_Click"/>
+                <Button Content="Trạng thái thiết bị" Style="{StaticResource ActiveTabButtonStyle}" FontSize="13" Padding="0,8" Margin="0"/>
+                <Button Content="Đơn vị tính" Style="{StaticResource TabButtonStyle}" FontSize="13" Padding="0,8" Margin="32,0,0,0" Click="Button_DonViTinh_Click"/>
+                <Button Content="Các lỗi thường gặp" Style="{StaticResource TabButtonStyle}" FontSize="13" Padding="0,8" Margin="32,0,0,0" Click="Button_LoiThuongGap_Click"/>
             </StackPanel>
 
             <!-- 4. TABLE CONTENT -->
             <Grid Grid.Row="3" Margin="32,0,32,32">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>       
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- TOOLBAR (Search & Add) -->
+                <!-- TOOLBAR (ĐÃ SỬA) -->
                 <Grid Grid.Row="0" Margin="0,0,0,16">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <materialDesign:PackIcon Kind="BookOutline" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
-                        <TextBlock Text="Danh sách Trạng thái" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        <materialDesign:PackIcon Kind="BookOutline" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24" VerticalAlignment="Center"/>
+                        <TextBlock Text="Danh sách trạng thái" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
 
                         <!-- Tìm kiếm theo Mã -->
                         <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="24,0,0,0" Width="170" Height="36">
                             <Grid>
                                 <materialDesign:PackIcon Kind="Barcode" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
                                 <TextBox x:Name="txtSearchMa" BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" 
-                         materialDesign:HintAssist.Hint="Mã trạng thái" 
-                         Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
+                                         materialDesign:HintAssist.Hint="Mã trạng thái" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
                             </Grid>
                         </Border>
 
@@ -119,8 +100,7 @@
                             <Grid>
                                 <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
                                 <TextBox x:Name="txtSearchTen" BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" 
-                         materialDesign:HintAssist.Hint="Tên trạng thái" 
-                         Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
+                                         materialDesign:HintAssist.Hint="Tên trạng thái" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
                             </Grid>
                         </Border>
                     </StackPanel>
@@ -198,7 +178,6 @@
                                     </StackPanel>
                                 </Grid>
                             </Border>
-
                         </StackPanel>
                     </ScrollViewer>
                 </Border>

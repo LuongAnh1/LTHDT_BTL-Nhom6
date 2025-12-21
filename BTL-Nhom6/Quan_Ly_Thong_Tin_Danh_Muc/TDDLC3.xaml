@@ -63,19 +63,9 @@
 
             <!-- 3. SUB TABS -->
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="32,0,32,20">
-                <Button Content="Trạng thái thiết bị" 
-                        Style="{StaticResource TabButtonStyle}" 
-                        FontSize="13" Padding="0,8" Margin="0" 
-                        Click="Button_TrangThai_Click"/>
-
-                <Button Content="Đơn vị tính" 
-                        Style="{StaticResource TabButtonStyle}" 
-                        FontSize="13" Padding="0,8" Margin="32,0,0,0" 
-                        Click="Button_DonViTinh_Click"/>
-
-                <Button Content="Các lỗi thường gặp" 
-                        Style="{StaticResource ActiveTabButtonStyle}" 
-                        FontSize="13" Padding="0,8" Margin="32,0,0,0"/>
+                <Button Content="Trạng thái thiết bị" Style="{StaticResource TabButtonStyle}" FontSize="13" Padding="0,8" Margin="0" Click="Button_TrangThai_Click"/>
+                <Button Content="Đơn vị tính" Style="{StaticResource TabButtonStyle}" FontSize="13" Padding="0,8" Margin="32,0,0,0" Click="Button_DonViTinh_Click"/>
+                <Button Content="Các lỗi thường gặp" Style="{StaticResource ActiveTabButtonStyle}" FontSize="13" Padding="0,8" Margin="32,0,0,0"/>
             </StackPanel>
 
             <!-- 4. TABLE CONTENT -->
@@ -85,11 +75,11 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- TOOLBAR (Search by ID & Name) -->
+                <!-- TOOLBAR - ĐÃ SỬA CĂN GIỮA LOGO -->
                 <Grid Grid.Row="0" Margin="0,0,0,16">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <materialDesign:PackIcon Kind="AlertCircleOutline" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
-                        <TextBlock Text="Danh sách Lỗi thường gặp" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        <materialDesign:PackIcon Kind="AlertCircleOutline" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24" VerticalAlignment="Center"/>
+                        <TextBlock Text="Danh sách lỗi thường gặp" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
 
                         <!-- Tìm kiếm theo Mã lỗi -->
                         <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="24,0,0,0" Width="170" Height="36">
