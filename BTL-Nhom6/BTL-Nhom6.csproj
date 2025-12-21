@@ -137,6 +137,9 @@
     <Compile Include="Bao_Cao_Thong_Ke\BCTTTB.xaml.cs">
       <DependentUpon>BCTTTB.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Bao_Cao_Thong_Ke\Home_BCTK.xaml.cs">
+      <DependentUpon>Home_BCTK.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Bao_Cao_Thong_Ke\TKTSL_va_SC.xaml.cs">
       <DependentUpon>TKTSL_va_SC.xaml</DependentUpon>
     </Compile>
@@ -145,6 +148,7 @@
     </Compile>
     <Compile Include="Helper\BusinessLogicHelper.cs" />
     <Compile Include="Helper\DatabaseHelper.cs" />
+    <Compile Include="Helper\MenuEnums.cs" />
     <Compile Include="Helper\NavigationHelper.cs" />
     <Compile Include="Helper\UserSession.cs.cs" />
     <Compile Include="Models\Category.cs" />
@@ -250,14 +254,11 @@
     <Compile Include="Trang_Chu.xaml.cs">
       <DependentUpon>Trang_Chu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\Header.xaml.cs">
-      <DependentUpon>Header.xaml</DependentUpon>
+    <Compile Include="UserControls\MainLayout.xaml.cs">
+      <DependentUpon>MainLayout.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\SidebarItem.xaml.cs">
-      <DependentUpon>SidebarItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\SidebarMenu.xaml.cs">
-      <DependentUpon>SidebarMenu.xaml</DependentUpon>
+    <Compile Include="UserControls\SidebarControl.xaml.cs">
+      <DependentUpon>SidebarControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\WindowControlBar.xaml.cs">
       <DependentUpon>WindowControlBar.xaml</DependentUpon>
@@ -331,6 +332,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Bao_Cao_Thong_Ke\BCTTTB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Bao_Cao_Thong_Ke\Home_BCTK.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -458,15 +463,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\Header.xaml">
+    <Page Include="UserControls\MainLayout.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControls\SidebarItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\SidebarMenu.xaml">
+    <Page Include="UserControls\SidebarControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
