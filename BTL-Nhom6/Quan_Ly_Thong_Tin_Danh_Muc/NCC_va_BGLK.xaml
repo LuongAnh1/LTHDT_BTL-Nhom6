@@ -17,7 +17,6 @@
         Background="{StaticResource AppBackgroundBrush}">
 
     <Window.Resources>
-        <!-- Style cho các nút hành động Edit/Delete -->
         <Style x:Key="IconActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
             <Setter Property="Width" Value="30"/>
             <Setter Property="Height" Value="30"/>
@@ -32,10 +31,8 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- 1. SIDEBAR -->
         <uc:SidebarMenu Grid.Column="0" CurrentItem="QLTTDM"/>
 
-        <!-- 2. MAIN CONTENT -->
         <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -43,7 +40,6 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- 1. HEADER -->
             <Grid Grid.Row="0">
                 <TextBlock Text="Quản lý thông tin danh mục" 
                            FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
@@ -51,7 +47,6 @@
                 <uc:WindowControlBar />
             </Grid>
 
-            <!-- 2. MAIN TABS -->
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
                 <StackPanel Orientation="Horizontal">
                     <Button Content="Quản lý vị trí phòng ban" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="0" Click="Button_QLVTPB_Click"/>
@@ -61,138 +56,184 @@
                 </StackPanel>
             </Border>
 
-            <!-- 3. TABLE CONTENT -->
-            <Grid Grid.Row="2" Margin="32,0,32,32">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="32,0,32,32">
 
-                <!-- TOOLBAR - PHẦN ĐÃ SỬA -->
-                <Grid Grid.Row="0" Margin="0,0,0,16">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <!-- Thêm VerticalAlignment="Center" cho biểu tượng xe tải -->
-                        <materialDesign:PackIcon Kind="TruckOutline" 
-                                                 Foreground="{StaticResource HighlightBlueBrush}" 
-                                                 Width="24" Height="24" 
-                                                 VerticalAlignment="Center"/>
-
-                        <TextBlock Text="Danh sách nhà cung cấp" 
-                                   FontSize="18" FontWeight="Bold" 
-                                   Margin="8,0,0,0" 
-                                   VerticalAlignment="Center"/>
-
-                        <!-- Ô tìm kiếm theo MÃ -->
-                        <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="20,0,0,0" Width="160" Height="36">
-                            <Grid>
-                                <materialDesign:PackIcon Kind="Barcode" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
-                                <TextBox x:Name="txtSearchMa" BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" 
-                                         materialDesign:HintAssist.Hint="Mã NCC" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
-                            </Grid>
-                        </Border>
-
-                        <!-- Ô tìm kiếm theo TÊN -->
-                        <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Margin="12,0,0,0" Width="280" Height="36">
-                            <Grid>
-                                <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
-                                <TextBox x:Name="txtSearchTen" BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" 
-                                         materialDesign:HintAssist.Hint="Tên NCC" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-
-                    <!-- Nút thêm mới -->
-                    <Button HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="16,0">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="18" Height="18" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="Thêm nhà cung cấp" Foreground="White" VerticalAlignment="Center" FontWeight="Medium"/>
-                        </StackPanel>
-                    </Button>
-                </Grid>
-
-                <!-- BẢNG DỮ LIỆU -->
-                <Border Grid.Row="1" Background="White" CornerRadius="8" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <!-- SECTION 1: DANH SÁCH NHÀ CUNG CẤP -->
+                    <Border Background="White" CornerRadius="8" Padding="20" Margin="0,0,0,32" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1">
                         <StackPanel>
-                            <!-- Header Bảng -->
-                            <Border Background="#232E3E" Padding="16,12">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="1.5*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="120"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="MÃ NCC" Foreground="White" FontWeight="SemiBold"/>
-                                    <TextBlock Grid.Column="1" Text="TÊN NHÀ CUNG CẤP" Foreground="White" FontWeight="SemiBold"/>
-                                    <TextBlock Grid.Column="2" Text="SỐ ĐIỆY THOẠI" Foreground="White" FontWeight="SemiBold"/>
-                                    <TextBlock Grid.Column="3" Text="ĐỊA CHỈ" Foreground="White" FontWeight="SemiBold"/>
-                                    <TextBlock Grid.Column="4" Text="HÀNH ĐỘNG" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                                </Grid>
-                            </Border>
+                            <Grid Margin="0,0,0,16">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="TruckOutline" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Danh sách Nhà cung cấp" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
 
-                            <!-- Hàng dữ liệu mẫu 1 -->
-                            <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="16,12">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="1.5*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="120"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="NCC001" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="1" Text="Công ty Điện lực ABC" FontWeight="Medium" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="024.1234.567" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="3" Text="KCN Bắc Thăng Long, Hà Nội" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <!-- Ô tìm kiếm theo MÃ -->
+                                    <Border Background="{StaticResource AppBackgroundBrush}" CornerRadius="8" Width="150" Height="36" Margin="0,0,10,0">
+                                        <Grid>
+                                            <materialDesign:PackIcon Kind="Barcode" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
+                                            <TextBox x:Name="txtSearchMaNCC" BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" 
+                                                     materialDesign:HintAssist.Hint="Mã NCC" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <!-- Ô tìm kiếm theo TÊN -->
+                                    <Border Background="{StaticResource AppBackgroundBrush}" CornerRadius="8" Width="220" Height="36" Margin="0,0,12,0">
+                                        <Grid>
+                                            <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
+                                            <TextBox x:Name="txtSearchTenNCC" BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" 
+                                                     materialDesign:HintAssist.Hint="Tên nhà cung cấp" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <Button Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="12,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="18" Height="18" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Thêm nhà cung cấp" Foreground="White" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
 
-                                    <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Button Style="{StaticResource IconActionButton}">
-                                            <materialDesign:PackIcon Kind="FileDocumentOutline" Foreground="{StaticResource HighlightBlueBrush}" Width="18" Height="18"/>
-                                        </Button>
-                                        <Button Style="{StaticResource IconActionButton}">
-                                            <materialDesign:PackIcon Kind="Pencil" Foreground="{StaticResource HighlightBlueBrush}" Width="18" Height="18"/>
-                                        </Button>
-                                        <Button Style="{StaticResource IconActionButton}">
-                                            <materialDesign:PackIcon Kind="Delete" Foreground="{StaticResource DeleteIconBrush}" Width="18" Height="18"/>
-                                        </Button>
-                                    </StackPanel>
-                                </Grid>
-                            </Border>
-
-                            <!-- Hàng dữ liệu mẫu 2 -->
-                            <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="16,12">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="1.5*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="120"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" Text="NCC002" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="1" Text="Thiết bị Công nghiệp XYZ" FontWeight="Medium" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" Text="028.9999.888" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="3" Text="Quận 7, TP. Hồ Chí Minh" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-
-                                    <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                        <Button Style="{StaticResource IconActionButton}">
-                                            <materialDesign:PackIcon Kind="FileDocumentOutline" Foreground="{StaticResource HighlightBlueBrush}" Width="18" Height="18"/>
-                                        </Button>
-                                        <Button Style="{StaticResource IconActionButton}">
-                                            <materialDesign:PackIcon Kind="Pencil" Foreground="{StaticResource HighlightBlueBrush}" Width="18" Height="18"/>
-                                        </Button>
-                                        <Button Style="{StaticResource IconActionButton}">
-                                            <materialDesign:PackIcon Kind="Delete" Foreground="{StaticResource DeleteIconBrush}" Width="18" Height="18"/>
-                                        </Button>
-                                    </StackPanel>
-                                </Grid>
+                            <!-- Bảng dữ liệu Nhà cung cấp -->
+                            <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="6" ClipToBounds="True">
+                                <StackPanel>
+                                    <Border Background="#232E3E" Padding="15,10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="3*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="100"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="MÃ NCC" Foreground="White" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Column="1" Text="TÊN NHÀ CUNG CẤP" Foreground="White" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Column="2" Text="ĐỊA CHỈ" Foreground="White" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Column="3" Text="LIÊN HỆ" Foreground="White" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Column="4" Text="HÀNH ĐỘNG" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                    <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="15,10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="3*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="100"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="NCC001" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="Công ty TNHH An Phát" FontWeight="Medium" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2" Text="123 Lê Lợi, Quận 1, TP.HCM" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="3" Text="0901234567" VerticalAlignment="Center"/>
+                                            <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <Button Style="{StaticResource IconActionButton}">
+                                                    <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18" Foreground="{StaticResource HighlightBlueBrush}"/>
+                                                </Button>
+                                                <Button Style="{StaticResource IconActionButton}">
+                                                    <materialDesign:PackIcon Kind="Delete" Width="18" Height="18" Foreground="{StaticResource DeleteIconBrush}"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
                             </Border>
                         </StackPanel>
-                    </ScrollViewer>
-                </Border>
-            </Grid>
+                    </Border>
+
+                    <!-- SECTION 2: BÁO GIÁ LINH KIỆN -->
+                    <Border Background="White" CornerRadius="8" Padding="20" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,16">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="ListBoxOutline" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Danh sách Báo giá linh kiện" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <!-- Ô tìm kiếm theo MÃ LINH KIỆN -->
+                                    <Border Background="{StaticResource AppBackgroundBrush}" CornerRadius="8" Width="150" Height="36" Margin="0,0,10,0">
+                                        <Grid>
+                                            <materialDesign:PackIcon Kind="Barcode" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
+                                            <TextBox x:Name="txtSearchMaLK" BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" 
+                                                     materialDesign:HintAssist.Hint="Mã linh kiện" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <!-- Ô tìm kiếm theo TÊN LINH KIỆN -->
+                                    <Border Background="{StaticResource AppBackgroundBrush}" CornerRadius="8" Width="220" Height="36" Margin="0,0,12,0">
+                                        <Grid>
+                                            <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="10,0,0,0" Width="16" Height="16"/>
+                                            <TextBox x:Name="txtSearchTenLK" BorderThickness="0" Padding="32,6,10,6" VerticalAlignment="Center" 
+                                                     materialDesign:HintAssist.Hint="Tên linh kiện" Style="{StaticResource MaterialDesignTextBox}" FontSize="13"/>
+                                        </Grid>
+                                    </Border>
+                                    <Button Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="12,0">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="18" Height="18" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Thêm báo giá mới" Foreground="White" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+
+                            <Border BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" CornerRadius="6" ClipToBounds="True">
+                                <StackPanel>
+                                    <!-- Header Bảng Báo giá -->
+                                    <Border Background="#232E3E" Padding="15,10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="100"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="MÃ LK" Foreground="White" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Column="1" Text="TÊN LINH KIỆN" Foreground="White" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Column="2" Text="NHÀ CUNG CẤP" Foreground="White" FontWeight="SemiBold"/>
+                                            <TextBlock Grid.Column="3" Text="TỒN" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Column="4" Text="ĐƠN GIÁ" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                            <TextBlock Grid.Column="5" Text="ĐƠN VỊ" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                            <TextBlock Grid.Column="6" Text="HÀNH ĐỘNG" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Dữ liệu mẫu Báo giá -->
+                                    <Border BorderBrush="{StaticResource AppBackgroundBrush}" BorderThickness="0,0,0,1" Padding="15,10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1.5*"/>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="120"/>
+                                                <ColumnDefinition Width="100"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="RAM001" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="RAM DDR4 8GB Kingston" FontWeight="Medium" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2" Text="Công ty TNHH An Phát" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="3" Text="50" Foreground="#22C55E" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="4" Text="850,000" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="5" Text="Cái" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <StackPanel Grid.Column="6" Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <Button Style="{StaticResource IconActionButton}">
+                                                    <materialDesign:PackIcon Kind="Pencil" Width="18" Height="18" Foreground="{StaticResource HighlightBlueBrush}"/>
+                                                </Button>
+                                                <Button Style="{StaticResource IconActionButton}">
+                                                    <materialDesign:PackIcon Kind="Delete" Width="18" Height="18" Foreground="{StaticResource DeleteIconBrush}"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
     </Grid>
-</Window>
+</Window>                     
