@@ -103,7 +103,7 @@ namespace BTL_Nhom6.Services
             catch (Exception ex)
             {
                 // Bạn có thể ghi log lỗi chi tiết ở đây nếu cần
-                // Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message);
                 return false; // Thất bại
             }
         }
