@@ -1,10 +1,12 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
-// Import namespace của Helper để sử dụng lớp điều hướng
+﻿// Import namespace của Helper để sử dụng lớp điều hướng
 using BTL_Nhom6.Helper;
 using BTL_Nhom6.Models;
 using BTL_Nhom6.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media.Effects; // Thêm thư viện này để dùng BlurEffect
 
 namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
@@ -13,6 +15,7 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
     {
         // Khởi tạo Service
         private LocationService _locationService = new LocationService();
+        private List<Location> _allLocations;
 
         public QLVTPB()
         {
@@ -25,14 +28,15 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         {
             try
             {
-                var listLocations = _locationService.GetAllLocations();
-                dgLocations.ItemsSource = listLocations;
+                _allLocations = _locationService.GetAllLocations();
+                dgLocations.ItemsSource = _allLocations;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
             }
         }
+
 
         //1. Sự kiện khi bấm nút Sửa
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
@@ -118,6 +122,25 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
                 MessageBox.Show("Thêm mới vị trí thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
+        // 4. Sự kiện khi thay đổi nội dung tìm kiếm
+        private void Search_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_allLocations == null) return;
+
+            string code = txtSearchCode.Text.Trim().ToLowerInvariant();
+            string name = txtSearchName.Text.Trim().ToLowerInvariant();
+
+            var filtered = _allLocations.Where(l =>
+                (string.IsNullOrEmpty(code) ||
+                 l.LocationID.ToString().ToLowerInvariant().Contains(code)) &&
+
+                (string.IsNullOrEmpty(name) ||
+                 l.LocationName.ToLowerInvariant().Contains(name))
+            ).ToList();
+
+            dgLocations.ItemsSource = filtered;
+        }
+
 
         // ==========================================================
         // SỰ KIỆN CHUYỂN TAB TRONG QUẢN LÝ DANH MỤC
