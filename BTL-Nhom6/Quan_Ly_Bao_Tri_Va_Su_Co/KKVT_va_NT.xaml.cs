@@ -55,7 +55,7 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
         // 3. Cập nhật phiếu công việc
         private void Button_CapNhat_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new CapNhatPhieu());
+            NavigationHelper.Navigate(this, new CNPCV());
         }
 
         // 4. Kê khai vật tư (Trang hiện tại)

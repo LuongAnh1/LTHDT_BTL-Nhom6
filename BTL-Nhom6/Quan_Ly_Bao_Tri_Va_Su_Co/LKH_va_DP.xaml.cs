@@ -48,7 +48,7 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 
         private void Button_CapNhat_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new CapNhatPhieu());
+            NavigationHelper.Navigate(this, new CNPCV());
         }
 
         private void Button_NghiemThu_Click(object sender, RoutedEventArgs e)
