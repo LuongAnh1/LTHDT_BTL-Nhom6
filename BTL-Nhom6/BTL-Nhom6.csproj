@@ -157,6 +157,8 @@
     <Compile Include="Models\ProductUnit.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Skill.cs" />
+    <Compile Include="Models\Supplier.cs" />
+    <Compile Include="Models\SupplierQuoteDTO.cs" />
     <Compile Include="Models\TechnicianSkillViewModel.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CNPCV.xaml.cs">
@@ -198,6 +200,9 @@
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\LocationWindow.xaml.cs">
       <DependentUpon>LocationWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\ModelSuppliersWindow.xaml.cs">
+      <DependentUpon>ModelSuppliersWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\NCC_va_BGLK.xaml.cs">
       <DependentUpon>NCC_va_BGLK.xaml</DependentUpon>
     </Compile>
@@ -206,6 +211,9 @@
     </Compile>
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\QLVTPB.xaml.cs">
       <DependentUpon>QLVTPB.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\SupplierWindow.xaml.cs">
+      <DependentUpon>SupplierWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC.xaml.cs">
       <DependentUpon>TDDLC.xaml</DependentUpon>
@@ -262,6 +270,8 @@
     <Compile Include="Services\MaterialService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SkillService.cs" />
+    <Compile Include="Services\SupplierQuoteDTOService.cs" />
+    <Compile Include="Services\SupplierService.cs" />
     <Compile Include="Services\UnitService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Trang_Chu.xaml.cs">
@@ -411,6 +421,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\ModelSuppliersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\NCC_va_BGLK.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -420,6 +434,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\QLVTPB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\SupplierWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
