@@ -82,16 +82,20 @@
     </Window.Resources>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="127*"/>
+            <RowDefinition Height="273*"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="270"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- 1. SIDEBAR (Giả lập màu tối) -->
-        <uc:SidebarMenu Grid.Column="0" CurrentItem="QLBT"/>
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="QLBT" Grid.RowSpan="2"/>
 
         <!-- 2. MAIN CONTENT -->
-        <Grid Grid.Column="1" Background="{StaticResource BgLight}">
+        <Grid Grid.Column="1" Background="{StaticResource BgLight}" Grid.RowSpan="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Top Bar & Header -->

@@ -23,6 +23,12 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
             dgDieuPhoi.ItemsSource = data;
         }
 
+        // ĐÃ THÊM: Sửa lỗi thiếu định nghĩa sự kiện Loaded trong Sidebar
+        private void SidebarMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Có thể để trống nếu không xử lý gì đặc biệt
+        }
+
         private void Button_PhanCong_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Mở cửa sổ chọn nhân viên kỹ thuật để phân công.", "Thông báo");
@@ -30,22 +36,21 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 
         #region CHUYỂN TRANG (NAVIGATION)
 
-        // 1. Quản lý Yêu cầu
         private void Button_QLYCBT_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.Navigate(this, new QLYCBT());
         }
 
-        // 2. Điều phối công việc (Trang hiện tại)
-        private void Button_DieuPhoi_Click(object sender, RoutedEventArgs e) { }
+        private void Button_DieuPhoi_Click(object sender, RoutedEventArgs e)
+        {
+            // Trang hiện tại, không cần làm gì
+        }
 
-        // 3. Cập nhật phiếu công việc
         private void Button_CapNhat_Click(object sender, RoutedEventArgs e)
         {
             // NavigationHelper.Navigate(this, new CapNhatPhieu());
         }
 
-        // 4. Kê khai vật tư & Nghiệm thu
         private void Button_NghiemThu_Click(object sender, RoutedEventArgs e)
         {
             NavigationHelper.Navigate(this, new KKVT_va_NT());
