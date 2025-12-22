@@ -4,7 +4,8 @@ using BTL_Nhom6.Helper;
 using BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc;
 using BTL_Nhom6.Quan_Tri_He_Thong;
 using BTL_Nhom6.Quan_Ly_Kho_Vat_Tu;
-using BTL_Nhom6.Quan_Ly_Thiet_Bi;// Namespace chứa NavigationHelper
+using BTL_Nhom6.Quan_Ly_Thiet_Bi;
+using BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co;// Namespace chứa NavigationHelper
 // using BTL_Nhom6.Views; // Mở comment nếu các Window nằm trong thư mục Views
 
 namespace BTL_Nhom6.UserControls
@@ -61,7 +62,7 @@ namespace BTL_Nhom6.UserControls
                     nextWindow = new HSTB_va_QR();
                     break;
                 case "QLQTBT":
-                    MessageBox.Show("Chức năng Bảo trì đang phát triển");
+                    nextWindow = new QLYCBT();
                     break;
                 case "QLKVT":
                     nextWindow = new DMVT_va_DM();
