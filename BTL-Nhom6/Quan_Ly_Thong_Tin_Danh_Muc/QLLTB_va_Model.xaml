@@ -146,14 +146,17 @@
                         </Grid>
 
                         <!-- DataGrid Categories -->
-                        <DataGrid Grid.Row="1" x:Name="dgCategories"
-                                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
-                                  SelectionMode="Single" HeadersVisibility="Column"
-                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
-          
+                        <DataGrid Grid.Row="1" 
+                                  x:Name="dgCategories"
+                                  AutoGenerateColumns="False" 
+                                  CanUserAddRows="False" 
+                                  IsReadOnly="True"
+                                  SelectionMode="Single" 
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal" 
+                                  HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
                                   ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
                                   CellStyle="{StaticResource DataGridCellStyle}"
-          
                                   RowHeight="45" Background="White" BorderThickness="0,1,0,0"
                                   SelectionChanged="DgCategories_SelectionChanged">
 
