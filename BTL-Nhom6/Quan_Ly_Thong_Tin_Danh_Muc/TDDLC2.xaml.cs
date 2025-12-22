@@ -1,23 +1,161 @@
-﻿using BTL_Nhom6.Helper;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Effects;
+using BTL_Nhom6.Models;
+using BTL_Nhom6.Services;
+using BTL_Nhom6.Helper; // Đảm bảo đúng namespace của NavigationHelper
 
 namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
 {
     public partial class TDDLC2 : Window
     {
+        private readonly UnitService _unitService = new UnitService();
+        private List<ProductUnit> _originalList = new List<ProductUnit>();
+
         public TDDLC2()
         {
             InitializeComponent();
+            Loaded += TDDLC2_Loaded;
+        }
+
+        private void TDDLC2_Loaded(object sender, RoutedEventArgs e)
+        {
             LoadData();
         }
 
         private void LoadData()
         {
-            icDonViTinh.ItemsSource = new List<object> {
-                new { Ma = "CAI", Ten = "Cái", MoTa = "Đơn vị tính đếm được." },
-                new { Ma = "BO", Ten = "Bộ", MoTa = "Tập hợp các vật thể." }
-            };
+            try
+            {
+                _originalList = _unitService.GetAllUnits();
+                dgDonViTinh.ItemsSource = _originalList;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message);
+            }
+        }
+
+        // TÌM KIẾM
+        private void txtSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string ma = txtSearchMa.Text.Trim().ToLower();
+            string ten = txtSearchTen.Text.Trim().ToLower();
+
+            if (_originalList == null) return;
+
+            var filtered = _originalList.Where(x =>
+                (string.IsNullOrEmpty(ma) || x.UnitID.ToString().Contains(ma)) &&
+                (string.IsNullOrEmpty(ten) || x.UnitName.ToLower().Contains(ten))
+            ).ToList();
+
+            dgDonViTinh.ItemsSource = filtered;
+        }
+
+        // THÊM MỚI (Có Blur)
+        private void btnAddNew_Click(object sender, RoutedEventArgs e)
+        {
+            BlurEffect blur = new BlurEffect { Radius = 15 };
+            this.Effect = blur;
+            try
+            {
+                UnitWindow window = new UnitWindow();
+                if (window.ShowDialog() == true)
+                {
+                    _unitService.AddUnit(window.ResultUnit);
+                    LoadData();
+                    MessageBox.Show("Thêm thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                this.Effect = null;
+            }
+        }
+
+        // SỬA (Có Blur)
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn != null && btn.Tag != null)
+            {
+                int id = (int)btn.Tag;
+                var item = _originalList.FirstOrDefault(x => x.UnitID == id);
+                if (item != null)
+                {
+                    BlurEffect blur = new BlurEffect { Radius = 15 };
+                    this.Effect = blur;
+                    try
+                    {
+                        UnitWindow window = new UnitWindow(item);
+                        if (window.ShowDialog() == true)
+                        {
+                            _unitService.UpdateUnit(window.ResultUnit);
+                            LoadData();
+                            MessageBox.Show("Cập nhật thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    finally
+                    {
+                        this.Effect = null;
+                    }
+                }
+            }
+        }
+
+        // XÓA
+        private void btnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            if (btn != null && btn.Tag != null)
+            {
+                int id = (int)btn.Tag;
+
+                // --- 1. KIỂM TRA RÀNG BUỘC DỮ LIỆU ---
+                // Gọi hàm kiểm tra vừa viết bên Service
+                if (_unitService.IsUnitInUse(id))
+                {
+                    MessageBox.Show(
+                        "Không thể xóa đơn vị này!\n\nLý do: Đơn vị tính này đang được sử dụng cho các Vật tư trong kho.\nVui lòng gỡ bỏ hoặc thay đổi đơn vị tính của các vật tư liên quan trước khi xóa.",
+                        "Cảnh báo ràng buộc dữ liệu",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return; // Dừng lại, không thực hiện xóa
+                }
+
+                // --- 2. XÁC NHẬN XÓA ---
+                if (MessageBox.Show($"Bạn có chắc chắn muốn xóa Đơn vị tính có ID: {id} không?",
+                                    "Xác nhận xóa",
+                                    MessageBoxButton.YesNo,
+                                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        // --- 3. THỰC HIỆN XÓA ---
+                        _unitService.DeleteUnit(id);
+
+                        // Load lại bảng
+                        LoadData();
+                        MessageBox.Show("Xóa thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Phòng trường hợp lỗi khác (mất kết nối mạng, DB lỗi...)
+                        MessageBox.Show("Đã xảy ra lỗi khi xóa: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
         }
 
         #region Chuyển đổi Danh mục lớn
