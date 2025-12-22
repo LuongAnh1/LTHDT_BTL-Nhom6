@@ -111,7 +111,12 @@
                 </Grid>
 
                 <!-- BẢNG DỮ LIỆU -->
-                <Border Grid.Row="1" Background="White" CornerRadius="8" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True">
+                <Border Grid.Row="1" 
+                        Background="White" 
+                        CornerRadius="8" 
+                        BorderBrush="{StaticResource BorderLightBrush}" 
+                        BorderThickness="1" 
+                        ClipToBounds="True">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <!-- Header Bảng -->
@@ -126,7 +131,7 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="MÃ NCC" Foreground="White" FontWeight="SemiBold"/>
                                     <TextBlock Grid.Column="1" Text="TÊN NHÀ CUNG CẤP" Foreground="White" FontWeight="SemiBold"/>
-                                    <TextBlock Grid.Column="2" Text="SỐ ĐIỆY THOẠI" Foreground="White" FontWeight="SemiBold"/>
+                                    <TextBlock Grid.Column="2" Text="SỐ ĐIỆN THOẠI" Foreground="White" FontWeight="SemiBold"/>
                                     <TextBlock Grid.Column="3" Text="ĐỊA CHỈ" Foreground="White" FontWeight="SemiBold"/>
                                     <TextBlock Grid.Column="4" Text="HÀNH ĐỘNG" Foreground="White" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 </Grid>

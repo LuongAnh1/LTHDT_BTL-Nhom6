@@ -148,9 +148,13 @@
     <Compile Include="Helper\NavigationHelper.cs" />
     <Compile Include="Helper\UserSession.cs.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\CommonError.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\DeviceModel.cs" />
+    <Compile Include="Models\DeviceStatus.cs" />
     <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\Material.cs" />
+    <Compile Include="Models\ProductUnit.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="Models\TechnicianSkillViewModel.cs" />
@@ -182,8 +186,14 @@
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\CategoryWindow.xaml.cs">
       <DependentUpon>CategoryWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\CommonErrorWindow.xaml.cs">
+      <DependentUpon>CommonErrorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\DeviceModelWindow.xaml.cs">
       <DependentUpon>DeviceModelWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\DeviceStatusWindow.xaml.cs">
+      <DependentUpon>DeviceStatusWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\LocationWindow.xaml.cs">
       <DependentUpon>LocationWindow.xaml</DependentUpon>
@@ -205,6 +215,9 @@
     </Compile>
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC3.xaml.cs">
       <DependentUpon>TDDLC3.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\UnitWindow.xaml.cs">
+      <DependentUpon>UnitWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Lý_Thiet_Bi\DC_va_BG.xaml.cs">
       <DependentUpon>DC_va_BG.xaml</DependentUpon>
@@ -240,12 +253,16 @@
       <DependentUpon>Quen_Mat_Khau.xaml</DependentUpon>
     </Compile>
     <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\CommonErrorService.cs" />
     <Compile Include="Services\DeviceModelService.cs" />
     <Compile Include="Services\DeviceService.cs" />
+    <Compile Include="Services\DeviceStatusService.cs" />
     <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\LoggerService.cs" />
+    <Compile Include="Services\MaterialService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SkillService.cs" />
+    <Compile Include="Services\UnitService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Trang_Chu.xaml.cs">
       <DependentUpon>Trang_Chu.xaml</DependentUpon>
@@ -378,7 +395,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\CommonErrorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\DeviceModelWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\DeviceStatusWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -407,6 +432,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\TDDLC3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Thong_Tin_Danh_Muc\UnitWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
