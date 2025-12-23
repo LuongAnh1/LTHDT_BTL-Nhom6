@@ -1,11 +1,12 @@
-﻿using System;
+﻿using BTL_Nhom6.Helper;
+using LiveCharts;
+using LiveCharts.Wpf;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media;
-using LiveCharts;
-using LiveCharts.Wpf;
 
 namespace BTL_Nhom6.Bao_Cao_Thong_Ke
 {
@@ -84,13 +85,41 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
             // Thực hiện logic filter ở đây
         }
 
-        // Navigation
-        private void Button_ChiPhiVatTu_Click(object sender, RoutedEventArgs e) { var w = new BCCPVT(); w.Show(); this.Close(); }
-        private void Button_HieuSuatBaoTri_Click(object sender, RoutedEventArgs e) { var w = new BCHSBT(); w.Show(); this.Close(); }
-        private void Button_NangSuatKTV_Click(object sender, RoutedEventArgs e) { var w = new BCNSKTV(); w.Show(); this.Close(); }
-        private void Button_BaoHanhNCC_Click(object sender, RoutedEventArgs e) { var w = new BCTDBH_va_NCC(); w.Show(); this.Close(); }
-        private void Button_TinhTrangThietBi_Click(object sender, RoutedEventArgs e) { /* Trang hiện tại */ }
-        private void Button_ThongKeLoi_Click(object sender, RoutedEventArgs e) { var w = new TKTSL_va_SC(); w.Show(); this.Close(); }
+        // --- NAVIGATION BUTTONS ---
+        private void Button_ChiPhiVatTu_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.Navigate(this, new BCCPVT());
+        }
+
+        // 2. Hiệu suất bảo trì (Trang hiện tại - Không làm gì)
+        private void Button_HieuSuatBaoTri_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.Navigate(this, new BCHSBT());
+        }
+
+        // 3. Năng suất KTV
+        private void Button_NangSuatKTV_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.Navigate(this, new BCNSKTV());
+        }
+
+        // 4. Bảo hành & NCC
+        private void Button_BaoHanhNCC_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.Navigate(this, new BCTDBH_va_NCC());
+        }
+
+        // 5. Tình trạng thiết bị
+        private void Button_TinhTrangThietBi_Click(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        // 6. Thống kê Lỗi
+        private void Button_ThongKeLoi_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationHelper.Navigate(this, new TKTSL_va_SC());
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
