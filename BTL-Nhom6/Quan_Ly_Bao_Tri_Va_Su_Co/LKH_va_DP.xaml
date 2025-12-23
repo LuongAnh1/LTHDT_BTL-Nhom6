@@ -45,16 +45,21 @@
     </Window.Resources>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0*"/>
+            <RowDefinition Height="0*"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="270"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- 1. SIDEBAR -->
-        <uc:SidebarMenu Grid.Column="0" CurrentItem="QLQTBT"/>
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="QLQTBT" Loaded="SidebarMenu_Loaded" Grid.RowSpan="3"/>
 
         <!-- 2. MAIN CONTENT -->
-        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
+        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}" Grid.RowSpan="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <!-- Header -->
@@ -112,30 +117,47 @@
                 <Grid Grid.Row="0" Margin="0,0,0,16">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <!-- Search -->
+                        <!-- Search Mã -->
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Search Tên -->
                         <ColumnDefinition Width="*"/>
                         <!-- Spacer -->
                         <ColumnDefinition Width="Auto"/>
                         <!-- Add Button -->
                     </Grid.ColumnDefinitions>
 
-                    <!-- Search Box -->
-                    <Border Grid.Column="0" Background="White" CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Width="350" Height="40">
+                    <!-- 1. Search Mã Thiết Bị -->
+                    <Border Grid.Column="0" Background="White" CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Width="180" Height="40" Margin="0,0,12,0">
                         <Grid>
-                            <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="12,0,0,0" Width="20" Height="20"/>
-                            <TextBox x:Name="txtSearch" 
+                            <materialDesign:PackIcon Kind="Barcode" Foreground="Gray" VerticalAlignment="Center" Margin="12,0,0,0" Width="20" Height="20"/>
+                            <TextBox x:Name="txtSearchMa" 
                                      BorderThickness="0" 
                                      Padding="40,0,10,0" 
                                      VerticalAlignment="Center" 
                                      VerticalContentAlignment="Center"
-                                     materialDesign:HintAssist.Hint="Tìm kiếm công việc..."
+                                     materialDesign:HintAssist.Hint="Mã thiết bị"
                                      materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
                                      FontSize="14"/>
                         </Grid>
                     </Border>
 
-                    <!-- Add Button -->
-                    <Button Grid.Column="2" 
+                    <!-- 2. Search Tên Thiết Bị -->
+                    <Border Grid.Column="1" Background="White" CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Width="250" Height="40">
+                        <Grid>
+                            <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="12,0,0,0" Width="20" Height="20"/>
+                            <TextBox x:Name="txtSearchTen" 
+                                     BorderThickness="0" 
+                                     Padding="40,0,10,0" 
+                                     VerticalAlignment="Center" 
+                                     VerticalContentAlignment="Center"
+                                     materialDesign:HintAssist.Hint="Tên thiết bị"
+                                     materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                     FontSize="14"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- 3. Add Button -->
+                    <Button Grid.Column="3" 
                             Background="{StaticResource PrimaryBlueBrush}" 
                             BorderThickness="0" 
                             Height="40" 
