@@ -156,6 +156,7 @@
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CommonError.cs" />
     <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\DeviceAssignment.cs" />
     <Compile Include="Models\DeviceModel.cs" />
     <Compile Include="Models\DeviceStatus.cs" />
     <Compile Include="Models\Location.cs" />
@@ -274,6 +275,7 @@
     </Compile>
     <Compile Include="Services\CategoryService.cs" />
     <Compile Include="Services\CommonErrorService.cs" />
+    <Compile Include="Services\DeviceAssignmentService.cs" />
     <Compile Include="Services\DeviceModelService.cs" />
     <Compile Include="Services\DeviceService.cs" />
     <Compile Include="Services\DeviceStatusService.cs" />
