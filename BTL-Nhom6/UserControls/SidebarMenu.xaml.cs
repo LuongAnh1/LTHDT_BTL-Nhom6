@@ -6,6 +6,8 @@ using BTL_Nhom6.Quan_Tri_He_Thong;
 using BTL_Nhom6.Quan_Ly_Kho_Vat_Tu;
 using BTL_Nhom6.Quan_Ly_Thiet_Bi;
 using BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co;// Namespace chứa NavigationHelper
+using BTL_Nhom6.Bao_Cao_Thong_Ke;// Namespace chứa NavigationHelper
+
 // using BTL_Nhom6.Views; // Mở comment nếu các Window nằm trong thư mục Views
 
 namespace BTL_Nhom6.UserControls
@@ -68,7 +70,7 @@ namespace BTL_Nhom6.UserControls
                     nextWindow = new DMVT_va_DM();
                     break;
                 case "BCTK":
-                    MessageBox.Show("Chức năng Báo cáo thống kê đang phát triển");
+                    nextWindow = new BCCPVT();
                     break;
                 default:
                     break;
