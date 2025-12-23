@@ -1,11 +1,13 @@
-﻿using System;
+﻿using BTL_Nhom6.Helper;
+using BTL_Nhom6.Quan_Ly_Kho_Vat_Tu;
+using LiveCharts;
+using LiveCharts.Wpf; // Thư viện LiveCharts
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Media; // Cần thiết để dùng Color, Brush
-using LiveCharts;
-using LiveCharts.Wpf; // Thư viện LiveCharts
 
 namespace BTL_Nhom6.Bao_Cao_Thong_Ke
 {
@@ -190,48 +192,37 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
         // 1. Chi phí & Vật tư
         private void Button_ChiPhiVatTu_Click(object sender, RoutedEventArgs e)
         {
-            var window = new BCCPVT();
-            window.Show();
-            this.Close();
+            NavigationHelper.Navigate(this, new BCCPVT());
         }
 
         // 2. Hiệu suất bảo trì (Trang hiện tại - Không làm gì)
         private void Button_HieuSuatBaoTri_Click(object sender, RoutedEventArgs e)
         {
-            // Có thể reload lại dữ liệu nếu muốn
-            LoadSampleData();
+            
         }
 
         // 3. Năng suất KTV
         private void Button_NangSuatKTV_Click(object sender, RoutedEventArgs e)
         {
-            var window = new BCNSKTV();
-            window.Show();
-            this.Close();
+            NavigationHelper.Navigate(this, new BCNSKTV());
         }
 
         // 4. Bảo hành & NCC
         private void Button_BaoHanhNCC_Click(object sender, RoutedEventArgs e)
         {
-            var window = new BCTDBH_va_NCC();
-            window.Show();
-            this.Close();
+            NavigationHelper.Navigate(this, new BCTDBH_va_NCC());
         }
 
         // 5. Tình trạng thiết bị
         private void Button_TinhTrangThietBi_Click(object sender, RoutedEventArgs e)
         {
-            var window = new BCTTTB();
-            window.Show();
-            this.Close();
+            NavigationHelper.Navigate(this, new BCTTTB());
         }
 
         // 6. Thống kê Lỗi
         private void Button_ThongKeLoi_Click(object sender, RoutedEventArgs e)
         {
-            var window = new TKTSL_va_SC();
-            window.Show();
-            this.Close();
+            NavigationHelper.Navigate(this, new TKTSL_va_SC());
         }
 
         // =============================================================
@@ -242,6 +233,33 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        // Thêm hàm này vào trong class BCHSBT (trước dấu đóng ngoặc } cuối cùng)
+
+        private void BtnLocDuLieu_Click(object sender, RoutedEventArgs e)
+        {
+            // Mô phỏng việc load lại dữ liệu khi bấm nút "Áp dụng"
+            // Bạn có thể viết logic random dữ liệu hoặc gọi API ở đây
+
+            // Ví dụ: Random lại số liệu thống kê
+            Random r = new Random();
+
+            // Cập nhật số liệu (Giả sử bạn đang dùng các biến này cho BCHSBT)
+            SoPhieuDungHan = r.Next(50, 200);
+            SoPhieuTreHan = r.Next(5, 50);
+            int tong = SoPhieuDungHan + SoPhieuTreHan;
+            TyLeHoanThanh = tong > 0 ? (int)((double)SoPhieuDungHan / tong * 100) : 0;
+
+            // Cập nhật biểu đồ (nếu có)
+            // Ví dụ cập nhật Donut Chart nếu bạn đang dùng nó
+            if (DonutChartData != null && DonutChartData.Count >= 2)
+            {
+                DonutChartData[0].Values[0] = (double)SoPhieuDungHan;
+                DonutChartData[1].Values[0] = (double)SoPhieuTreHan;
+            }
+
+            MessageBox.Show("Đã cập nhật dữ liệu báo cáo!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
