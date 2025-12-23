@@ -17,9 +17,9 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
     /// <summary>
     /// Interaction logic for BCTDBH_VA_NCC.xaml
     /// </summary>
-    public partial class BCTDBH_VA_NCC : Window
+    public partial class BCTDBH_va_NCC : Window
     {
-        public BCTDBH_VA_NCC()
+        public BCTDBH_va_NCC()
         {
             InitializeComponent();
         }
