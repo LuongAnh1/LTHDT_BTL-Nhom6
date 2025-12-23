@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Windows;
 using BTL_Nhom6.Helper; // Đảm bảo namespace này đúng với file NavigationHelper của bạn
+using System.Collections.Generic;
+using System.Windows.Controls;
+using BTL_Nhom6.Models;
+using BTL_Nhom6.Services;
+using MySql.Data.MySqlClient;
 
 namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
 {
@@ -9,9 +14,124 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
     /// </summary>
     public partial class TCTS : Window
     {
+        private readonly DeviceService _deviceService;
+
         public TCTS()
         {
             InitializeComponent();
+            _deviceService = new DeviceService();
+        }
+
+        // Sự kiện khi Window load xong
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                LoadComboBoxData(); // Load danh sách phòng ban, trạng thái
+                LoadData();         // Load danh sách thiết bị ban đầu (Toàn bộ)
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        // Hàm load dữ liệu vào ComboBox (Dùng SQL trực tiếp cho nhanh, hoặc tạo Service riêng)
+        private void LoadComboBoxData()
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // 1. Load Locations
+                string sqlLoc = "SELECT LocationID, LocationName FROM Locations";
+                MySqlCommand cmdLoc = new MySqlCommand(sqlLoc, conn);
+                List<Location> locations = new List<Location> { new Location { LocationID = -1, LocationName = "Tất cả phòng ban" } };
+
+                using (var reader = cmdLoc.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        locations.Add(new Location
+                        {
+                            LocationID = Convert.ToInt32(reader["LocationID"]),
+                            LocationName = reader["LocationName"].ToString()
+                        });
+                    }
+                }
+                cbLocation.ItemsSource = locations;
+                cbLocation.SelectedIndex = 0; // Chọn mặc định "Tất cả"
+
+                // 2. Load Statuses
+                string sqlStat = "SELECT StatusID, StatusName FROM DeviceStatus";
+                MySqlCommand cmdStat = new MySqlCommand(sqlStat, conn);
+                List<DeviceStatus> statuses = new List<DeviceStatus> { new DeviceStatus { StatusID = -1, StatusName = "Tất cả trạng thái" } };
+
+                using (var reader = cmdStat.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        statuses.Add(new DeviceStatus
+                        {
+                            StatusID = Convert.ToInt32(reader["StatusID"]),
+                            StatusName = reader["StatusName"].ToString()
+                        });
+                    }
+                }
+                cbStatus.ItemsSource = statuses;
+                cbStatus.SelectedIndex = 0;
+            }
+        }
+
+        // Hàm tìm kiếm và hiển thị lên DataGrid
+        private void LoadData()
+        {
+            // Lấy giá trị từ giao diện
+            string keyword = txtKeyword.Text.Trim();
+            string userKw = txtUser.Text.Trim();
+
+            int? locId = null;
+            if (cbLocation.SelectedValue != null && (int)cbLocation.SelectedValue > 0)
+            {
+                locId = (int)cbLocation.SelectedValue;
+            }
+
+            int? statId = null;
+            if (cbStatus.SelectedValue != null && (int)cbStatus.SelectedValue > 0)
+            {
+                statId = (int)cbStatus.SelectedValue;
+            }
+
+            // Gọi Service tìm kiếm
+            List<Device> devices = _deviceService.FindDevices(keyword, locId, statId, userKw);
+
+            // Gán vào DataGrid
+            dgDevices.ItemsSource = devices;
+        }
+
+        // Sự kiện click nút Tìm kiếm
+        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                LoadData();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi tìm kiếm: " + ex.Message);
+            }
+        }
+
+        // Sự kiện nút Xem chi tiết trong bảng
+        private void btnViewDetail_Click(object sender, RoutedEventArgs e)
+        {
+            // Lấy dòng hiện tại
+            Device selectedDevice = ((FrameworkElement)sender).DataContext as Device;
+            if (selectedDevice != null)
+            {
+                MessageBox.Show($"Xem chi tiết thiết bị: {selectedDevice.DeviceName} đang giữ bởi {selectedDevice.CurrentUserFullName}");
+                // Sau này bạn có thể mở Form Chi Tiết tại đây
+            }
         }
 
         #region ĐIỀU HƯỚNG TABS (THANH BAR NGANG)
