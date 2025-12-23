@@ -158,6 +158,7 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Button Content="Cập nhật" 
+                                                Foreground="White"
                                                 Style="{StaticResource MaterialDesignRaisedButton}" 
                                                 Background="{StaticResource PrimaryBlueBrush}"
                                                 BorderThickness="0"

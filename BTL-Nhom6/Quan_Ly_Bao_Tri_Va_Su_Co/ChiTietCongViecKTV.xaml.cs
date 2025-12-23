@@ -13,12 +13,15 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
         {
             InitializeComponent();
 
-            // Hiển thị thông tin KTV lên header
-            txtTenKTV.Text = ktv.TenKTV;
-            txtMaNV.Text = "Mã NV: " + ktv.MaNV;
-            txtChuyenMon.Text = "Chuyên môn: " + ktv.ChuyenMon;
-            txtInitials.Text = ktv.Initials;
-            txtTrangThai.Text = ktv.TrangThai;
+            if (ktv != null)
+            {
+                // Hiển thị thông tin KTV lên header
+                txtTenKTV.Text = ktv.TenKTV;
+                txtMaNV.Text = "Mã NV: " + ktv.MaNV;
+                txtChuyenMon.Text = "Chuyên môn: " + ktv.ChuyenMon;
+                txtInitials.Text = ktv.Initials;
+                txtTrangThai.Text = ktv.TrangThai;
+            }
 
             LoadCongViecSample();
             this.DataContext = this;
@@ -26,26 +29,27 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 
         private void LoadCongViecSample()
         {
+            var converter = new HeaderJobConverter();
             DanhSachPhieu = new ObservableCollection<PhieuCongViecModel>
             {
                 new PhieuCongViecModel {
                     MaPhieu = "PCV001", TenThietBi = "Máy tính Dell OptiPlex",
                     MoTaLoi = "Thay RAM và nâng cấp SSD", MucUuTien = "Cao",
-                    PriorityBg = (SolidColorBrush)new HeaderJobConverter().Convert("#FEE2E2"), // Red-100
+                    PriorityBg = (SolidColorBrush)converter.Convert("#FEE2E2"),
                     PriorityFg = Brushes.Red,
                     TrangThai = "Đang thực hiện", StatusColor = Brushes.Blue, StatusIcon = "ProgressWrench"
                 },
                 new PhieuCongViecModel {
                     MaPhieu = "PCV042", TenThietBi = "Máy in HP LaserJet",
                     MoTaLoi = "Kẹt giấy liên tục và mờ chữ", MucUuTien = "Trung bình",
-                    PriorityBg = (SolidColorBrush)new HeaderJobConverter().Convert("#FEF3C7"), // Yellow-100
+                    PriorityBg = (SolidColorBrush)converter.Convert("#FEF3C7"),
                     PriorityFg = Brushes.DarkOrange,
                     TrangThai = "Chờ linh kiện", StatusColor = Brushes.Orange, StatusIcon = "ClockOutline"
                 },
                 new PhieuCongViecModel {
                     MaPhieu = "PCV089", TenThietBi = "Điều hòa Daikin 12000BTU",
                     MoTaLoi = "Vệ sinh định kỳ và nạp gas", MucUuTien = "Thấp",
-                    PriorityBg = (SolidColorBrush)new HeaderJobConverter().Convert("#DCFCE7"), // Green-100
+                    PriorityBg = (SolidColorBrush)converter.Convert("#DCFCE7"),
                     PriorityFg = Brushes.Green,
                     TrangThai = "Hoàn thành", StatusColor = Brushes.Green, StatusIcon = "CheckCircleOutline"
                 }
@@ -53,9 +57,14 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
             dgCongViec.ItemsSource = DanhSachPhieu;
         }
 
+        // PHẢI CÓ HÀM NÀY ĐỂ XAML KHÔNG LỖI
+        private void SidebarMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+        }
+
         private void Button_Back_Click(object sender, RoutedEventArgs e)
         {
-            this.Close(); // Quay lại màn hình chọn KTV
+            this.Close();
         }
 
         private void Button_CapNhatTienDo_Click(object sender, RoutedEventArgs e)
@@ -77,7 +86,6 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
         public string StatusIcon { get; set; }
     }
 
-    // Class phụ trợ để convert mã màu string sang Brush nhanh
     public class HeaderJobConverter
     {
         public object Convert(string hex) => (SolidColorBrush)new BrushConverter().ConvertFrom(hex);
