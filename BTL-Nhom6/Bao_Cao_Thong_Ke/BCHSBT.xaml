@@ -3,10 +3,279 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BTL_Nhom6.Bao_Cao_Thong_Ke"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+        xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
         mc:Ignorable="d"
-        Title="BCHSBT" Height="450" Width="800">
+        Title="Báo cáo Hiệu suất bảo trì" 
+        Height="800" Width="1440"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{StaticResource TextPrimaryBrush}"
+        TextElement.FontSize="14"
+        Background="{StaticResource AppBackgroundBrush}">
+
+    <Window.Resources>
+        <!-- INPUT STYLE -->
+        <Style x:Key="FilterInputStyle" TargetType="Control" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
+            <Setter Property="Background" Value="{StaticResource ContentBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLightBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 1. SIDEBAR -->
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="BCTK"/>
+
+        <!-- 2. MAIN CONTENT -->
+        <Grid Grid.Column="1" Background="{StaticResource AppBackgroundBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- WINDOW HEADER -->
+            <Grid Grid.Row="0">
+                <uc:WindowControlBar />
+            </Grid>
+
+            <!-- HEADER -->
+            <Grid Grid.Row="0">
+                <TextBlock Text="Báo cáo thống kê" 
+                   FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
+                   Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <uc:WindowControlBar />
+            </Grid>
+
+            <!-- TABS -->
+            <Border Grid.Row="2" Margin="32,0,32,16" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Chi phí vật tư" Style="{StaticResource TabButtonStyle}" Click="Button_ChiPhiVatTu_Click"/>
+                        <Button Content="Hiệu suất bảo trì" Style="{StaticResource ActiveTabButtonStyle}" Click="Button_HieuSuatBaoTri_Click"/>
+                        <Button Content="Năng suất KTV" Style="{StaticResource TabButtonStyle}" Click="Button_NangSuatKTV_Click"/>
+                        <Button Content="Theo dõi bảo hành &amp; NCC" Style="{StaticResource TabButtonStyle}" Click="Button_BaoHanhNCC_Click"/>
+                        <Button Content="Tình trạng thiết bị" Style="{StaticResource TabButtonStyle}" Click="Button_TinhTrangThietBi_Click"/>
+                        <Button Content="Thống kê lỗi &amp; Sự cố" Style="{StaticResource TabButtonStyle}" Click="Button_ThongKeLoi_Click"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- SCROLLABLE CONTENT -->
+            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Padding="32,0,32,40">
+                <StackPanel>
+
+                    <!-- SECTION 1: BỘ LỌC (FILTER) -->
+                    <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="20" Margin="0,0,0,24">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Filter Header -->
+                            <Grid Grid.Row="0" Margin="0,0,0,16">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FilterVariant" Width="20" Height="20" Foreground="{StaticResource PrimaryBlueBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Bộ lọc dữ liệu" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <!-- Nút Xuất báo cáo -->
+                                <Button HorizontalAlignment="Right"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"
+                                        Height="32" Padding="12,0" FontSize="13" FontWeight="Bold"
+                                        materialDesign:ButtonAssist.CornerRadius="4">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="Download" Margin="0,0,8,0" Width="16" Height="16"/>
+                                        <TextBlock Text="Xuất báo cáo"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+
+                            <!-- Filter Inputs -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Date Range -->
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Phạm vi ngày" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <DatePicker materialDesign:HintAssist.Hint="Chọn ngày" 
+                                                Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                                BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                </StackPanel>
+
+                                <!-- Equipment Type (CÓ BINDING) -->
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox ItemsSource="{Binding DanhSachThietBi}" 
+                                              SelectedIndex="0"
+                                              materialDesign:HintAssist.Hint="Tất cả" 
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                              BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                </StackPanel>
+
+                                <!-- Technician (CÓ BINDING) -->
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Kỹ thuật viên" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox ItemsSource="{Binding DanhSachKyThuatVien}"
+                                              SelectedIndex="0"
+                                              materialDesign:HintAssist.Hint="Tất cả" 
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                              BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                </StackPanel>
+
+                                <!-- Apply Button -->
+                                <Button Grid.Column="6" VerticalAlignment="Bottom" 
+                                        Content="Áp dụng"
+                                        Background="White" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}"
+                                        Foreground="{StaticResource TextPrimaryBrush}" FontWeight="SemiBold"
+                                        Height="42" materialDesign:ButtonAssist.CornerRadius="4"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!-- SECTION 2: CHARTS DASHBOARD -->
+                    <Grid Height="400">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="24"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- CHART 1: MTTR (Line Chart - ĐÃ NÂNG CẤP LÊN LIVECHARTS) -->
+                        <Border Grid.Column="0" Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="24">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Title -->
+                                <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                                    <TextBlock Text="Thời gian xử lý trung bình (MTTR)" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Đơn vị: giờ" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,4,0,0"/>
+                                </StackPanel>
+
+                                <!-- Chart Area (LiveCharts) -->
+                                <Grid Grid.Row="1">
+                                    <lvc:CartesianChart Series="{Binding MttrChartSeries}" 
+                                LegendLocation="None"
+                                Margin="0,0,0,10">
+
+                                        <!-- 1. Trục Hoành (X-Axis): Hiển thị Tháng -->
+                                        <lvc:CartesianChart.AxisX>
+                                            <lvc:Axis Labels="{Binding MttrLabels}" 
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              FontSize="12">
+                                                <!-- Đường kẻ dọc mờ (ẩn đi cho giống mẫu) -->
+                                                <lvc:Axis.Separator>
+                                                    <lvc:Separator Step="1" StrokeThickness="0"/>
+                                                </lvc:Axis.Separator>
+                                            </lvc:Axis>
+                                        </lvc:CartesianChart.AxisX>
+
+                                        <!-- 2. Trục Tung (Y-Axis): Hiển thị Giờ -->
+                                        <lvc:CartesianChart.AxisY>
+                                            <lvc:Axis MinValue="0" MaxValue="8" 
+                              Foreground="{StaticResource TextSecondaryBrush}"
+                              FontSize="12">
+                                                <!-- Đường kẻ ngang (Grid lines) -->
+                                                <lvc:Axis.Separator>
+                                                    <!-- Step=2: Nhảy số 0, 2, 4, 6, 8 -->
+                                                    <lvc:Separator Step="2" 
+                                           Stroke="{StaticResource BorderLightBrush}" 
+                                           StrokeThickness="1"
+                                           StrokeDashArray="4"/>
+                                                    <!-- Nét đứt mờ -->
+                                                </lvc:Axis.Separator>
+                                            </lvc:Axis>
+                                        </lvc:CartesianChart.AxisY>
+
+                                        <!-- Tooltip khi rê chuột vào -->
+                                        <lvc:CartesianChart.DataTooltip>
+                                            <lvc:DefaultTooltip SelectionMode="SharedYValues" Background="White" Foreground="#1E40AF" BorderThickness="1" BorderBrush="#1E40AF"/>
+                                        </lvc:CartesianChart.DataTooltip>
+
+                                    </lvc:CartesianChart>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- CHART 2: PIE/DONUT (CÓ BINDING DỮ LIỆU ĐỘNG) -->
+                        <Border Grid.Column="2" Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="24">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="Tỷ lệ phiếu bảo trì" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+
+                                <!-- Biểu đồ động -->
+                                <Grid Grid.Row="1" Width="180" Height="180">
+                                    <lvc:PieChart InnerRadius="82" 
+                                                  Series="{Binding DonutChartData}" 
+                                                  LegendLocation="None" 
+                                                  Hoverable="False"
+                                                  DataTooltip="{x:Null}">
+                                    </lvc:PieChart>
+
+                                    <!-- Text ở giữa binding số liệu -->
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                        <TextBlock Text="{Binding TyLeHoanThanh, StringFormat={}{0}%}" 
+                                                   FontSize="32" FontWeight="Bold" 
+                                                   Foreground="{StaticResource TextPrimaryBrush}" 
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="Đúng hạn" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Chú thích binding số liệu -->
+                                <StackPanel Grid.Row="2" Margin="0,20,0,0">
+                                    <Grid Margin="0,0,0,12">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Width="12" Height="12" CornerRadius="6" Background="{StaticResource PrimaryBlueBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Đúng hạn" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding SoPhieuDungHan, StringFormat={}{0} phiếu}" FontWeight="SemiBold" HorizontalAlignment="Right" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    </Grid>
+
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Border Width="12" Height="12" CornerRadius="6" Background="#EFF6FF" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Trễ hạn" VerticalAlignment="Center" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding SoPhieuTreHan, StringFormat={}{0} phiếu}" FontWeight="SemiBold" HorizontalAlignment="Right" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>
