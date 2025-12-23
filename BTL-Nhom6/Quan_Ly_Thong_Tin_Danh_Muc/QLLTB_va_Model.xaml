@@ -161,8 +161,8 @@
                                   SelectionChanged="DgCategories_SelectionChanged">
 
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Mã Loại" Binding="{Binding CategoryID}" Width="80"/>
-                                <DataGridTextColumn Header="Tên Loại thiết bị" Binding="{Binding CategoryName}" Width="*" FontWeight="SemiBold"/>
+                                <DataGridTextColumn Header="Mã loại" Binding="{Binding CategoryID}" Width="80"/>
+                                <DataGridTextColumn Header="Tên loại thiết bị" Binding="{Binding CategoryName}" Width="*" FontWeight="SemiBold"/>
                                 <DataGridTextColumn Header="Mô tả" Binding="{Binding Description}" Width="2*"/>
 
                                 <DataGridTemplateColumn Header="Hành động" Width="100">
@@ -234,9 +234,9 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Mã Model" Binding="{Binding ModelID}" Width="90"/>
                                 <DataGridTextColumn Header="Tên Model" Binding="{Binding ModelName}" Width="1.5*" FontWeight="SemiBold"/>
-                                <DataGridTextColumn Header="Hãng SX" Binding="{Binding Manufacturer}" Width="*"/>
+                                <DataGridTextColumn Header="Hãng sản xuất" Binding="{Binding Manufacturer}" Width="*"/>
 
-                                <DataGridTemplateColumn Header="Loại TB" Width="*">
+                                <DataGridTemplateColumn Header="Loại thiết bị" Width="*">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <Border Background="#F5F5F5" CornerRadius="4" Padding="8,2" HorizontalAlignment="Left">

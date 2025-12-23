@@ -1,0 +1,176 @@
+﻿<Window x:Class="BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co.ChiTietCongViecKTV"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
+        mc:Ignorable="d"
+        Title="Chi tiết công việc kỹ thuật viên" 
+        Height="768" Width="1366"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        Background="{StaticResource AppBackgroundBrush}">
+
+    <Window.Resources>
+        <!-- Style cho Header DataGrid -->
+        <Style x:Key="CustomDataGridColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+            <Setter Property="Background" Value="#232E3E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Padding" Value="16,0"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <!-- Cột chứa Sidebar -->
+            <ColumnDefinition Width="*"/>
+            <!-- Cột chứa Nội dung chính -->
+        </Grid.ColumnDefinitions>
+
+        <!-- 1. SIDEBAR MENU -->
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="QLQTBT" Loaded="SidebarMenu_Loaded"/>
+
+        <!-- 2. MAIN CONTENT AREA -->
+        <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header & Control Bar -->
+                <RowDefinition Height="Auto"/>
+                <!-- Thông tin KTV -->
+                <RowDefinition Height="*"/>
+                <!-- Bảng công việc -->
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <Grid Grid.Row="0" Background="Transparent">
+                <StackPanel Orientation="Horizontal" Margin="32,24,0,10">
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" 
+                            Padding="0" Width="40" Height="40" Click="Button_Back_Click" ToolTip="Quay lại">
+                        <materialDesign:PackIcon Kind="ArrowLeft" Width="28" Height="28" Foreground="{StaticResource PrimaryBlueBrush}"/>
+                    </Button>
+                    <TextBlock Text="Chi tiết danh sách công việc" 
+                               FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
+                               VerticalAlignment="Center" Margin="12,0,0,0"/>
+                </StackPanel>
+                <uc:WindowControlBar />
+            </Grid>
+
+            <!-- THÔNG TIN KỸ THUẬT VIÊN (CARD) -->
+            <Border Grid.Row="1" Background="White" Margin="32,10,32,0" CornerRadius="8" 
+                    BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Avatar đại diện -->
+                    <Border Width="60" Height="60" CornerRadius="30" Background="#E3F2FD">
+                        <TextBlock x:Name="txtInitials" Text="NA" FontWeight="Bold" FontSize="20" 
+                                   Foreground="#1976D2" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <!-- Text thông tin -->
+                    <StackPanel Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="txtTenKTV" Text="Nguyễn Văn A" FontSize="20" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <TextBlock x:Name="txtMaNV" Text="Mã NV: KT01" Foreground="Gray" Margin="0,0,24,0"/>
+                            <TextBlock x:Name="txtChuyenMon" Text="Chuyên môn: Điện - Điện lạnh" Foreground="Gray"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Badge Trạng thái -->
+                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                        <Border Background="#DCFCE7" CornerRadius="15" Padding="16,6">
+                            <TextBlock x:Name="txtTrangThai" Text="Đang hoạt động" Foreground="#166534" FontWeight="Bold" FontSize="13"/>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- BẢNG DANH SÁCH PHIẾU CÔNG VIỆC -->
+            <Grid Grid.Row="2" Margin="32,24,32,32">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Toolbar bên trong trang chi tiết -->
+                <Grid Grid.Row="0" Margin="0,0,0,16">
+                    <Border Background="White" HorizontalAlignment="Left" CornerRadius="4" BorderThickness="1" BorderBrush="{StaticResource BorderLightBrush}" Width="400" Height="40">
+                        <Grid>
+                            <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="12,0,0,0" Width="20" Height="20"/>
+                            <TextBox x:Name="txtSearchTask" BorderThickness="0" Padding="40,0,10,0" VerticalContentAlignment="Center"
+                                     materialDesign:HintAssist.Hint="Tìm kiếm mã phiếu hoặc thiết bị..." 
+                                     materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- DataGrid -->
+                <Border Grid.Row="1" Background="White" CornerRadius="8" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True">
+                    <DataGrid x:Name="dgCongViec" 
+                              AutoGenerateColumns="False" 
+                              CanUserAddRows="False"
+                              HeadersVisibility="Column" 
+                              Background="White"
+                              BorderThickness="0"
+                              GridLinesVisibility="Horizontal"
+                              HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
+                              ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}"
+                              VerticalScrollBarVisibility="Auto">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="MÃ PHIẾU" Binding="{Binding MaPhieu}" Width="120" FontWeight="Bold"/>
+                            <DataGridTextColumn Header="THIẾT BỊ" Binding="{Binding TenThietBi}" Width="220"/>
+                            <DataGridTextColumn Header="MÔ TẢ LỖI" Binding="{Binding MoTaLoi}" Width="*"/>
+
+                            <!-- Ưu tiên -->
+                            <DataGridTemplateColumn Header="MỨC ƯU TIÊN" Width="130">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="12" Padding="10,2" HorizontalAlignment="Left" Background="{Binding PriorityBg}">
+                                            <TextBlock Text="{Binding MucUuTien}" Foreground="{Binding PriorityFg}" FontSize="12" FontWeight="Bold"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Trạng thái -->
+                            <DataGridTemplateColumn Header="TRẠNG THÁI" Width="160">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="{Binding StatusIcon}" Foreground="{Binding StatusColor}" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding TrangThai}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <!-- Hành động -->
+                            <DataGridTemplateColumn Header="THAO TÁC" Width="140">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Cập nhật" 
+                                                Style="{StaticResource MaterialDesignRaisedButton}" 
+                                                Background="{StaticResource PrimaryBlueBrush}"
+                                                BorderThickness="0"
+                                                Height="30" Padding="12,0" FontSize="12"
+                                                materialDesign:ButtonAssist.CornerRadius="4"
+                                                Click="Button_CapNhatTienDo_Click"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window> 

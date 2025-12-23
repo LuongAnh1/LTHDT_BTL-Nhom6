@@ -161,6 +161,9 @@
     <Compile Include="Models\SupplierQuoteDTO.cs" />
     <Compile Include="Models\TechnicianSkillViewModel.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChiTietCongViecKTV.xaml.cs">
+      <DependentUpon>ChiTietCongViecKTV.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CNPCV.xaml.cs">
       <DependentUpon>CNPCV.xaml</DependentUpon>
     </Compile>
@@ -366,6 +369,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dang_Nhap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChiTietCongViecKTV.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
