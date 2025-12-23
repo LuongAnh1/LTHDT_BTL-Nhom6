@@ -86,32 +86,228 @@
 
             <!-- SCROLLABLE CONTENT -->
             <!-- Đã tăng Padding Right (số thứ 3) lên 50 để tách bảng khỏi thanh cuộn -->
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="32,0,50,40">
+            <!-- SCROLLABLE CONTENT -->
+            <!-- Đã tăng Padding Left (số đầu tiên) lên 50 để bảng rời xa thanh Sidebar -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="50,0,40,40">
                 <StackPanel>
 
                     <!-- SECTION 1: BỘ LỌC -->
                     <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="20" Margin="0,0,0,24">
-                        <!-- (Nội dung bên trong giữ nguyên) -->
                         <Grid>
-                            <!-- ... -->
-                            <!-- Giữ nguyên code bên trong -->
-                            <!-- ... -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Filter Header -->
+                            <Grid Grid.Row="0" Margin="0,0,0,16">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FilterVariant" Width="20" Height="20" Foreground="{StaticResource PrimaryBlueBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Bộ lọc dữ liệu" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <Button HorizontalAlignment="Right" Content="Xuất báo cáo"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"
+                                        Height="32" Padding="12,0" FontSize="13" FontWeight="Bold"
+                                        materialDesign:ButtonAssist.CornerRadius="4"/>
+                            </Grid>
+
+                            <!-- Filter Inputs -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Thời gian" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <DatePicker materialDesign:HintAssist.Hint="Chọn tháng/năm" 
+                                                Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                                BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Loại chi phí" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox materialDesign:HintAssist.Hint="Tất cả" 
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                              BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8">
+                                        <ComboBoxItem Content="Tất cả"/>
+                                        <ComboBoxItem Content="Chi phí nhân công"/>
+                                        <ComboBoxItem Content="Chi phí vật tư"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Phân xưởng" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox materialDesign:HintAssist.Hint="Toàn nhà máy" 
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                              BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="6">
+                                    <TextBlock Text="Tìm kiếm" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <TextBox materialDesign:HintAssist.Hint="Mã phiếu, nội dung..." 
+                                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                             BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                </StackPanel>
+
+                                <Button Grid.Column="8" VerticalAlignment="Bottom" 
+                                        Content="Áp dụng"
+                                        Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0"
+                                        Foreground="White" FontWeight="SemiBold"
+                                        Height="42" materialDesign:ButtonAssist.CornerRadius="4"/>
+                            </Grid>
                         </Grid>
                     </Border>
 
                     <!-- SECTION 2: BIỂU ĐỒ -->
-                    <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="24" Margin="0,0,0,24">
-                        <!-- (Nội dung bên trong giữ nguyên) -->
+                    <!-- Tăng Margin Bottom lên 40 để chữ tràn xuống không bị dính vào bảng bên dưới -->
+                    <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="24" Margin="0,0,0,40">
                         <Grid>
-                            <!-- ... -->
-                            <!-- Giữ nguyên code bên trong -->
-                            <!-- ... -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- SỬA 1: Tăng chiều cao lên 350 để cột và chữ thoải mái hiển thị -->
+                                <RowDefinition Height="350"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Tiêu đề và chú thích (Giữ nguyên) -->
+                            <Grid Grid.Row="0" Margin="0,0,0,20">
+                                <TextBlock Text="Biểu đồ chi phí theo thời gian" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <Border Width="12" Height="12" Background="{StaticResource PrimaryBlueBrush}" CornerRadius="2" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Nhân công" VerticalAlignment="Center" Margin="0,0,16,0" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <Border Width="12" Height="12" Background="#93C5FD" CornerRadius="2" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Vật tư" VerticalAlignment="Center" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Khu vực biểu đồ -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- 1. TRỤC Y (SỐ LIỆU): Cố định chiều cao 300 và căn Top -->
+                                <UniformGrid Grid.Column="0" Columns="1" VerticalAlignment="Top" Height="300" Margin="0,0,10,0">
+                                    <TextBlock Text="20M" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                                    <TextBlock Text="15M" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                                    <TextBlock Text="10M" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                                    <TextBlock Text="5M" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                                    <TextBlock Text="0" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                                </UniformGrid>
+
+                                <!-- 2. VÙNG BIỂU ĐỒ -->
+                                <Grid Grid.Column="1">
+                                    <!-- LAYER 1: ĐƯỜNG KẺ TRỤC HOÀNH -->
+                                    <!-- Vẽ một Border cao đúng 300px để tạo đường kẻ chuẩn ở vị trí số 0 -->
+                                    <Border VerticalAlignment="Top" Height="300" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1"/>
+
+                                    <!-- LAYER 2: CÁC CỘT DỮ LIỆU VÀ CHỮ -->
+                                    <UniformGrid Columns="6">
+
+                                        <!-- CẤU TRÚC MỖI CỘT: Chia làm 2 hàng (Trên 300px chứa cột, Dưới chứa chữ) -->
+
+                                        <!-- Cột 1 -->
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="300"/>
+                                                <!-- Khớp với chiều cao trục Y -->
+                                                <RowDefinition Height="Auto"/>
+                                                <!-- Tự động dãn để chứa chữ -->
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Phần biểu đồ: Căn đáy của vùng 300px -->
+                                            <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Width="40">
+                                                <Border Height="80" Background="#93C5FD" CornerRadius="4,4,0,0" ToolTip="Vật tư"/>
+                                                <Border Height="60" Background="{StaticResource PrimaryBlueBrush}" CornerRadius="0,0,0,0" ToolTip="Nhân công"/>
+                                            </StackPanel>
+
+                                            <!-- Phần chữ: Nằm ở hàng dưới, không bao giờ bị đường kẻ che hay cắt -->
+                                            <TextBlock Grid.Row="1" Text="T5/2024" HorizontalAlignment="Center" Margin="0,10,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </Grid>
+
+                                        <!-- Cột 2 -->
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="300"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Width="40">
+                                                <Border Height="100" Background="#93C5FD" CornerRadius="4,4,0,0"/>
+                                                <Border Height="70" Background="{StaticResource PrimaryBlueBrush}" CornerRadius="0,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="1" Text="T6/2024" HorizontalAlignment="Center" Margin="0,10,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </Grid>
+
+                                        <!-- Cột 3 -->
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="300"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Width="40">
+                                                <Border Height="60" Background="#93C5FD" CornerRadius="4,4,0,0"/>
+                                                <Border Height="50" Background="{StaticResource PrimaryBlueBrush}" CornerRadius="0,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="1" Text="T7/2024" HorizontalAlignment="Center" Margin="0,10,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </Grid>
+
+                                        <!-- Cột 4 -->
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="300"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Width="40">
+                                                <Border Height="120" Background="#93C5FD" CornerRadius="4,4,0,0"/>
+                                                <Border Height="80" Background="{StaticResource PrimaryBlueBrush}" CornerRadius="0,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="1" Text="T8/2024" HorizontalAlignment="Center" Margin="0,10,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </Grid>
+
+                                        <!-- Cột 5 -->
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="300"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Width="40">
+                                                <Border Height="90" Background="#93C5FD" CornerRadius="4,4,0,0"/>
+                                                <Border Height="65" Background="{StaticResource PrimaryBlueBrush}" CornerRadius="0,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="1" Text="T9/2024" HorizontalAlignment="Center" Margin="0,10,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </Grid>
+
+                                        <!-- Cột 6 -->
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="300"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <StackPanel Grid.Row="0" VerticalAlignment="Bottom" Width="40">
+                                                <Border Height="110" Background="#93C5FD" CornerRadius="4,4,0,0"/>
+                                                <Border Height="90" Background="{StaticResource PrimaryBlueBrush}" CornerRadius="0,0,0,0"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Row="1" Text="T10/2024" HorizontalAlignment="Center" Margin="0,10,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </Grid>
+
+                                    </UniformGrid>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Border>
-
+                    
                     <!-- SECTION 3: DATAGRID -->
-                    <!-- Thêm Margin="0,0,2,0" để tạo thêm khoảng cách nhỏ an toàn với viền phải -->
-                    <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True" Margin="0,0,2,0">
+                    <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True">
                         <StackPanel>
                             <!-- Table Title -->
                             <Grid Margin="24,20">
@@ -120,20 +316,27 @@
 
                             <!-- DataGrid -->
                             <DataGrid x:Name="dgChiPhi"
-                                      AutoGenerateColumns="False" 
-                                      CanUserAddRows="False" 
-                                      IsReadOnly="True"
-                                      HeadersVisibility="Column"
-                                      Background="{StaticResource ContentBackgroundBrush}"
-                                      BorderThickness="0"
-                                      RowHeight="54"
-                                      GridLinesVisibility="Horizontal"
-                                      HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
-                                      ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}"
-                                      CellStyle="{StaticResource MaterialDesignDataGridCell}">
+                                  Margin="0, 20, 0, 0"
+                                  ColumnHeaderHeight="50"
+                                  AutoGenerateColumns="False" 
+                                  CanUserAddRows="False" 
+                                  IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  Background="{StaticResource ContentBackgroundBrush}"
+                                  BorderThickness="0"
+                                  RowHeight="54"
+                                  GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
+                                  ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}"
+                                  CellStyle="{StaticResource MaterialDesignDataGridCell}" 
+                                  Width="1110">
 
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="MÃ PHIẾU" Binding="{Binding MaPhieu}" Width="140" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
+                                    <!-- 1. MÃ PHIẾU: Dùng TextBlock trong Header để set Margin 16 giống hệt Cell -->
+                                    <DataGridTextColumn Binding="{Binding MaPhieu}" Width="140" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="MÃ PHIẾU" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTextColumn.Header>
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -142,8 +345,11 @@
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
 
-                                    <!-- Cột Badge Loại Chi Phí -->
-                                    <DataGridTemplateColumn Header="LOẠI CHI PHÍ" Width="180">
+                                    <!-- 2. LOẠI CHI PHÍ: Header cách trái 16px để thẳng hàng với Badge -->
+                                    <DataGridTemplateColumn Width="180">
+                                        <DataGridTemplateColumn.Header>
+                                            <TextBlock Text="LOẠI CHI PHÍ" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTemplateColumn.Header>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <Border CornerRadius="12" Padding="12,4" HorizontalAlignment="Left" Margin="16,0,0,0">
@@ -178,7 +384,11 @@
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
 
-                                    <DataGridTextColumn Header="NỘI DUNG CHI TIẾT" Binding="{Binding NoiDung}" Width="*">
+                                    <!-- 3. NỘI DUNG: Header cách trái 16px -->
+                                    <DataGridTextColumn Binding="{Binding NoiDung}" Width="*">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="NỘI DUNG CHI TIẾT" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTextColumn.Header>
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -188,23 +398,46 @@
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
 
-                                    <DataGridTextColumn Header="NGÀY GHI NHẬN" Binding="{Binding Ngay}" Width="160" Foreground="{StaticResource TextSecondaryBrush}">
+                                    <!-- 4. NGÀY GHI NHẬN: Header cách trái 16px -->
+                                    <DataGridTextColumn Binding="{Binding Ngay}" Width="160" Foreground="{StaticResource TextSecondaryBrush}">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="NGÀY GHI NHẬN" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTextColumn.Header>
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
-                                                <Setter Property="Padding" Value="16,0,0,0"/>
+                                                <!-- Quan trọng: Căn giữa dữ liệu -->
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
+
                                     </DataGridTextColumn>
 
-                                    <DataGridTextColumn Header="SỐ TIỀN (VNĐ)" Binding="{Binding SoTien}" Width="160" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
+                                    <!-- 5. CỘT SỐ TIỀN: Căn PHẢI cả Tiêu đề và Dữ liệu -->
+                                    <DataGridTextColumn Binding="{Binding SoTien}" Width="160" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
+
+                                        <!-- HEADER STYLE: Quan trọng - Ép nội dung header sang phải -->
+                                        <DataGridTextColumn.HeaderStyle>
+                                            <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
+                                                <!-- Dòng này ép tiêu đề chạy sang phải -->
+                                                <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                            </Style>
+                                        </DataGridTextColumn.HeaderStyle>
+
+                                        <!-- NỘI DUNG HEADER: TextBlock cách lề phải 24px -->
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="SỐ TIỀN (VNĐ)" Margin="0,0,24,0" VerticalAlignment="Center"/>
+                                        </DataGridTextColumn.Header>
+
+                                        <!-- CELL STYLE: Dữ liệu căn giữa -->
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="VerticalAlignment" Value="Center"/>
-                                                <Setter Property="HorizontalAlignment" Value="Right"/>
-                                                <Setter Property="Padding" Value="0,0,24,0"/>
+                                                <!-- Quan trọng: Căn giữa dữ liệu số tiền -->
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
+
                                     </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
