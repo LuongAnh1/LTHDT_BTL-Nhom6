@@ -272,5 +272,30 @@ namespace BTL_Nhom6.Services
             cmd.Parameters.AddWithValue("@Warranty", dev.WarrantyExpiry.HasValue ? dev.WarrantyExpiry.Value : (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@Sup", dev.SupplierID.HasValue ? dev.SupplierID.Value : (object)DBNull.Value);
         }
+
+        // 10. Hàm chỉ cập nhật vị trí thiết bị (Không lưu lịch sử)
+        public bool UpdateDeviceLocation(string deviceCode, int newLocationId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = "UPDATE Devices SET LocationID = @NewLoc WHERE DeviceCode = @Code";
+
+                    MySqlCommand cmd = new MySqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@NewLoc", newLocationId);
+                    cmd.Parameters.AddWithValue("@Code", deviceCode);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Lỗi update vị trí: " + ex.Message);
+                    return false;
+                }
+            }
+        }
     }
 }
