@@ -237,19 +237,20 @@
     <Compile Include="Quan_Ly_Thong_Tin_Danh_Muc\UnitWindow.xaml.cs">
       <DependentUpon>UnitWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Quan_Lý_Thiet_Bi\DC_va_BG.xaml.cs">
+    <Compile Include="Quan_Ly_Thiet_Bi\DC_va_BG.xaml.cs">
       <DependentUpon>DC_va_BG.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Quan_Lý_Thiet_Bi\DeviceDetailWindow.xaml.cs">
+    <Compile Include="Quan_Ly_Thiet_Bi\DeviceDetailWindow.xaml.cs">
       <DependentUpon>DeviceDetailWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Quan_Lý_Thiet_Bi\HSTB_va_QR.xaml.cs">
+    <Compile Include="Quan_Ly_Thiet_Bi\ExpiryDateColorConverter.cs" />
+    <Compile Include="Quan_Ly_Thiet_Bi\HSTB_va_QR.xaml.cs">
       <DependentUpon>HSTB_va_QR.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Quan_Lý_Thiet_Bi\TCTS.xaml.cs">
+    <Compile Include="Quan_Ly_Thiet_Bi\TCTS.xaml.cs">
       <DependentUpon>TCTS.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Quan_Lý_Thiet_Bi\TDBH.xaml.cs">
+    <Compile Include="Quan_Ly_Thiet_Bi\TDBH.xaml.cs">
       <DependentUpon>TDBH.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Tri_He_Thong\NK_va_SLDL.xaml.cs">
@@ -475,23 +476,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Quan_Lý_Thiet_Bi\DC_va_BG.xaml">
+    <Page Include="Quan_Ly_Thiet_Bi\DC_va_BG.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Quan_Lý_Thiet_Bi\DeviceDetailWindow.xaml">
+    <Page Include="Quan_Ly_Thiet_Bi\DeviceDetailWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Quan_Lý_Thiet_Bi\HSTB_va_QR.xaml">
+    <Page Include="Quan_Ly_Thiet_Bi\HSTB_va_QR.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Quan_Lý_Thiet_Bi\TCTS.xaml">
+    <Page Include="Quan_Ly_Thiet_Bi\TCTS.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Quan_Lý_Thiet_Bi\TDBH.xaml">
+    <Page Include="Quan_Ly_Thiet_Bi\TDBH.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
