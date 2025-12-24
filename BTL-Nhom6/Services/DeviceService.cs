@@ -16,10 +16,11 @@ namespace BTL_Nhom6.Services
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                // LEFT JOIN bảng DeviceAssignments với điều kiện ReturnDate IS NULL để lấy người giữ hiện tại
+                // [CẬP NHẬT] Thêm sup.Phone, sup.ContactPerson vào SELECT
                 string sql = @"
                     SELECT d.*, 
-                           m.ModelName, l.LocationName, s.StatusName, sup.SupplierName,
+                           m.ModelName, l.LocationName, s.StatusName, 
+                           sup.SupplierName, sup.Phone AS SupplierPhone, sup.ContactPerson AS SupplierContactPerson,
                            u.FullName AS CurrentUserFullName
                     FROM Devices d
                     LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID
@@ -49,10 +50,11 @@ namespace BTL_Nhom6.Services
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-
+                // [CẬP NHẬT] Thêm sup.Phone, sup.ContactPerson vào SELECT
                 StringBuilder sql = new StringBuilder(@"
                     SELECT d.*, 
-                           m.ModelName, l.LocationName, s.StatusName, sup.SupplierName,
+                           m.ModelName, l.LocationName, s.StatusName, 
+                           sup.SupplierName, sup.Phone AS SupplierPhone, sup.ContactPerson AS SupplierContactPerson,
                            u.FullName AS CurrentUserFullName
                     FROM Devices d
                     LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID
@@ -63,7 +65,6 @@ namespace BTL_Nhom6.Services
                     LEFT JOIN Users u ON da.UserID = u.UserID
                     WHERE 1=1 ");
 
-                // Tạo tham số động
                 if (!string.IsNullOrEmpty(keyword))
                     sql.Append(" AND (d.DeviceName LIKE @Kw OR d.DeviceCode LIKE @Kw) ");
 
@@ -117,9 +118,23 @@ namespace BTL_Nhom6.Services
                 StatusName = reader["StatusName"] != DBNull.Value ? reader["StatusName"].ToString() : "N/A",
                 SupplierName = reader["SupplierName"] != DBNull.Value ? reader["SupplierName"].ToString() : "-",
 
-                // Hiển thị tên người giữ (quan trọng cho Form Tra cứu)
+                // [MỚI] Map thêm thông tin liên hệ
+                SupplierPhone = HasColumn(reader, "SupplierPhone") && reader["SupplierPhone"] != DBNull.Value ? reader["SupplierPhone"].ToString() : "",
+                SupplierContactPerson = HasColumn(reader, "SupplierContactPerson") && reader["SupplierContactPerson"] != DBNull.Value ? reader["SupplierContactPerson"].ToString() : "",
+
                 CurrentUserFullName = reader["CurrentUserFullName"] != DBNull.Value ? reader["CurrentUserFullName"].ToString() : "Chưa bàn giao"
             };
+        }
+
+        // 3.1 Hàm phụ trợ: Kiểm tra cột có tồn tại trong Reader không (tránh lỗi nếu query thiếu cột)
+        private bool HasColumn(MySqlDataReader reader, string columnName)
+        {
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                if (reader.GetName(i).Equals(columnName, StringComparison.InvariantCultureIgnoreCase))
+                    return true;
+            }
+            return false;
         }
 
         // 4. Thêm thiết bị mới
@@ -198,6 +213,50 @@ namespace BTL_Nhom6.Services
 
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
+        }
+
+        // 10. Hàm lấy danh sách thiết bị sắp hết hạn trong khoảng 'days' ngày tới
+        public List<Device> GetDevicesExpiringSoon(int days)
+        {
+            List<Device> list = new List<Device>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                // SQL Logic:
+                // 1. Lấy thông tin thiết bị và join các bảng tên (giống GetAll)
+                // 2. Lấy thêm sup.Phone, sup.ContactPerson để hiển thị
+                // 3. Điều kiện WHERE: WarrantyExpiry >= Hôm nay VÀ <= Hôm nay + days ngày
+
+                string sql = @"
+            SELECT d.*, 
+                   m.ModelName, l.LocationName, s.StatusName, 
+                   sup.SupplierName, sup.Phone AS SupplierPhone, sup.ContactPerson AS SupplierContactPerson,
+                   u.FullName AS CurrentUserFullName
+            FROM Devices d
+            LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID
+            LEFT JOIN Locations l ON d.LocationID = l.LocationID
+            LEFT JOIN DeviceStatus s ON d.StatusID = s.StatusID
+            LEFT JOIN Suppliers sup ON d.SupplierID = sup.SupplierID
+            LEFT JOIN DeviceAssignments da ON d.DeviceCode = da.DeviceCode AND da.ReturnDate IS NULL
+            LEFT JOIN Users u ON da.UserID = u.UserID
+            WHERE d.WarrantyExpiry IS NOT NULL 
+              AND d.WarrantyExpiry >= CURRENT_DATE()
+              AND d.WarrantyExpiry <= DATE_ADD(CURRENT_DATE(), INTERVAL @days DAY)
+            ORDER BY d.WarrantyExpiry ASC"; // Sắp xếp cái nào hết hạn trước lên đầu
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@days", days);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // Gọi hàm map dữ liệu (bạn cần cập nhật hàm MapReaderToDevice bên dưới nữa)
+                        list.Add(MapReaderToDevice(reader));
+                    }
+                }
+            }
+            return list;
         }
 
         // 9. Hàm phụ trợ add tham số (để đỡ viết lại code)

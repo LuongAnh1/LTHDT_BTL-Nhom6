@@ -21,6 +21,10 @@ namespace BTL_Nhom6.Models
         public string StatusName { get; set; }
         public string SupplierName { get; set; }
 
+        // --- BỔ SUNG THUỘC TÍNH HIỂN THỊ THÔNG TIN LIÊN HỆ ---
+        public string SupplierPhone { get; set; }        // SĐT nhà cung cấp
+        public string SupplierContactPerson { get; set; } // Người liên hệ bảo hành
+
         // [QUAN TRỌNG] Bổ sung thuộc tính để hiển thị người đang giữ thiết bị
         // Dữ liệu này sẽ lấy từ bảng DeviceAssignments (những dòng có ReturnDate = NULL)
         public string CurrentUserFullName { get; set; }
