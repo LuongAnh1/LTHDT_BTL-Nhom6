@@ -3,10 +3,393 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BTL_Nhom6.Bao_Cao_Thong_Ke"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
         mc:Ignorable="d"
-        Title="TKTSL_va_SC" Height="450" Width="800">
+        Title="Thống kê Tần suất lỗi &amp; Sự cố" 
+        Height="850" Width="1440"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{StaticResource TextPrimaryBrush}"
+        TextElement.FontSize="14"
+        Background="{StaticResource AppBackgroundBrush}">
+
+    <Window.Resources>
+        <!-- STYLE: Custom Header cho DataGrid -->
+        <Style x:Key="CustomDataGridColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+            <Setter Property="Background" Value="#F9FAFB"/>
+            <!-- bg-gray-50 -->
+            <Setter Property="Foreground" Value="#374151"/>
+            <!-- text-gray-700 -->
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="BorderBrush" Value="#E5E7EB"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 1. SIDEBAR -->
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="BCTK"/>
+
+        <!-- 2. MAIN CONTENT -->
+        <Grid Grid.Column="1" Background="{StaticResource AppBackgroundBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header -->
+                <RowDefinition Height="Auto"/>
+                <!-- Tabs -->
+                <RowDefinition Height="*"/>
+                <!-- Scrollable Content -->
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <Grid Grid.Row="0">
+                <TextBlock Text="Báo cáo tình trạng thiết bị" 
+                     FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
+                     Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <uc:WindowControlBar />
+            </Grid>
+
+            <!-- TABS ĐIỀU HƯỚNG -->
+            <Border Grid.Row="1" Margin="32,0,32,16" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Chi phí vật tư" Style="{StaticResource TabButtonStyle}" Click="Button_ChiPhiVatTu_Click"/>
+                        <Button Content="Hiệu suất bảo trì" Style="{StaticResource TabButtonStyle}" Click="Button_HieuSuatBaoTri_Click"/>
+                        <Button Content="Năng suất KTV" Style="{StaticResource TabButtonStyle}" Click="Button_NangSuatKTV_Click"/>
+                        <Button Content="Theo dõi bảo hành &amp; NCC" Style="{StaticResource TabButtonStyle}" Click="Button_BaoHanhNCC_Click"/>
+                        <Button Content="Tình trạng thiết bị" Style="{StaticResource TabButtonStyle}" Click="Button_TinhTrangThietBi_Click"/>
+                        <Button Content="Thống kê lỗi &amp; Sự cố" Style="{StaticResource ActiveTabButtonStyle}" Click="Button_ThongKeLoi_Click"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- CONTENT -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="32,0,32,40">
+                <StackPanel>
+
+                    <!-- SECTION 1: BỘ LỌC -->
+                    <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="20" Margin="0,0,0,24">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Hàng 1: Tiêu đề & Nút Xuất -->
+                            <Grid Grid.Row="0" Margin="0,0,0,16">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FilterVariant" Width="20" Height="20" Foreground="{StaticResource PrimaryBlueBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Bộ lọc báo cáo" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <Button HorizontalAlignment="Right" Content="Xuất báo cáo"
+                                    Click="BtnXuatBaoCao_Click"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"
+                                    Height="32" Padding="12,0" FontSize="13" FontWeight="Bold"
+                                    materialDesign:ButtonAssist.CornerRadius="4"/>                                                  
+                            </Grid>
+
+                            <!-- Hàng 2: Các ô nhập liệu -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Nút Áp dụng -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Cột 1: Phạm vi ngày (Dùng DatePicker cho hợp logic báo cáo lỗi) -->
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Phạm vi ngày" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <DatePicker Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                                        Height="48" 
+                                        Padding="12,0"
+                                        VerticalContentAlignment="Center"
+                                        materialDesign:HintAssist.Hint="Chọn ngày"/>                                                        
+                                </StackPanel>
+
+                                <!-- Cột 2: Loại thiết bị -->
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          Height="48" 
+                                          Padding="12,0" 
+                                          VerticalContentAlignment="Center"
+                                          SelectedIndex="0">                                                    
+                                        <ComboBoxItem Content="Tất cả"/>
+                                        <ComboBoxItem Content="Máy bơm"/>
+                                        <ComboBoxItem Content="Hệ thống HVAC"/>
+                                        <ComboBoxItem Content="Dây chuyền sản xuất"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!-- Cột 3: Phân loại lỗi -->
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Phân loại lỗi" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                          Height="48" 
+                                          Padding="12,0" 
+                                          VerticalContentAlignment="Center"
+                                          SelectedIndex="0">
+                                        <ComboBoxItem Content="Tất cả"/>
+                                        <ComboBoxItem Content="Lỗi cơ khí"/>
+                                        <ComboBoxItem Content="Lỗi điện"/>
+                                        <ComboBoxItem Content="Lỗi phần mềm"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!-- Cột 4: Nút Áp dụng -->
+                                <Button Grid.Column="6" 
+                                    VerticalAlignment="Bottom" 
+                                    Content="Áp dụng" 
+                                    Click="BtnApDung_Click"
+                                    Background="{StaticResource PrimaryBlueBrush}" 
+                                    BorderThickness="0"
+                                    Foreground="White" 
+                                    FontWeight="SemiBold"
+                                    Height="48" 
+                                    Padding="24,0"
+                                    materialDesign:ButtonAssist.CornerRadius="4"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!-- SECTION 2: BIỂU ĐỒ PHÂN BỐ LỖI -->
+                    <Border Background="White" CornerRadius="8" BorderBrush="#E5E7EB" BorderThickness="1" Padding="24" Margin="0,0,0,24">
+                        <StackPanel>
+                            <TextBlock Text="Biểu đồ phân bố lỗi" FontWeight="SemiBold" FontSize="18" Foreground="#1F2937" Margin="0,0,0,20"/>
+
+                            <!-- Container chính của biểu đồ -->
+                            <Grid Height="300">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30"/>
+                                    <!-- Cột chứa nhãn trục Y -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Cột chứa các thanh biểu đồ -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- 1. TRỤC Y (Thang đo cố định: 0 - 20) -->
+                                <!-- Margin Bottom 25 khớp với chiều cao dành cho nhãn trục X -->
+                                <UniformGrid Grid.Column="0" Columns="1" Margin="0,0,10,25">
+                                    <TextBlock Text="20" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
+                                    <TextBlock Text="15" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
+                                    <TextBlock Text="10" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
+                                    <TextBlock Text="5"  VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
+                                    <TextBlock Text="0"  VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
+                                </UniformGrid>
+
+                                <!-- Đường kẻ dọc trục Y -->
+                                <Border Grid.Column="0" BorderBrush="#D1D5DB" BorderThickness="0,0,1,0" Margin="0,0,0,25"/>
+
+                                <!-- 2. VÙNG VẼ CỘT (Dynamic Chart) -->
+                                <Grid Grid.Column="1">
+                                    <!-- Đường kẻ ngang trục X -->
+                                    <Border BorderBrush="#D1D5DB" BorderThickness="0,0,0,1" VerticalAlignment="Bottom" Margin="0,0,0,25"/>
+
+                                    <!-- ItemsControl: Tự động sinh ra các cột dựa trên Binding -->
+                                    <ItemsControl ItemsSource="{Binding DuLieuBieuDo}" VerticalAlignment="Bottom">
+
+                                        <!-- Panel chứa các cột: UniformGrid giúp chia đều khoảng cách ngang -->
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Rows="1"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <!-- Template cho từng cột -->
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel VerticalAlignment="Bottom">
+
+                                                    <!-- THANH BIỂU ĐỒ -->
+                                                    <!-- Height được Binding vào HeightValue tính toán từ C# -->
+                                                    <Border Width="50" 
+                                        CornerRadius="4,4,0,0" 
+                                        Background="#3B82F6"
+                                        Margin="5,0">
+
+                                                        <!-- Hiệu ứng Animation: Cột mọc lên khi dữ liệu thay đổi -->
+                                                        <Border.Triggers>
+                                                            <EventTrigger RoutedEvent="Loaded">
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetProperty="Height"
+                                                                     From="0" 
+                                                                     To="{Binding HeightValue}" 
+                                                                     Duration="0:0:0.6" 
+                                                                     DecelerationRatio="0.9"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </EventTrigger>
+                                                        </Border.Triggers>
+
+                                                        <!-- Style Hover: Đổi màu khi di chuột vào -->
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <!-- Chiều cao mặc định lấy từ Binding -->
+                                                                <Setter Property="Height" Value="{Binding HeightValue}"/>
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="#2563EB"/>
+                                                                        <!-- Xanh đậm hơn -->
+                                                                        <Setter Property="Cursor" Value="Hand"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+
+                                                        <!-- Tooltip hiển thị số liệu chi tiết -->
+                                                        <Border.ToolTip>
+                                                            <ToolTip>
+                                                                <StackPanel>
+                                                                    <TextBlock FontWeight="Bold" Text="{Binding Label}"/>
+                                                                    <TextBlock Text="{Binding GiaTriThuc, StringFormat='Số lượng: {0}'}"/>
+                                                                </StackPanel>
+                                                            </ToolTip>
+                                                        </Border.ToolTip>
+                                                    </Border>
+
+                                                    <!-- NHÃN TRỤC X (Tên thiết bị/Lỗi) -->
+                                                    <TextBlock Text="{Binding Label}" 
+                                           HorizontalAlignment="Center" 
+                                           Margin="0,10,0,0" 
+                                           FontSize="12" 
+                                           Foreground="#4B5563"
+                                           TextTrimming="CharacterEllipsis"
+                                           ToolTip="{Binding Label}"/>
+                                                    <!-- Tooltip nếu tên quá dài -->
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+<!-- SECTION 3: DANH SÁCH CHI TIẾT -->
+ <!-- Đã thêm Margin="32,0,32,32" để co bảng lại, tạo khoảng cách với 2 bên lề -->
+                    <!-- Border thay đổi: CornerRadius=0, BorderThickness chỉ trên/dưới, Margin=0 để tràn viền -->
+                    <Border Background="White" 
+         CornerRadius="0" 
+         BorderBrush="#E5E7EB" 
+         BorderThickness="0, 1, 0, 1" 
+         ClipToBounds="True"
+         Margin="0, 10, 0, 24">
+
+                        <StackPanel>
+                            <!-- Tiêu đề: Đặt trong Grid với Margin chuẩn giống Bảng 2, bỏ Separator -->
+                            <Grid Margin="24,20,24,0">
+                                <TextBlock Text="Danh sách sự cố chi tiết" 
+                        FontSize="18" 
+                        FontWeight="Bold" 
+                        Foreground="#1F2937"/>
+                            </Grid>
+
+                            <!-- DataGrid: Thêm Margin 24 các bên để nội dung thụt vào trong giống Bảng 2 -->
+                            <DataGrid ItemsSource="{Binding DanhSachSuCo}" 
+                   Margin="24, 20, 24, 20"
+                   AutoGenerateColumns="False" 
+                   CanUserAddRows="False" 
+                   IsReadOnly="True" 
+                   HeadersVisibility="Column"
+                   Background="Transparent" 
+                   BorderThickness="0"
+                   GridLinesVisibility="Horizontal"
+                   HorizontalGridLinesBrush="#E5E7EB"
+                   RowHeight="55">
+
+                                <!-- CÁC RESOURCE VÀ STYLE (GIỮ NGUYÊN) -->
+                                <DataGrid.Resources>
+                                    <!-- Style Header màu xanh đậm (Giữ nguyên theo thiết kế cũ của bạn) -->
+                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
+                                        <Setter Property="Background" Value="#2C3E50"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="BorderBrush" Value="#2C3E50"/>
+                                        <Setter Property="Height" Value="50"/>
+                                    </Style>
+
+                                    <!-- Style Row -->
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#F9FAFB"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+
+                                    <!-- Style Cell -->
+                                    <Style TargetType="DataGridCell">
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Padding" Value="16,0"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="DataGridCell">
+                                                    <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                                                        <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.Resources>
+
+                                <!-- CÁC CỘT (GIỮ NGUYÊN) -->
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding MaSC}" Header="MÃ SỰ CỐ" Width="140" Foreground="#4B5563"/>
+                                    <DataGridTextColumn Binding="{Binding ThietBi}" Header="THIẾT BỊ" Width="200" FontWeight="SemiBold" Foreground="#111827"/>
+                                    <DataGridTextColumn Binding="{Binding LoaiLoi}" Header="LOẠI LỖI" Width="*" Foreground="#4B5563"/>
+                                    <DataGridTextColumn Binding="{Binding Ngay, StringFormat=yyyy-MM-dd}" Header="NGÀY GHI NHẬN" Width="160" Foreground="#4B5563"/>
+                                    <DataGridTemplateColumn Header="MỨC ĐỘ ƯU TIÊN" Width="180">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border x:Name="Badge" CornerRadius="12" Padding="12,4" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                                    <TextBlock x:Name="BadgeText" Text="{Binding MucDo}" FontSize="12" FontWeight="Bold"/>
+                                                </Border>
+                                                <DataTemplate.Triggers>
+                                                    <DataTrigger Binding="{Binding MucDo}" Value="High">
+                                                        <Setter TargetName="Badge" Property="Background" Value="#FEE2E2"/>
+                                                        <Setter TargetName="BadgeText" Property="Foreground" Value="#991B1B"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding MucDo}" Value="Medium">
+                                                        <Setter TargetName="Badge" Property="Background" Value="#FEF3C7"/>
+                                                        <Setter TargetName="BadgeText" Property="Foreground" Value="#92400E"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding MucDo}" Value="Low">
+                                                        <Setter TargetName="Badge" Property="Background" Value="#DCFCE7"/>
+                                                        <Setter TargetName="BadgeText" Property="Foreground" Value="#166534"/>
+                                                    </DataTrigger>
+                                                </DataTemplate.Triggers>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>

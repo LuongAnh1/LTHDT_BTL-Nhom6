@@ -3,10 +3,262 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BTL_Nhom6.Bao_Cao_Thong_Ke"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
         mc:Ignorable="d"
-        Title="BCTDBH_VA_NCC" Height="450" Width="800">
+        Title="Báo cáo Theo dõi Bảo hành &amp; NCC" 
+        Height="850" Width="1440"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{StaticResource TextPrimaryBrush}"
+        TextElement.FontSize="14"
+        Background="{StaticResource AppBackgroundBrush}">
+
+    <Window.Resources>
+        <!-- STYLE: HEADER DATAGRID -->
+        <Style x:Key="CustomDataGridColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+            <Setter Property="Background" Value="{StaticResource SidebarBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextWhiteBrush}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Padding" Value="16,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="270"/>
+            <!-- Sidebar cố định -->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- 1. SIDEBAR -->
+        <uc:SidebarMenu Grid.Column="0" CurrentItem="BCTK"/>
+
+        <!-- 2. MAIN CONTENT -->
+        <Grid Grid.Column="1" Background="{StaticResource AppBackgroundBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <Grid Grid.Row="0">
+                <TextBlock Text="Báo cáo thống kê" 
+                    FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
+                    Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                <uc:WindowControlBar />
+            </Grid>
+
+
+            <!-- TABS -->
+            <Border Grid.Row="1" Margin="32,0,32,16" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
+                <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Chi phí vật tư" Style="{StaticResource TabButtonStyle}" Click="Button_ChiPhiVatTu_Click"/>
+                        <Button Content="Hiệu suất bảo trì" Style="{StaticResource TabButtonStyle}" Click="Button_HieuSuatBaoTri_Click"/>
+                        <Button Content="Năng suất KTV" Style="{StaticResource TabButtonStyle}" Click="Button_NangSuatKTV_Click"/>
+                        <Button Content="Theo dõi bảo hành &amp; NCC" Style="{StaticResource ActiveTabButtonStyle}" Click="Button_BaoHanhNCC_Click"/>
+                        <Button Content="Tình trạng thiết bị" Style="{StaticResource TabButtonStyle}" Click="Button_TinhTrangThietBi_Click"/>
+                        <Button Content="Thống kê lỗi &amp; Sự cố" Style="{StaticResource TabButtonStyle}" Click="Button_ThongKeLoi_Click"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- SCROLLABLE CONTENT -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="50,0,40,40">
+                <StackPanel>
+
+                    <!-- SECTION 1: BỘ LỌC -->
+                    <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="20" Margin="0,0,0,24">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Hàng 1: Tiêu đề & Nút Xuất -->
+                            <Grid Grid.Row="0" Margin="0,0,0,16">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="FilterVariant" Width="20" Height="20" Foreground="{StaticResource PrimaryBlueBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBlock Text="Bộ lọc báo cáo" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
+                                </StackPanel>
+
+                                <Button HorizontalAlignment="Right" Content="Xuất báo cáo" 
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}" 
+                    Height="32" Padding="12,0" FontSize="13" FontWeight="Bold" 
+                    materialDesign:ButtonAssist.CornerRadius="4"/>
+                            </Grid>
+
+                            <!-- Hàng 2: Các ô nhập liệu -->
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Nút Áp dụng -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Cột 1: Phạm vi ngày hết hạn -->
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Phạm vi ngày hết hạn" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <DatePicker Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                            Height="48" 
+                            Padding="12,0"
+                            VerticalContentAlignment="Center"
+                            materialDesign:HintAssist.Hint="dd/MM/yyyy"/>
+                                </StackPanel>
+
+                                <!-- Cột 2: Nhà cung cấp -->
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Nhà cung cấp" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                          Height="48" 
+                          Padding="12,0" 
+                          VerticalContentAlignment="Center"
+                          SelectedIndex="0">
+                                        <ComboBoxItem Content="Tất cả"/>
+                                        <ComboBoxItem Content="Công ty TNHH Thiết bị A"/>
+                                        <ComboBoxItem Content="Công ty CP Kỹ thuật B"/>
+                                        <ComboBoxItem Content="Nhà phân phối C"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!-- Cột 3: Loại thiết bị -->
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                          Height="48" 
+                          Padding="12,0" 
+                          VerticalContentAlignment="Center"
+                          SelectedIndex="0">
+                                        <ComboBoxItem Content="Tất cả"/>
+                                        <ComboBoxItem Content="Máy CNC"/>
+                                        <ComboBoxItem Content="Hệ thống làm mát"/>
+                                    </ComboBox>
+                                </StackPanel>
+
+                                <!-- Cột 4: Nút Áp dụng -->
+                                <Button Grid.Column="6" 
+                    VerticalAlignment="Bottom" 
+                    Content="Áp dụng" 
+                    Click="BtnLocDuLieu_Click"
+                    Background="{StaticResource PrimaryBlueBrush}" 
+                    BorderThickness="0"
+                    Foreground="White" 
+                    FontWeight="SemiBold"
+                    Height="48" 
+                    Padding="24,0"
+                    materialDesign:ButtonAssist.CornerRadius="4"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!-- SECTION 2: DANH SÁCH THIẾT BỊ SẮP HẾT HẠN -->
+                    <Border x:Name="RefBorder" Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Margin="0,0,0,24">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="24,20,24,0">
+                                <materialDesign:PackIcon Kind="CalendarAlert" Width="24" Height="24" Foreground="#F97316" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="Thiết bị sắp hết hạn bảo hành" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                            <DataGrid ItemsSource="{Binding DanhSachHetHanBaoHanh}" Margin="24, 20, 24, 20" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" Background="Transparent" ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding MaTB}" Width="150" Header="MÃ THIẾT BỊ"/>
+                                    <DataGridTextColumn Binding="{Binding TenTB}" Width="*" Header="TÊN THIẾT BỊ"/>
+                                    <DataGridTextColumn Binding="{Binding NgayMua, StringFormat=dd/MM/yyyy}" Width="150" Header="NGÀY MUA"/>
+                                    <DataGridTemplateColumn Width="220" Header="NGÀY HẾT HẠN BẢO HÀNH">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding NgayHetHan, StringFormat=dd/MM/yyyy}" VerticalAlignment="Center" FontWeight="Bold" Foreground="#DC2626"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- SECTION 3: ĐÁNH GIÁ NHÀ CUNG CẤP -->
+                    <!-- Margin 14 để bù trừ cho padding của các item con (24 - 10 = 14) -->
+                    <StackPanel Margin="14,0,14,20">
+
+                        <StackPanel Orientation="Horizontal" Margin="10,0,0,16">
+                            <materialDesign:PackIcon Kind="Domain" Width="24" Height="24" Foreground="{StaticResource PrimaryBlueBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="Đánh giá Nhà cung cấp" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        </StackPanel>
+
+                        <!-- ITEMS CONTROL: Hiển thị danh sách động -->
+                        <ItemsControl ItemsSource="{Binding DanhSachNCC}">
+
+                            <!-- Bố cục: Chia đều thành 3 cột -->
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Columns="3"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <!-- Template: Giao diện của 1 thẻ -->
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <!-- Margin 10 tạo khoảng cách đều giữa các thẻ -->
+                                    <Border Margin="10" Background="{StaticResource ContentBackgroundBrush}" CornerRadius="8" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="20">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,12">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding TenCongTy}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                                    <TextBlock Text="{Binding LienHe}" FontSize="12" Foreground="#6B7280" Margin="0,4,0,0"/>
+                                                </StackPanel>
+
+                                                <!-- Badge Đánh giá: Màu sắc thay đổi theo DataTrigger -->
+                                                <Border x:Name="BadgeBorder" HorizontalAlignment="Right" VerticalAlignment="Top" CornerRadius="12" Padding="8,4">
+                                                    <TextBlock x:Name="BadgeText" Text="{Binding DanhGia}" FontSize="11" FontWeight="Bold"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <TextBlock Text="{Binding MoTa}" TextWrapping="Wrap" FontSize="13" Foreground="#4B5563" LineHeight="20"/>
+                                        </StackPanel>
+
+                                        <!-- Xử lý logic màu sắc -->
+                                        <Border.Triggers>
+                                            <!-- Mặc định (hoặc Kém) -->
+                                        </Border.Triggers>
+                                    </Border>
+
+                                    <!-- DataTriggers để đổi màu Badge dựa trên giá trị "DanhGia" -->
+                                    <DataTemplate.Triggers>
+                                        <!-- Trường hợp: Tốt -->
+                                        <DataTrigger Binding="{Binding DanhGia}" Value="Tốt">
+                                            <Setter TargetName="BadgeBorder" Property="Background" Value="#DCFCE7"/>
+                                            <Setter TargetName="BadgeText" Property="Foreground" Value="#166534"/>
+                                        </DataTrigger>
+
+                                        <!-- Trường hợp: Trung bình -->
+                                        <DataTrigger Binding="{Binding DanhGia}" Value="Trung bình">
+                                            <Setter TargetName="BadgeBorder" Property="Background" Value="#FEF9C3"/>
+                                            <Setter TargetName="BadgeText" Property="Foreground" Value="#854D0E"/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                </StackPanel>
+               
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>
