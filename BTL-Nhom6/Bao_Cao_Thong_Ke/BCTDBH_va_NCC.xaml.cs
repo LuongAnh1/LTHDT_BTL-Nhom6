@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
-using BTL_Nhom6.Helper; // Sử dụng NavigationHelper như file mẫu của bạn
+using BTL_Nhom6.Helper; 
 
 namespace BTL_Nhom6.Bao_Cao_Thong_Ke
 {
-    /// <summary>
-    /// Interaction logic for BCTDBH_va_NCC.xaml
-    /// </summary>
     public partial class BCTDBH_va_NCC : Window
     {
-        // Khai báo các Property để Binding ra XAML
+        // Khai báo các danh sách để Binding dữ liệu ra giao diện
         public ObservableCollection<ThietBiBaoHanh> DanhSachHetHanBaoHanh { get; set; }
         public ObservableCollection<NhaCungCap> DanhSachNCC { get; set; }
 
@@ -19,13 +16,13 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
             InitializeComponent();
             LoadData();
 
-            // Quan trọng: Gán DataContext = this để XAML có thể Binding dữ liệu từ file code-behind này
+            // QUAN TRỌNG: Dòng này giúp XAML nhận diện được các biến dữ liệu
             this.DataContext = this;
         }
 
         private void LoadData()
         {
-            // 1. Tạo dữ liệu mẫu cho Bảng: Thiết bị sắp hết hạn bảo hành
+            // 1. Tạo dữ liệu mẫu cho Bảng: Thiết bị sắp hết hạn
             DanhSachHetHanBaoHanh = new ObservableCollection<ThietBiBaoHanh>
             {
                 new ThietBiBaoHanh { MaTB = "CNC-01", TenTB = "Máy phay CNC Vertical", NgayMua = new DateTime(2023, 1, 15), NgayHetHan = new DateTime(2025, 1, 15) },
@@ -34,7 +31,7 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
                 new ThietBiBaoHanh { MaTB = "ROBOT-A", TenTB = "Cánh tay robot lắp ráp", NgayMua = new DateTime(2024, 1, 5), NgayHetHan = new DateTime(2026, 1, 5) }
             };
 
-            // 2. Tạo dữ liệu mẫu cho Cards: Đánh giá nhà cung cấp
+            // 2. Tạo dữ liệu mẫu cho Cards: Nhà cung cấp
             DanhSachNCC = new ObservableCollection<NhaCungCap>
             {
                 new NhaCungCap {
@@ -61,63 +58,52 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
             };
         }
 
-        // Xử lý sự kiện nút "Áp dụng" bộ lọc
+        // --- KHẮC PHỤC LỖI CS1061 TẠI ĐÂY ---
         private void BtnLocDuLieu_Click(object sender, RoutedEventArgs e)
         {
+            // Logic xử lý khi bấm nút Áp dụng
             MessageBox.Show("Đã áp dụng bộ lọc dữ liệu!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
-            // Tại đây bạn có thể viết logic lọc lại danh sách DanhSachHetHanBaoHanh dựa trên DatePicker và ComboBox
         }
 
         #region ĐIỀU HƯỚNG TABS (Navigation)
 
-        // Lưu ý: Bạn cần thay thế tên các Class Window (như ChiPhiVatTu, HieuSuatBaoTri...) 
-        // cho đúng với tên file thực tế trong project của bạn.
+        // Bạn cần thay thế 'new TenClassWindow()' bằng đúng tên các Window trong project của bạn
 
-        // 1. Chi phí vật tư
         private void Button_ChiPhiVatTu_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new ChiPhiVatTu());
-            MessageBox.Show("Chuyển đến trang: Chi phí vật tư");
+            NavigationHelper.Navigate(this, new BCCPVT());
         }
 
-        // 2. Hiệu suất bảo trì
         private void Button_HieuSuatBaoTri_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new HieuSuatBaoTri());
-            MessageBox.Show("Chuyển đến trang: Hiệu suất bảo trì");
+            NavigationHelper.Navigate(this, new BCHSBT());
         }
 
-        // 3. Năng suất Kỹ thuật viên
         private void Button_NangSuatKTV_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new NangSuatKTV());
-            MessageBox.Show("Chuyển đến trang: Năng suất KTV");
+            NavigationHelper.Navigate(this, new BCNSKTV());
         }
 
-        // 4. Theo dõi bảo hành & NCC (Trang hiện tại)
         private void Button_BaoHanhNCC_Click(object sender, RoutedEventArgs e)
         {
-            // Đang ở trang này nên không làm gì
+            // Đang ở trang hiện tại, không làm gì
         }
 
-        // 5. Tình trạng thiết bị
         private void Button_TinhTrangThietBi_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new TinhTrangThietBi());
-            MessageBox.Show("Chuyển đến trang: Tình trạng thiết bị");
+            NavigationHelper.Navigate(this, new BCTTTB());
         }
 
-        // 6. Thống kê lỗi
         private void Button_ThongKeLoi_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new ThongKeLoi());
-            MessageBox.Show("Chuyển đến trang: Thống kê lỗi & Sự cố");
+            NavigationHelper.Navigate(this, new TKTSL_va_SC());
         }
 
         #endregion
     }
 
     // --- CÁC CLASS MODEL DỮ LIỆU ---
+    // Cần có các class này để DataGrid và ItemsControl hiểu được Binding
 
     public class ThietBiBaoHanh
     {
@@ -135,7 +121,7 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
         public string DanhGia { get; set; } // "Tốt", "Trung bình", "Kém"
         public string MoTa { get; set; }
 
-        // Thuộc tính tính toán (Computed Property) để hiển thị gọn trên thẻ
+        // Thuộc tính tính toán để hiển thị gọn trên thẻ
         public string LienHe => $"{Email} | {SoDienThoai}";
     }
 }

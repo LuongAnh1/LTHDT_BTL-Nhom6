@@ -81,45 +81,88 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+
+                            <!-- Hàng 1: Tiêu đề & Nút Xuất -->
                             <Grid Grid.Row="0" Margin="0,0,0,16">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="FilterVariant" Width="20" Height="20" Foreground="{StaticResource PrimaryBlueBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                    <TextBlock Text="Bộ lọc báo cáo" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <TextBlock Text="Bộ lọc báo cáo" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                 </StackPanel>
-                                <Button HorizontalAlignment="Right" Content="Xuất báo cáo" Style="{StaticResource MaterialDesignFlatButton}" Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}" Height="32" Padding="12,0" FontSize="13" FontWeight="Bold" materialDesign:ButtonAssist.CornerRadius="4"/>
+
+                                <Button HorizontalAlignment="Right" Content="Xuất báo cáo" 
+                    Style="{StaticResource MaterialDesignFlatButton}" 
+                    Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}" 
+                    Height="32" Padding="12,0" FontSize="13" FontWeight="Bold" 
+                    materialDesign:ButtonAssist.CornerRadius="4"/>
                             </Grid>
+
+                            <!-- Hàng 2: Các ô nhập liệu -->
                             <Grid Grid.Row="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="16"/>
+                                    <!-- Khoảng cách -->
                                     <ColumnDefinition Width="Auto"/>
+                                    <!-- Nút Áp dụng -->
                                 </Grid.ColumnDefinitions>
+
+                                <!-- Cột 1: Phạm vi ngày hết hạn -->
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Phạm vi ngày hết hạn" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <DatePicker Style="{StaticResource MaterialDesignOutlinedDatePicker}" Height="48"/>
+                                    <DatePicker Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                            Height="48" 
+                            Padding="12,0"
+                            VerticalContentAlignment="Center"
+                            materialDesign:HintAssist.Hint="dd/MM/yyyy"/>
                                 </StackPanel>
+
+                                <!-- Cột 2: Nhà cung cấp -->
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Nhà cung cấp" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="48" SelectedIndex="0">
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                          Height="48" 
+                          Padding="12,0" 
+                          VerticalContentAlignment="Center"
+                          SelectedIndex="0">
                                         <ComboBoxItem Content="Tất cả"/>
                                         <ComboBoxItem Content="Công ty TNHH Thiết bị A"/>
                                         <ComboBoxItem Content="Công ty CP Kỹ thuật B"/>
                                         <ComboBoxItem Content="Nhà phân phối C"/>
                                     </ComboBox>
                                 </StackPanel>
+
+                                <!-- Cột 3: Loại thiết bị -->
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="48" SelectedIndex="0">
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                          Height="48" 
+                          Padding="12,0" 
+                          VerticalContentAlignment="Center"
+                          SelectedIndex="0">
                                         <ComboBoxItem Content="Tất cả"/>
                                         <ComboBoxItem Content="Máy CNC"/>
                                         <ComboBoxItem Content="Hệ thống làm mát"/>
                                     </ComboBox>
                                 </StackPanel>
-                                <Button Grid.Column="6" VerticalAlignment="Bottom" Content="Áp dụng" Click="BtnLocDuLieu_Click" Background="{StaticResource PrimaryBlueBrush}" Foreground="White" Height="48" Padding="24,0" materialDesign:ButtonAssist.CornerRadius="4"/>
+
+                                <!-- Cột 4: Nút Áp dụng -->
+                                <Button Grid.Column="6" 
+                    VerticalAlignment="Bottom" 
+                    Content="Áp dụng" 
+                    Click="BtnLocDuLieu_Click"
+                    Background="{StaticResource PrimaryBlueBrush}" 
+                    BorderThickness="0"
+                    Foreground="White" 
+                    FontWeight="SemiBold"
+                    Height="48" 
+                    Padding="24,0"
+                    materialDesign:ButtonAssist.CornerRadius="4"/>
                             </Grid>
                         </Grid>
                     </Border>
