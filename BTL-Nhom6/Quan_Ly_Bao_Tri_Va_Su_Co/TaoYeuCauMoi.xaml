@@ -1,0 +1,93 @@
+﻿<Window x:Class="BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co.TaoYeuCauMoi"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Tạo yêu cầu bảo trì" Height="650" Width="600"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"
+        Background="{StaticResource ContentBackgroundBrush}" AllowsTransparency="True"
+        TextElement.Foreground="{StaticResource TextPrimaryBrush}"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+
+    <Border CornerRadius="12" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" 
+            Background="{StaticResource ContentBackgroundBrush}" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.2" Direction="270"/>
+        </Border.Effect>
+        <Grid Margin="32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <TextBlock Grid.Row="0" Text="TẠO YÊU CẦU BẢO TRÌ" FontSize="24" FontWeight="Bold" 
+                       Foreground="{StaticResource PrimaryBlueBrush}" HorizontalAlignment="Center" Margin="0,0,0,24"/>
+
+            <!-- BODY -->
+            <StackPanel Grid.Row="1">
+
+                <!-- 1. Chọn thiết bị -->
+                <TextBlock Text="Thiết bị gặp sự cố (*)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <ComboBox x:Name="cboThietBi" Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                          materialDesign:HintAssist.Hint="Chọn thiết bị..." 
+                          Height="50" Margin="0,0,0,16"
+                          DisplayMemberPath="DeviceName" 
+                          SelectedValuePath="DeviceCode"/>
+
+                <!-- 2. Mức ưu tiên -->
+                <TextBlock Text="Mức độ ưu tiên (*)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <ComboBox x:Name="cboMucUuTien" Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                          materialDesign:HintAssist.Hint="Chọn mức độ..." 
+                          Height="50" Margin="0,0,0,16" SelectedIndex="1">
+                    <ComboBoxItem Content="Low (Thấp)" Tag="Low"/>
+                    <ComboBoxItem Content="Medium (Trung bình)" Tag="Medium"/>
+                    <ComboBoxItem Content="High (Cao)" Tag="High"/>
+                    <ComboBoxItem Content="Critical (Khẩn cấp)" Tag="Critical"/>
+                </ComboBox>
+
+                <!-- 3. Mô tả lỗi -->
+                <TextBlock Text="Mô tả sự cố (*)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <TextBox x:Name="txtMoTa" Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         materialDesign:HintAssist.Hint="Mô tả chi tiết hiện tượng..." 
+                         Height="120" TextWrapping="Wrap" AcceptsReturn="True" 
+                         VerticalContentAlignment="Top" Margin="0,0,0,16"/>
+
+                <!-- 4. Chọn ảnh -->
+                <TextBlock Text="Hình ảnh minh chứng" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedButton}" 
+                            Click="BtnChonAnh_Click" BorderBrush="{StaticResource BorderMediumBrush}" Foreground="{StaticResource TextPrimaryBrush}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="CameraPlus" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="Chọn ảnh"/>
+                        </StackPanel>
+                    </Button>
+
+                    <TextBlock Grid.Column="1" x:Name="lblAnhDaChon" Text="Chưa có ảnh nào được chọn" 
+                               VerticalAlignment="Center" Margin="16,0,0,0" FontStyle="Italic" Foreground="Gray"/>
+                </Grid>
+
+            </StackPanel>
+
+            <!-- FOOTER -->
+            <Grid Grid.Row="2" Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="Hủy bỏ" IsCancel="True" Click="BtnHuy_Click" 
+                        Style="{StaticResource MaterialDesignOutlinedButton}" BorderBrush="{StaticResource BorderMediumBrush}" Foreground="{StaticResource TextSecondaryBrush}"/>
+
+                <Button Grid.Column="1" Grid.ColumnSpan="2" Content="LƯU YÊU CẦU" Click="BtnLuu_Click" 
+                        Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{StaticResource PrimaryBlueBrush}" Foreground="White" FontWeight="Bold"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
