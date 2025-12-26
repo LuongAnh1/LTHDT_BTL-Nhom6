@@ -1,0 +1,122 @@
+﻿<Window x:Class="BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co.AssignTaskDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Phân công công việc" Height="Auto" Width="550"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"
+        Background="{StaticResource ContentBackgroundBrush}" AllowsTransparency="True"
+        TextElement.Foreground="{StaticResource TextPrimaryBrush}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        SizeToContent="Height">
+    <!-- SizeToContent="Height" giúp form tự co giãn theo nội dung -->
+
+    <Border CornerRadius="12" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" 
+            Background="{StaticResource ContentBackgroundBrush}" MouseLeftButtonDown="Border_MouseLeftButtonDown">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.2" Direction="270"/>
+        </Border.Effect>
+        <Grid Margin="32">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header -->
+                <RowDefinition Height="Auto"/>
+                <!-- Info -->
+                <RowDefinition Height="Auto"/>
+                <!-- Input -->
+                <RowDefinition Height="Auto"/>
+                <!-- Footer -->
+            </Grid.RowDefinitions>
+
+            <!-- 1. HEADER -->
+            <TextBlock Grid.Row="0" Text="PHÂN CÔNG CÔNG VIỆC" FontSize="24" FontWeight="Bold" 
+                       Foreground="{StaticResource PrimaryBlueBrush}" HorizontalAlignment="Center" Margin="0,0,0,24"/>
+
+            <!-- 2. THÔNG TIN THIẾT BỊ (READONLY) -->
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="Thông tin thiết bị &amp; Yêu cầu:" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="{StaticResource TextSecondaryBrush}"/>
+
+                <Border Background="#F3F4F6" CornerRadius="4" Padding="12" Margin="0,0,0,20" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,8">
+                            <TextBlock Text="Mã TB:" FontWeight="Bold" Width="80"/>
+                            <TextBlock x:Name="lblDeviceCode" Text="DEV-001" Foreground="{StaticResource TextPrimaryBrush}"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,0,0,8">
+                            <TextBlock Text="Tên TB:" FontWeight="Bold" Width="80"/>
+                            <TextBlock x:Name="lblDeviceName" Text="Máy cắt CNC" Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="Nội dung:" FontWeight="Bold" Width="80" VerticalAlignment="Top"/>
+                            <TextBlock x:Name="lblDescription" Text="Mô tả lỗi hoặc công việc định kỳ..." 
+                                       Foreground="#D32F2F" TextWrapping="Wrap" FontStyle="Italic"/>
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- 3. FORM PHÂN CÔNG (INPUT) -->
+            <StackPanel Grid.Row="2">
+                <!-- Chọn Kỹ thuật viên -->
+                <TextBlock Text="Kỹ thuật viên thực hiện (*):" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <ComboBox x:Name="cboTechnician" 
+                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                          DisplayMemberPath="FullName" 
+                          SelectedValuePath="UserID"
+                          Height="50" Margin="0,0,0,16"
+                          materialDesign:HintAssist.Hint="Chọn nhân viên kỹ thuật..."/>
+
+                <!-- Ngày bắt đầu & Dự kiến xong -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Ngày bắt đầu:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <DatePicker x:Name="dpStartDate" Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                                    Height="50" materialDesign:HintAssist.Hint="Chọn ngày"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Hạn hoàn thành (Dự kiến):" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <DatePicker x:Name="dpEndDate" Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                                    Height="50" materialDesign:HintAssist.Hint="Chọn ngày (Tuỳ chọn)"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Ghi chú / Hướng dẫn -->
+                <TextBlock Text="Ghi chú / Hướng dẫn xử lý:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <TextBox x:Name="txtNote" Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         Height="80" TextWrapping="Wrap" AcceptsReturn="True" 
+                         VerticalContentAlignment="Top" Margin="0,0,0,16"
+                         materialDesign:HintAssist.Hint="Nhập hướng dẫn cho kỹ thuật viên (nếu có)"/>
+            </StackPanel>
+
+            <!-- 4. FOOTER BUTTONS -->
+            <Grid Grid.Row="3" Margin="0,16,0,32">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Hủy bỏ" IsCancel="True" Click="BtnHuy_Click" 
+                        Style="{StaticResource MaterialDesignOutlinedButton}" 
+                        BorderBrush="{StaticResource BorderMediumBrush}" 
+                        Foreground="{StaticResource TextSecondaryBrush}" Height="45"/>
+
+                <Button Grid.Column="1" Grid.ColumnSpan="2" Content="TẠO PHIẾU CÔNG VIỆC" Click="BtnLuu_Click" 
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Background="{StaticResource PrimaryBlueBrush}" 
+                        BorderBrush="{StaticResource PrimaryBlueBrush}" 
+                        Foreground="White" FontWeight="Bold" Height="45">
+                    <Button.Effect>
+                        <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3" Direction="270"/>
+                    </Button.Effect>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

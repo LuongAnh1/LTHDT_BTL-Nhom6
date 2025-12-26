@@ -1,4 +1,4 @@
-﻿using BTL_Nhom6.Helper; // Đảm bảo namespace này khớp với file NavigationHelper của bạn
+﻿using BTL_Nhom6.Helper;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,15 +11,18 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
     {
         private readonly DeviceService _deviceService;
         private readonly LocationService _locationService;
+        private readonly UserService _userService; // [MỚI] 1. Khai báo UserService
 
-        // Biến lưu ID vị trí hiện tại để kiểm tra trùng
+        // Biến lưu trạng thái cũ để so sánh
         private int _currentLocationId = 0;
+        private int _currentUserId = 0; // [MỚI] 2. Biến lưu ID người giữ hiện tại
 
         public DC_va_BG()
         {
             InitializeComponent();
             _deviceService = new DeviceService();
             _locationService = new LocationService();
+            _userService = new UserService(); // [MỚI] 3. Khởi tạo
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -31,13 +34,17 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
         {
             try
             {
-                // 1. Load danh sách thiết bị vào ComboBox
+                // Load danh sách thiết bị
                 var devices = _deviceService.GetAllDevices();
                 cbbThietBi.ItemsSource = devices;
 
-                // 2. Load danh sách phòng ban vào ComboBox
+                // Load danh sách phòng ban
                 var locations = _locationService.GetAllLocations();
                 cbbViTriMoi.ItemsSource = locations;
+
+                // [MỚI] 4. Load danh sách nhân viên vào ComboBox Người mới
+                var users = _userService.GetAllUsers();
+                cbbNguoiMoi.ItemsSource = users;
             }
             catch (Exception ex)
             {
@@ -45,103 +52,116 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
             }
         }
 
-        // Sự kiện: Khi chọn thiết bị -> Tự động điền vị trí cũ
+        // Sự kiện: Khi chọn thiết bị -> Tự động điền thông tin cũ (Vị trí & Người giữ)
         private void cbbThietBi_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cbbThietBi.SelectedItem is Device selectedDevice)
             {
-                // Hiển thị tên vị trí hiện tại lên TextBox (Readonly)
+                // --- Xử lý Vị trí ---
                 txtViTriHienTai.Text = selectedDevice.LocationName;
-
-                // Lưu ID vị trí hiện tại
                 _currentLocationId = selectedDevice.LocationID;
+
+                // --- [MỚI] 5. Xử lý Người phụ trách ---
+                // Hiển thị tên người đang giữ (Lấy từ Model Device đã cập nhật ở bước trước)
+                txtNguoiHienTai.Text = !string.IsNullOrEmpty(selectedDevice.CurrentUserFullName)
+                                       ? selectedDevice.CurrentUserFullName
+                                       : "Chưa bàn giao";
+
+                // Lưu ID người đang giữ
+                _currentUserId = selectedDevice.CurrentHolderId;
+
+                // Reset ComboBox chọn mới về null để người dùng tự chọn nếu muốn thay đổi
+                cbbViTriMoi.SelectedIndex = -1;
+                cbbNguoiMoi.SelectedIndex = -1;
             }
         }
 
         private void Button_XacNhan_Click(object sender, RoutedEventArgs e)
         {
-            // 1. Validate dữ liệu
+            // 1. Validate dữ liệu cơ bản
             if (cbbThietBi.SelectedValue == null)
             {
                 MessageBox.Show("Vui lòng chọn thiết bị!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            if (cbbViTriMoi.SelectedValue == null)
-            {
-                MessageBox.Show("Vui lòng chọn vị trí mới!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            // 2. Lấy dữ liệu
+            // 2. Lấy dữ liệu ID
             string deviceCode = cbbThietBi.SelectedValue.ToString();
             int newLocationId = (int)cbbViTriMoi.SelectedValue;
 
-            // Kiểm tra nếu vị trí mới trùng vị trí cũ
-            if (newLocationId == _currentLocationId)
+            // Logic lấy Vị trí mới: Nếu không chọn trong CBB thì giữ nguyên vị trí cũ
+            int newLocationId = cbbViTriMoi.SelectedValue != null
+                                ? (int)cbbViTriMoi.SelectedValue
+                                : _currentLocationId;
+
+            // Logic lấy Người nhận mới: Nếu không chọn trong CBB thì giữ nguyên người cũ
+            int newUserId = cbbNguoiMoi.SelectedValue != null
+                            ? (int)cbbNguoiMoi.SelectedValue
+                            : _currentUserId;
+
+            // 3. Kiểm tra xem có thay đổi gì không?
+            if (newLocationId == _currentLocationId && newUserId == _currentUserId)
             {
-                MessageBox.Show("Thiết bị đang ở vị trí này rồi. Vui lòng chọn vị trí khác.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Bạn chưa thay đổi Vị trí hoặc Người phụ trách nào cả.",
+                                "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
-            // 3. Thực hiện Update
-            bool success = _deviceService.UpdateDeviceLocation(deviceCode, newLocationId);
+            // 4. [SỬA] Gọi hàm Service cập nhật cả 2 thông tin
+            // Hàm này cần 3 tham số: Mã TB, ID Vị trí Mới, ID Người Mới
+            bool success = _deviceService.TransferAndHandover(deviceCode, newLocationId, newUserId);
 
             if (success)
             {
-                MessageBox.Show("Cập nhật vị trí thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                string msg = "Cập nhật thành công!\n";
+                if (newLocationId != _currentLocationId) msg += "- Đã điều chuyển vị trí.\n";
+                if (newUserId != _currentUserId) msg += "- Đã bàn giao người phụ trách.";
 
-                // Reset form và Load lại dữ liệu để cập nhật danh sách thiết bị (có LocationName mới)
-                cbbThietBi.SelectedIndex = -1;
-                cbbViTriMoi.SelectedIndex = -1;
-                txtViTriHienTai.Text = "-";
-                txtGhiChu.Text = "";
+                MessageBox.Show(msg, "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                LoadData(); // Load lại để ComboBox thiết bị cập nhật vị trí mới trong data source
+                // Reset form
+                ResetForm();
+
+                // Load lại dữ liệu để cập nhật danh sách thiết bị (trạng thái mới)
+                LoadData();
             }
             else
             {
-                MessageBox.Show("Có lỗi xảy ra khi cập nhật.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Có lỗi xảy ra khi cập nhật Database.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        #region ĐIỀU HƯỚNG TABS (THANH BAR NGANG)
-
-        // 1. Hồ sơ thiết bị & QR
-        private void Button_HSTB_Click(object sender, RoutedEventArgs e)
+        // Hàm phụ trợ để xóa trắng form
+        private void ResetForm()
         {
-            NavigationHelper.Navigate(this, new HSTB_va_QR());
+            cbbThietBi.SelectedIndex = -1;
+            cbbViTriMoi.SelectedIndex = -1;
+            cbbNguoiMoi.SelectedIndex = -1; // [MỚI]
+
+            txtViTriHienTai.Text = "-";
+            txtNguoiHienTai.Text = "-"; // [MỚI]
+            txtGhiChu.Text = "";
+
+            _currentLocationId = 0;
+            _currentUserId = 0;
         }
 
-        // 2. Tra cứu tài sản (TCTS)
-        private void Button_TraCuu_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationHelper.Navigate(this, new TCTS());
-        }
-
-        // 3. Theo dõi bảo hành (TDBH)
-        private void Button_BaoHanh_Click(object sender, RoutedEventArgs e)
-        {
-            NavigationHelper.Navigate(this, new TDBH());
-        }
-
+        #region ĐIỀU HƯỚNG TABS
+        private void Button_HSTB_Click(object sender, RoutedEventArgs e) => NavigationHelper.Navigate(this, new HSTB_va_QR());
+        private void Button_TraCuu_Click(object sender, RoutedEventArgs e) => NavigationHelper.Navigate(this, new TCTS());
+        private void Button_BaoHanh_Click(object sender, RoutedEventArgs e) => NavigationHelper.Navigate(this, new TDBH());
         #endregion
 
-        #region XỬ LÝ LOGIC TẠO PHIẾU ĐIỀU CHUYỂN
-        #endregion
-
-        #region XỬ LÝ TRÊN BẢNG LỊCH SỬ
-
-        // In biên bản điều chuyển
+        #region XỬ LÝ KHÁC
         private void Button_InBienBan_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Đang chuẩn bị xuất biên bản bàn giao (PDF/Excel)...");
+            MessageBox.Show("Tính năng in biên bản đang phát triển.");
         }
 
         // Xem chi tiết lịch sử
         private void Button_XemChiTiet_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Hiển thị thông tin chi tiết của phiếu điều chuyển này.");
+            MessageBox.Show("Tính năng xem lịch sử đang phát triển.");
         }
 
         #endregion

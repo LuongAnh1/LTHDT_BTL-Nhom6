@@ -25,27 +25,30 @@ namespace BTL_Nhom6.Services
             {
                 conn.Open();
 
+                // [SỬA SQL] Thêm JOIN bảng WorkOrders (wo) và Users (u_tech) để lấy tên KTV
                 string sql = @"
-            SELECT r.*, d.DeviceName, u.FullName 
-            FROM MaintenanceRequests r
-            LEFT JOIN Devices d ON r.DeviceCode = d.DeviceCode
-            LEFT JOIN Users u ON r.RequestedBy = u.UserID
-            WHERE 1=1 ";
+                        SELECT r.*, 
+                               d.DeviceName, 
+                               u_req.FullName AS RequesterName,
+                               u_tech.FullName AS TechnicianName
+                        FROM MaintenanceRequests r
+                        LEFT JOIN Devices d ON r.DeviceCode = d.DeviceCode
+                        LEFT JOIN Users u_req ON r.RequestedBy = u_req.UserID
+                        -- Join để lấy kỹ thuật viên đang phụ trách (nếu có)
+                        LEFT JOIN WorkOrders wo ON r.RequestID = wo.RequestID
+                        LEFT JOIN Users u_tech ON wo.TechnicianID = u_tech.UserID
+                        WHERE 1=1 ";
 
-                // --- BƯỚC 1: Xử lý Logic Filter (Mapping từ Tiếng Việt -> Tiếng Anh DB) ---
+                // --- BƯỚC 1: Filter Trạng thái ---
                 string dbStatus = "";
                 if (statusFilter == "Đang chờ xử lý") dbStatus = "Pending";
                 else if (statusFilter == "Đang thực hiện") dbStatus = "Approved";
                 else if (statusFilter == "Hoàn thành") dbStatus = "Completed";
                 else if (statusFilter == "Từ chối") dbStatus = "Rejected";
 
-                // Nếu có chọn status hợp lệ thì nối thêm điều kiện vào SQL
-                if (!string.IsNullOrEmpty(dbStatus))
-                {
-                    sql += " AND r.Status = @Status";
-                }
+                if (!string.IsNullOrEmpty(dbStatus)) sql += " AND r.Status = @Status";
 
-                // --- BƯỚC 2: Xử lý Search ---
+                // --- BƯỚC 2: Search ---
                 if (!string.IsNullOrEmpty(keyword))
                 {
                     sql += " AND (r.ProblemDescription LIKE @Keyword OR d.DeviceName LIKE @Keyword OR r.DeviceCode LIKE @Keyword)";
@@ -54,19 +57,8 @@ namespace BTL_Nhom6.Services
                 sql += " ORDER BY r.RequestDate DESC";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
-
-                // --- BƯỚC 3: Thêm tham số (QUAN TRỌNG: Chỉ thêm 1 lần) ---
-
-                // Sửa lỗi: Chỉ thêm @Status khi dbStatus có dữ liệu
-                if (!string.IsNullOrEmpty(dbStatus))
-                {
-                    cmd.Parameters.AddWithValue("@Status", dbStatus);
-                }
-
-                if (!string.IsNullOrEmpty(keyword))
-                {
-                    cmd.Parameters.AddWithValue("@Keyword", "%" + keyword + "%");
-                }
+                if (!string.IsNullOrEmpty(dbStatus)) cmd.Parameters.AddWithValue("@Status", dbStatus);
+                if (!string.IsNullOrEmpty(keyword)) cmd.Parameters.AddWithValue("@Keyword", "%" + keyword + "%");
 
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
@@ -83,9 +75,12 @@ namespace BTL_Nhom6.Services
                             Status = reader["Status"].ToString(),
                             ProblemDescription = reader["ProblemDescription"].ToString(),
 
-                            // Các trường JOIN
-                            DeviceName = reader["DeviceName"] != DBNull.Value ? reader["DeviceName"].ToString() : "Unknown Device",
-                            RequesterName = reader["FullName"] != DBNull.Value ? reader["FullName"].ToString() : "Unknown User"
+                            // Map dữ liệu JOIN
+                            DeviceName = reader["DeviceName"] != DBNull.Value ? reader["DeviceName"].ToString() : "Unknown",
+                            RequesterName = reader["RequesterName"] != DBNull.Value ? reader["RequesterName"].ToString() : "Unknown",
+
+                            // [MỚI] Map tên kỹ thuật viên
+                            TechnicianName = reader["TechnicianName"] != DBNull.Value ? reader["TechnicianName"].ToString() : ""
                         });
                     }
                 }
