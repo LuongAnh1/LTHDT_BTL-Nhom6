@@ -87,7 +87,6 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
 
             // 2. Lấy dữ liệu ID
             string deviceCode = cbbThietBi.SelectedValue.ToString();
-            int newLocationId = (int)cbbViTriMoi.SelectedValue;
 
             // Logic lấy Vị trí mới: Nếu không chọn trong CBB thì giữ nguyên vị trí cũ
             int newLocationId = cbbViTriMoi.SelectedValue != null

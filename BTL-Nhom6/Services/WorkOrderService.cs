@@ -8,7 +8,65 @@ namespace BTL_Nhom6.Services
 {
     public class WorkOrderService
     {
-        // 1. Lấy danh sách Trạng thái (để đổ vào ComboBox khi phân công)
+        // 1. Lấy danh sách việc của KTV theo ID (Dùng cho form ChiTietCongViecKTV)
+        public List<WorkOrderViewModel> GetWorkOrdersByTechId(int userId)
+        {
+            List<WorkOrderViewModel> list = new List<WorkOrderViewModel>();
+
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    // Câu lệnh SQL: Kết hợp dữ liệu từ nhiều bảng để lấy thông tin hiển thị
+                    // Sử dụng COALESCE để lấy Mô tả lỗi ưu tiên từ Request -> Schedule -> Solution
+                    string sql = @"
+                        SELECT 
+                            wo.WorkOrderID,
+                            d.DeviceName AS TenThietBi,
+                            COALESCE(r.ProblemDescription, s.TaskName, wo.Solution, 'Công việc khác') AS MoTaLoi,
+                            COALESCE(r.Priority, 'Medium') AS MucUuTien,
+                            stt.StatusName AS TrangThai
+                        FROM WorkOrders wo
+                        JOIN Devices d ON wo.DeviceCode = d.DeviceCode
+                        JOIN WorkOrderStatus stt ON wo.StatusID = stt.StatusID
+                        LEFT JOIN MaintenanceRequests r ON wo.RequestID = r.RequestID
+                        LEFT JOIN MaintenanceSchedules s ON wo.ScheduleID = s.ScheduleID
+                        WHERE wo.TechnicianID = @UID
+                        ORDER BY wo.StartDate DESC";
+
+                    MySqlCommand cmd = new MySqlCommand(sql, conn);
+                    cmd.Parameters.AddWithValue("@UID", userId);
+
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            WorkOrderViewModel item = new WorkOrderViewModel();
+
+                            // Ánh xạ dữ liệu từ DataReader vào Model
+                            item.WorkOrderID = Convert.ToInt32(reader["WorkOrderID"]);
+
+                            // Kiểm tra DBNull cho an toàn (dù SQL đã xử lý)
+                            item.TenThietBi = reader["TenThietBi"] != DBNull.Value ? reader["TenThietBi"].ToString() : "N/A";
+                            item.MoTaLoi = reader["MoTaLoi"] != DBNull.Value ? reader["MoTaLoi"].ToString() : "";
+                            item.MucUuTien = reader["MucUuTien"] != DBNull.Value ? reader["MucUuTien"].ToString() : "Medium";
+                            item.TrangThai = reader["TrangThai"] != DBNull.Value ? reader["TrangThai"].ToString() : "Unknown";
+
+                            list.Add(item);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Ghi log lỗi nếu cần thiết
+                    Console.WriteLine("Lỗi GetWorkOrdersByTechId: " + ex.Message);
+                }
+            }
+            return list;
+        }
+
+        // 2. Lấy danh sách trạng thái (Cho ComboBox nếu cần)
         public List<WorkOrderStatus> GetAllStatuses()
         {
             List<WorkOrderStatus> list = new List<WorkOrderStatus>();
@@ -32,7 +90,7 @@ namespace BTL_Nhom6.Services
             return list;
         }
 
-        // 2. Tạo Phiếu công việc mới (Hàm quan trọng nhất form này)
+        // 3. Tạo Phiếu công việc mới (Giữ nguyên logic cũ dùng Transaction)
         public bool CreateWorkOrder(WorkOrder wo)
         {
             using (MySqlConnection conn = DatabaseHelper.GetConnection())
@@ -42,7 +100,7 @@ namespace BTL_Nhom6.Services
 
                 try
                 {
-                    // A. Tạo phiếu công việc
+                    // A. Insert vào bảng WorkOrders
                     string sql = @"INSERT INTO WorkOrders 
                                    (DeviceCode, RequestID, ScheduleID, TechnicianID, StatusID, StartDate) 
                                    VALUES 
@@ -50,17 +108,15 @@ namespace BTL_Nhom6.Services
 
                     MySqlCommand cmd = new MySqlCommand(sql, conn, transaction);
                     cmd.Parameters.AddWithValue("@Dev", wo.DeviceCode);
-                    // Xử lý Nullable
                     cmd.Parameters.AddWithValue("@Req", wo.RequestID.HasValue ? wo.RequestID.Value : (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Sch", wo.ScheduleID.HasValue ? wo.ScheduleID.Value : (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Tech", wo.TechnicianID.HasValue ? wo.TechnicianID.Value : (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Stat", wo.StatusID); // Thường là 1 (Mới tạo) hoặc 2 (Đang làm)
-                    cmd.Parameters.AddWithValue("@Start", DateTime.Now); // Ngày bắt đầu là lúc phân công
+                    cmd.Parameters.AddWithValue("@Stat", wo.StatusID);
+                    cmd.Parameters.AddWithValue("@Start", wo.StartDate ?? DateTime.Now);
 
                     cmd.ExecuteNonQuery();
 
                     // B. Cập nhật trạng thái Request (Nếu có RequestID)
-                    // Nếu đã phân công -> Chuyển Request sang 'Approved' (Đang thực hiện)
                     if (wo.RequestID.HasValue)
                     {
                         string sqlUpdateReq = "UPDATE MaintenanceRequests SET Status = 'Approved' WHERE RequestID = @RID";
@@ -75,7 +131,7 @@ namespace BTL_Nhom6.Services
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    Console.WriteLine("Error CreateWO: " + ex.Message);
+                    Console.WriteLine("Lỗi CreateWO: " + ex.Message);
                     return false;
                 }
             }

@@ -46,14 +46,12 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
             {
                 if (item.Tag.ToString() == _request.Priority) { cboMucUuTien.SelectedItem = item; break; }
             }
-            }
 
             // Select Status
             foreach (ComboBoxItem item in cboTrangThai.Items)
             {
                 if (item.Tag.ToString() == _request.Status) { cboTrangThai.SelectedItem = item; break; }
             }
-        }
         }
 
         // 3. Hàm lấy ảnh từ CSDL và hiển thị
@@ -114,13 +112,12 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
             {
                 MessageBox.Show("Lỗi khi cập nhật vào cơ sở dữ liệu!", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
 
         private void BtnHuy_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
-        private void BtnHuy_Click(object sender, RoutedEventArgs e) => this.Close();
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) { if (e.ChangedButton == MouseButton.Left) this.DragMove(); }
 
         private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)

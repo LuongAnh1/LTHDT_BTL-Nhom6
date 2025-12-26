@@ -73,7 +73,7 @@ namespace BTL_Nhom6.Services
                 }
                 catch (Exception ex)
                 {
-                    // Ghi log lỗi nếu cần: Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
                 }
             }
 
