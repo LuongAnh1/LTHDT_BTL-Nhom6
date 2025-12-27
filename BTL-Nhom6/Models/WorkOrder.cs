@@ -19,9 +19,6 @@ namespace BTL_Nhom6.Models
         public DateTime? EndDate { get; set; }
         public string Solution { get; set; }
 
-        // --- Thuộc tính hiển thị (JOIN) ---
-        public string DeviceName { get; set; }
-        public string TechnicianName { get; set; } // Tên KTV
-        public string StatusName { get; set; }     // Tên trạng thái
+        
     }
 }

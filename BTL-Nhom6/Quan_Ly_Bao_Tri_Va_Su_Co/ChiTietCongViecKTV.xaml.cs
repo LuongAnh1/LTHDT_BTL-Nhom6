@@ -1,10 +1,11 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Collections.Generic;
+﻿using BTL_Nhom6.Helper;
 using BTL_Nhom6.Models;
 using BTL_Nhom6.Services;
-using BTL_Nhom6.Helper;
+using System.Collections.Generic;
 using System.Linq; // Để dùng hàm Where tìm kiếm
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media.Effects;
 
 namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 {
@@ -107,8 +108,28 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 
             if (task != null)
             {
-                // Mở form cập nhật trạng thái công việc (sẽ làm sau)
-                MessageBox.Show($"Cập nhật phiếu: {task.MaPhieu}");
+                // 1. Làm mờ form hiện tại
+                BlurEffect blur = new BlurEffect { Radius = 15 };
+                this.Effect = blur;
+
+                // 2. Mở form cập nhật
+                CapNhatTrangThaiViec dialog = new CapNhatTrangThaiViec(
+                    task.WorkOrderID,
+                    task.MaPhieu,
+                    task.TrangThai,
+                    task.MoTaLoi // Hoặc truyền Solution nếu Model có trường riêng
+                );
+
+                bool? result = dialog.ShowDialog();
+
+                // 3. Xóa hiệu ứng mờ
+                this.Effect = null;
+
+                // 4. Nếu cập nhật thành công -> Load lại dữ liệu
+                if (result == true)
+                {
+                    LoadTasks();
+                }
             }
         }
 

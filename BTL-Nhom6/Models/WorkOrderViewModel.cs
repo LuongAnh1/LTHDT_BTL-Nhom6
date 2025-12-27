@@ -20,5 +20,18 @@
         // Logic Icon và màu cho Trạng thái
         public string StatusIcon => TrangThai == "Hoàn thành" ? "CheckCircle" : "ClockOutline";
         public string StatusColor => TrangThai == "Hoàn thành" ? "Green" : "Orange";
+
+        // --- Thuộc tính hiển thị (JOIN) ---
+        public string DeviceName { get; set; }
+        public string TechnicianName { get; set; } // Tên KTV
+        public string StatusName { get; set; }     // Tên trạng thái
+
+        public decimal LaborCost { get; set; }      // Nhân công
+        public decimal TransportCost { get; set; }  // Vận chuyển
+        public decimal OtherCost { get; set; }      // Chi phí khác
+        public string OtherCostDescription { get; set; } // Mô tả chi phí khác
+
+        // Thuộc tính tính toán tổng (Optional)
+        public decimal TotalCost => LaborCost + TransportCost + OtherCost; // + Tiền vật tư (tính riêng)
     }
 }

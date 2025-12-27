@@ -169,6 +169,7 @@
     <Compile Include="Models\MaintenanceRequest.cs" />
     <Compile Include="Models\MaintenanceSchedule.cs" />
     <Compile Include="Models\Material.cs" />
+    <Compile Include="Models\MaterialViewModel.cs" />
     <Compile Include="Models\ProductUnit.cs" />
     <Compile Include="Models\RequestImage.cs" />
     <Compile Include="Models\Role.cs" />
@@ -184,11 +185,17 @@
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\AssignTaskDialog.xaml.cs">
       <DependentUpon>AssignTaskDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CapNhatTrangThaiViec.xaml.cs">
+      <DependentUpon>CapNhatTrangThaiViec.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CapNhatYeuCau.xaml.cs">
       <DependentUpon>CapNhatYeuCau.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChiTietCongViecKTV.xaml.cs">
       <DependentUpon>ChiTietCongViecKTV.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChonVatTuDialog.xaml.cs">
+      <DependentUpon>ChonVatTuDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CNPCV.xaml.cs">
       <DependentUpon>CNPCV.xaml</DependentUpon>
@@ -418,11 +425,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\CapNhatTrangThaiViec.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\CapNhatYeuCau.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChiTietCongViecKTV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChonVatTuDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -6,7 +6,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:uc="clr-namespace:BTL_Nhom6.UserControls"
         mc:Ignorable="d"
-        Title="Cập nhật phiếu công việc" 
+        Title="Điều phối công việc" 
         Height="768" Width="1366"
         WindowStartupLocation="CenterScreen"
         WindowStyle="None"
@@ -98,10 +98,10 @@
             <!-- TABS NAVIGATION -->
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,10,32,24">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Quản lý Yêu cầu Bảo trì" Style="{StaticResource TabButtonStyle}" Click="Button_QLYCBT_Click"/>
-                    <Button Content="Điều phối công việc" Style="{StaticResource TabButtonStyle}" Margin="32,0,0,0" Click="Button_DieuPhoi_Click"/>
-                    <Button Content="Cập nhật phiếu công việc" Style="{StaticResource ActiveTabButtonStyle}" Margin="32,0,0,0"/>
-                    <Button Content="Kê khai vật tư &amp; Nghiệm thu" Style="{StaticResource TabButtonStyle}" Margin="32,0,0,0" Click="Button_NghiemThu_Click"/>
+                    <Button Content="Quản lý yêu cầu bảo trì" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="0" Click="Button_QLYCBT_Click"/>
+                    <Button Content="Điều phối công việc" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_DieuPhoi_Click"/>
+                    <Button Content="Cập nhật phiếu công việc" Style="{StaticResource ActiveTabButtonStyle}" Padding="0,8" Margin="32,0,0,0"/>
+                    <Button Content="Kê khai vật tư &amp; Nghiệm thu" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_NghiemThu_Click"/>
                 </StackPanel>
             </Border>
 
