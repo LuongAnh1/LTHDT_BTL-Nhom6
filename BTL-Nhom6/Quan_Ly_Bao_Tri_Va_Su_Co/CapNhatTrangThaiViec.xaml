@@ -1,0 +1,63 @@
+﻿<Window x:Class="BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co.CapNhatTrangThaiViec"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Cập nhật trạng thái" Height="Auto" Width="500"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None"
+        Background="Transparent" AllowsTransparency="True"
+        SizeToContent="Height"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        TextElement.Foreground="{StaticResource TextPrimaryBrush}">
+
+    <Border CornerRadius="12" Background="White" BorderBrush="#E0E0E0" BorderThickness="1" Margin="20">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="5" Opacity="0.2"/>
+        </Border.Effect>
+
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <TextBlock Grid.Row="0" Text="CẬP NHẬT TIẾN ĐỘ" FontSize="20" FontWeight="Bold" 
+                       Foreground="{StaticResource PrimaryBlueBrush}" HorizontalAlignment="Center" Margin="0,0,0,24"/>
+
+            <!-- Info -->
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="Mã phiếu:" FontWeight="SemiBold" Foreground="Gray"/>
+                <TextBlock x:Name="lblMaPhieu" Text="WO-0001" FontWeight="Bold" Margin="0,0,0,12"/>
+
+                <TextBlock Text="Trạng thái hiện tại (*):" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <ComboBox x:Name="cboStatus" Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                          Height="45" Margin="0,0,0,16" DisplayMemberPath="StatusName" SelectedValuePath="StatusID"/>
+            </StackPanel>
+
+            <!-- Solution -->
+            <StackPanel Grid.Row="2">
+                <TextBlock Text="Ghi chú / Kết quả xử lý:" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                <TextBox x:Name="txtSolution" Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         Height="100" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"
+                         materialDesign:HintAssist.Hint="Nhập nội dung công việc đã làm..."/>
+            </StackPanel>
+
+            <!-- Buttons -->
+            <Grid Grid.Row="3" Margin="0,24,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Hủy bỏ" Click="BtnHuy_Click"
+                        Style="{StaticResource MaterialDesignOutlinedButton}" BorderBrush="Gray" Foreground="Gray"/>
+
+                <Button Grid.Column="1" Grid.ColumnSpan="2" Content="LƯU CẬP NHẬT" Click="BtnLuu_Click"
+                        Style="{StaticResource MaterialDesignRaisedButton}" Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{StaticResource PrimaryBlueBrush}"/>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

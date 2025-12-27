@@ -9,19 +9,20 @@ namespace BTL_Nhom6.Services
 {
     public class DeviceService
     {
-        // 1. Lấy danh sách tất cả thiết bị (Kèm thông tin chi tiết qua JOIN)
+        // 1. Lấy danh sách (Đã sửa SQL để lấy thêm u.UserID)
         public List<Device> GetAllDevices()
         {
             List<Device> list = new List<Device>();
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                // [CẬP NHẬT] Thêm sup.Phone, sup.ContactPerson vào SELECT
+                // [SỬA] Thêm u.UserID AS CurrentHolderId
                 string sql = @"
                     SELECT d.*, 
                            m.ModelName, l.LocationName, s.StatusName, 
                            sup.SupplierName, sup.Phone AS SupplierPhone, sup.ContactPerson AS SupplierContactPerson,
-                           u.FullName AS CurrentUserFullName
+                           u.FullName AS CurrentUserFullName,
+                           u.UserID AS CurrentHolderId 
                     FROM Devices d
                     LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID
                     LEFT JOIN Locations l ON d.LocationID = l.LocationID
@@ -43,19 +44,19 @@ namespace BTL_Nhom6.Services
             return list;
         }
 
-        // 2. Tìm kiếm nâng cao (Theo Form Tra Cứu)
+        // 2. Tìm kiếm (Đã sửa SQL để lấy thêm u.UserID)
         public List<Device> FindDevices(string keyword, int? locationId, int? statusId, string userKeyword)
         {
             List<Device> list = new List<Device>();
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                // [CẬP NHẬT] Thêm sup.Phone, sup.ContactPerson vào SELECT
                 StringBuilder sql = new StringBuilder(@"
                     SELECT d.*, 
                            m.ModelName, l.LocationName, s.StatusName, 
                            sup.SupplierName, sup.Phone AS SupplierPhone, sup.ContactPerson AS SupplierContactPerson,
-                           u.FullName AS CurrentUserFullName
+                           u.FullName AS CurrentUserFullName,
+                           u.UserID AS CurrentHolderId
                     FROM Devices d
                     LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID
                     LEFT JOIN Locations l ON d.LocationID = l.LocationID
@@ -80,7 +81,6 @@ namespace BTL_Nhom6.Services
                 sql.Append(" ORDER BY d.DeviceCode ASC");
 
                 MySqlCommand cmd = new MySqlCommand(sql.ToString(), conn);
-
                 if (!string.IsNullOrEmpty(keyword)) cmd.Parameters.AddWithValue("@Kw", "%" + keyword + "%");
                 if (locationId.HasValue && locationId.Value > 0) cmd.Parameters.AddWithValue("@LocID", locationId.Value);
                 if (statusId.HasValue && statusId.Value > 0) cmd.Parameters.AddWithValue("@StatID", statusId.Value);
@@ -97,7 +97,7 @@ namespace BTL_Nhom6.Services
             return list;
         }
 
-        // 3. Hàm Map dữ liệu chung (Giúp code gọn gàng)
+        // 3. Hàm Map (Đã bổ sung Map CurrentHolderId)
         private Device MapReaderToDevice(MySqlDataReader reader)
         {
             return new Device
@@ -117,12 +117,12 @@ namespace BTL_Nhom6.Services
                 LocationName = reader["LocationName"] != DBNull.Value ? reader["LocationName"].ToString() : "N/A",
                 StatusName = reader["StatusName"] != DBNull.Value ? reader["StatusName"].ToString() : "N/A",
                 SupplierName = reader["SupplierName"] != DBNull.Value ? reader["SupplierName"].ToString() : "-",
-
-                // [MỚI] Map thêm thông tin liên hệ
                 SupplierPhone = HasColumn(reader, "SupplierPhone") && reader["SupplierPhone"] != DBNull.Value ? reader["SupplierPhone"].ToString() : "",
                 SupplierContactPerson = HasColumn(reader, "SupplierContactPerson") && reader["SupplierContactPerson"] != DBNull.Value ? reader["SupplierContactPerson"].ToString() : "",
 
-                CurrentUserFullName = reader["CurrentUserFullName"] != DBNull.Value ? reader["CurrentUserFullName"].ToString() : "Chưa bàn giao"
+                // [MỚI] Map ID và Tên người dùng
+                CurrentUserFullName = reader["CurrentUserFullName"] != DBNull.Value ? reader["CurrentUserFullName"].ToString() : "Chưa bàn giao",
+                CurrentHolderId = HasColumn(reader, "CurrentHolderId") && reader["CurrentHolderId"] != DBNull.Value ? Convert.ToInt32(reader["CurrentHolderId"]) : 0
             };
         }
 
@@ -222,16 +222,12 @@ namespace BTL_Nhom6.Services
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                // SQL Logic:
-                // 1. Lấy thông tin thiết bị và join các bảng tên (giống GetAll)
-                // 2. Lấy thêm sup.Phone, sup.ContactPerson để hiển thị
-                // 3. Điều kiện WHERE: WarrantyExpiry >= Hôm nay VÀ <= Hôm nay + days ngày
-
                 string sql = @"
             SELECT d.*, 
                    m.ModelName, l.LocationName, s.StatusName, 
                    sup.SupplierName, sup.Phone AS SupplierPhone, sup.ContactPerson AS SupplierContactPerson,
-                   u.FullName AS CurrentUserFullName
+                   u.FullName AS CurrentUserFullName,
+                   u.UserID AS CurrentHolderId
             FROM Devices d
             LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID
             LEFT JOIN Locations l ON d.LocationID = l.LocationID
@@ -242,7 +238,7 @@ namespace BTL_Nhom6.Services
             WHERE d.WarrantyExpiry IS NOT NULL 
               AND d.WarrantyExpiry >= CURRENT_DATE()
               AND d.WarrantyExpiry <= DATE_ADD(CURRENT_DATE(), INTERVAL @days DAY)
-            ORDER BY d.WarrantyExpiry ASC"; // Sắp xếp cái nào hết hạn trước lên đầu
+            ORDER BY d.WarrantyExpiry ASC";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@days", days);
@@ -251,7 +247,6 @@ namespace BTL_Nhom6.Services
                 {
                     while (reader.Read())
                     {
-                        // Gọi hàm map dữ liệu (bạn cần cập nhật hàm MapReaderToDevice bên dưới nữa)
                         list.Add(MapReaderToDevice(reader));
                     }
                 }
@@ -273,27 +268,62 @@ namespace BTL_Nhom6.Services
             cmd.Parameters.AddWithValue("@Sup", dev.SupplierID.HasValue ? dev.SupplierID.Value : (object)DBNull.Value);
         }
 
-        // 10. Hàm chỉ cập nhật vị trí thiết bị (Không lưu lịch sử)
-        public bool UpdateDeviceLocation(string deviceCode, int newLocationId)
+        // [MỚI HOÀN TOÀN] 10. Hàm Điều Chuyển & Bàn Giao (Có Transaction)
+        // Hàm này thay thế hàm UpdateDeviceLocation cũ
+        public bool TransferAndHandover(string deviceCode, int newLocationId, int newUserId)
         {
             using (var conn = DatabaseHelper.GetConnection())
             {
-                try
+                conn.Open();
+                // Bắt đầu Transaction để đảm bảo cả 2 lệnh cùng thành công hoặc cùng thất bại
+                using (var transaction = conn.BeginTransaction())
                 {
-                    conn.Open();
-                    string sql = "UPDATE Devices SET LocationID = @NewLoc WHERE DeviceCode = @Code";
+                    try
+                    {
+                        MySqlCommand cmd = new MySqlCommand();
+                        cmd.Connection = conn;
+                        cmd.Transaction = transaction;
 
-                    MySqlCommand cmd = new MySqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@NewLoc", newLocationId);
-                    cmd.Parameters.AddWithValue("@Code", deviceCode);
+                        // BƯỚC 1: Cập nhật vị trí trong bảng Devices
+                        cmd.CommandText = "UPDATE Devices SET LocationID = @LocID WHERE DeviceCode = @Code";
+                        cmd.Parameters.AddWithValue("@LocID", newLocationId);
+                        cmd.Parameters.AddWithValue("@Code", deviceCode);
+                        cmd.ExecuteNonQuery();
 
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    return rowsAffected > 0;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Lỗi update vị trí: " + ex.Message);
-                    return false;
+                        // BƯỚC 2: Cập nhật người phụ trách trong bảng DeviceAssignments
+                        // Logic: Tìm dòng đang active (ReturnDate IS NULL) để update người mới
+                        cmd.Parameters.Clear(); // Xóa tham số cũ
+                        cmd.CommandText = @"UPDATE DeviceAssignments 
+                                            SET UserID = @UserID, AssignedDate = NOW() 
+                                            WHERE DeviceCode = @Code AND ReturnDate IS NULL";
+                        cmd.Parameters.AddWithValue("@UserID", newUserId);
+                        cmd.Parameters.AddWithValue("@Code", deviceCode);
+
+                        int rowsAssignments = cmd.ExecuteNonQuery();
+
+                        // Nếu không có dòng nào được update (nghĩa là thiết bị này chưa từng được giao cho ai - mới nhập)
+                        // Thì ta phải INSERT dòng mới
+                        if (rowsAssignments == 0)
+                        {
+                            cmd.Parameters.Clear();
+                            cmd.CommandText = @"INSERT INTO DeviceAssignments (DeviceCode, UserID, AssignedDate) 
+                                                VALUES (@Code, @UserID, NOW())";
+                            cmd.Parameters.AddWithValue("@Code", deviceCode);
+                            cmd.Parameters.AddWithValue("@UserID", newUserId);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Hoàn tất transaction
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Nếu lỗi thì rollback lại mọi thứ
+                        transaction.Rollback();
+                        Console.WriteLine("Lỗi TransferAndHandover: " + ex.Message);
+                        return false;
+                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ namespace BTL_Nhom6.Models
     public class MaintenanceRequest
     {
         // --- 1. CÁC THUỘC TÍNH GỐC (Mapping với cột trong Database) ---
+        // ... Các thuộc tính gốc giữ nguyên ...
         public int RequestID { get; set; }
         public string DeviceCode { get; set; }
         public int RequestedBy { get; set; }
@@ -14,18 +15,16 @@ namespace BTL_Nhom6.Models
         public string Status { get; set; }
         public string ProblemDescription { get; set; }
 
-        // --- 2. CÁC THUỘC TÍNH BỔ SUNG (BỊ THIẾU - CẦN THÊM VÀO ĐÂY) ---
-        // Hai thuộc tính này dùng để chứa kết quả JOIN từ bảng Devices và Users
+        // --- THUỘC TÍNH BỔ SUNG TỪ JOIN ---
         public string DeviceName { get; set; }
         public string RequesterName { get; set; }
 
-        // --- 3. CÁC THUỘC TÍNH BINDING CHO XAML (Tiếng Việt) ---
+        // [MỚI] Thêm thuộc tính này để hứng dữ liệu từ Service
+        public string TechnicianName { get; set; }
 
+        // --- BINDING CHO XAML (Giữ nguyên Tiếng Việt) ---
         public string MucUuTien => Priority;
-
-        // Sửa lại: Lấy tên thiết bị từ DeviceName chứ không phải DeviceCode
-        public string ThietBi => DeviceName;
-
+        public string ThietBi => DeviceName; // Binding đúng
         public string MaThietBi => DeviceCode;
 
         public string MoTaLoi => ProblemDescription;
@@ -48,12 +47,12 @@ namespace BTL_Nhom6.Models
         // Sửa lại: Lấy tên người dùng từ RequesterName
         public string NguoiYeuCau => RequesterName;
 
-        public string NguoiXuLy { get; set; } = "Admin";
+        // [SỬA] Logic hiển thị người xử lý
+        public string NguoiXuLy => !string.IsNullOrEmpty(TechnicianName) ? TechnicianName : "Chưa phân công";
 
         public string NgayYeuCau => RequestDate.ToString("dd/MM/yyyy HH:mm");
 
         public string NgayHoanTat => ActualCompletion?.ToString("dd/MM/yyyy") ?? "--";
-
-        public string GhiChu { get; set; }
+        public string GhiChu { get; set; } // Nếu bảng DB có cột Note thì map vào, ko thì để trống
     }
 }

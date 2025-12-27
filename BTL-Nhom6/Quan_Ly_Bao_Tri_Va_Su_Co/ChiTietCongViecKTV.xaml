@@ -48,14 +48,15 @@
             <!-- HEADER -->
             <Grid Grid.Row="0" Background="Transparent">
                 <StackPanel Orientation="Horizontal" Margin="32,24,0,10">
-                    <Button Style="{StaticResource MaterialDesignFlatButton}" 
-                            Padding="0" Width="40" Height="40" Click="Button_Back_Click" ToolTip="Quay lại">
+                    <Button Click="BtnBack_Click" Style="{StaticResource MaterialDesignFlatButton}" 
+                            Padding="0" Width="40" Height="40" ToolTip="Quay lại">
                         <materialDesign:PackIcon Kind="ArrowLeft" Width="28" Height="28" Foreground="{StaticResource PrimaryBlueBrush}"/>
                     </Button>
                     <TextBlock Text="Chi tiết danh sách công việc" 
                                FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
                                VerticalAlignment="Center" Margin="12,0,0,0"/>
                 </StackPanel>
+                <!--uc:WindowControlBar Loaded="WindowControlBar_Loaded" /-->
                 <uc:WindowControlBar />
             </Grid>
 
@@ -164,7 +165,7 @@
                                                 BorderThickness="0"
                                                 Height="30" Padding="12,0" FontSize="12"
                                                 materialDesign:ButtonAssist.CornerRadius="4"
-                                                Click="Button_CapNhatTienDo_Click"/>
+                                                Click="BtnUpdate_Click"/>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

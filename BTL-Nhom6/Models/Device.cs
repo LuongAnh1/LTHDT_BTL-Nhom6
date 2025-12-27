@@ -28,6 +28,8 @@ namespace BTL_Nhom6.Models
         // [QUAN TRỌNG] Bổ sung thuộc tính để hiển thị người đang giữ thiết bị
         // Dữ liệu này sẽ lấy từ bảng DeviceAssignments (những dòng có ReturnDate = NULL)
         public string CurrentUserFullName { get; set; }
+        // Thêm thuộc tính này để lưu ID người đang giữ
+        public int CurrentHolderId { get; set; }
 
         // Constructor
         public Device() { }

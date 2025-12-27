@@ -8,38 +8,29 @@ namespace BTL_Nhom6.Services
 {
     public class MaterialService
     {
-        // 1. Lấy danh sách Vật tư (KÈM TÊN ĐƠN VỊ TÍNH)
-        public List<Material> GetAllMaterials()
+        // Lấy tất cả vật tư kèm Tên đơn vị tính
+        public List<MaterialViewModel> GetAllMaterials()
         {
-            List<Material> list = new List<Material>();
-            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            List<MaterialViewModel> list = new List<MaterialViewModel>();
+            using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                // Sử dụng LEFT JOIN để lấy tên đơn vị từ bảng Units
-                string sql = @"
-                    SELECT m.*, u.UnitName 
-                    FROM Materials m 
-                    LEFT JOIN Units u ON m.UnitID = u.UnitID 
-                    ORDER BY m.MaterialID DESC";
+                string sql = @"SELECT m.MaterialID, m.MaterialName, u.UnitName, m.UnitPrice 
+                               FROM Materials m
+                               JOIN Units u ON m.UnitID = u.UnitID";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        list.Add(new Material
+                        list.Add(new MaterialViewModel
                         {
                             MaterialID = Convert.ToInt32(reader["MaterialID"]),
-                            MaterialName = reader["MaterialName"].ToString(),
-
-                            // Lấy ID từ bảng Materials
-                            UnitID = reader["UnitID"] != DBNull.Value ? Convert.ToInt32(reader["UnitID"]) : 0,
-
-                            // Lấy Tên từ bảng Units (để hiển thị)
-                            UnitName = reader["UnitName"] != DBNull.Value ? reader["UnitName"].ToString() : "N/A",
-
-                            CurrentStock = Convert.ToInt32(reader["CurrentStock"]),
-                            UnitPrice = Convert.ToDecimal(reader["UnitPrice"])
+                            TenVatTu = reader["MaterialName"].ToString(),
+                            DonVi = reader["UnitName"].ToString(),
+                            DonGia = Convert.ToDecimal(reader["UnitPrice"]),
+                            SoLuong = 1 // Mặc định chọn là 1
                         });
                     }
                 }
