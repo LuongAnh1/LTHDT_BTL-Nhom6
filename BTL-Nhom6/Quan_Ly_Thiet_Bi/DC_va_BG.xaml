@@ -28,8 +28,13 @@
         <Grid Grid.Column="1" Background="{StaticResource ContentBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <!-- Row 0: Chọn TB - Vị trí cũ -->
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
+                <!-- Row 1: Vị trí mới - Người cũ (MỚI) -->
+                <RowDefinition Height="Auto"/>
+                <!-- Row 2: Người mới (MỚI) - Ghi chú -->
+                <RowDefinition Height="Auto"/>
+                <!-- Row 3: Button -->
             </Grid.RowDefinitions>
 
             <!-- HEADER -->
@@ -101,28 +106,35 @@
                                              materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"/>
                                 </StackPanel>
 
-                                <!-- 3. VỊ TRÍ MỚI -->
+                                <!-- Vị trí mới (Bên trái) & Người phụ trách hiện tại -->
                                 <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,20">
                                     <TextBlock Text="Chuyển đến vị trí mới" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13"/>
-                                    <ComboBox x:Name="cbbViTriMoi"
-                                              Style="{StaticResource MaterialDesignOutlinedComboBox}" 
-                                              Height="45" 
-                                              Padding="12,0" VerticalContentAlignment="Center"
-                                              materialDesign:HintAssist.Hint="Chọn phòng ban/vị trí mới"
-                                              materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                                              DisplayMemberPath="LocationName"
-                                              SelectedValuePath="LocationID">
-                                    </ComboBox>
+                                    <ComboBox x:Name="cbbViTriMoi" Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                              Height="45" Padding="12,0" VerticalContentAlignment="Center"
+                                              materialDesign:HintAssist.Hint="Chọn phòng ban mới..."
+                                              DisplayMemberPath="LocationName" SelectedValuePath="LocationID"/>
                                 </StackPanel>
 
-                                <!-- 4. GHI CHÚ (Optional - chỉ để hiển thị cho đẹp form vì không lưu DB) -->
-                                <StackPanel Grid.Row="1" Grid.Column="2" Grid.RowSpan="2" Margin="0,0,0,20">
+                                <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,20">
+                                    <TextBlock Text="Người phụ trách hiện tại" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13"/>
+                                    <TextBox x:Name="txtNguoiHienTai" Text="-" IsEnabled="False" 
+                                                Style="{StaticResource MaterialDesignOutlinedTextBox}" Height="45" Padding="12,0" VerticalContentAlignment="Center"/>
+                                </StackPanel>
+
+                                <!-- Chọn người nhận mới  & Ghi chú  -->
+                                <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,0,20" VerticalAlignment="Top">
+                                    <TextBlock Text="Bàn giao cho nhân viên (Mới)" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13"/>
+                                    <ComboBox x:Name="cbbNguoiMoi" Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                              Height="45" Padding="12,0" VerticalContentAlignment="Center"
+                                              materialDesign:HintAssist.Hint="Chọn nhân viên nhận bàn giao..."
+                                              IsEditable="True"
+                                              DisplayMemberPath="FullName" SelectedValuePath="UserID"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="2" Grid.Column="2" Margin="0,0,0,20">
                                     <TextBlock Text="Ghi chú (Tùy chọn)" FontWeight="SemiBold" Margin="0,0,0,8" Foreground="{StaticResource TextSecondaryBrush}" FontSize="13"/>
-                                    <TextBox x:Name="txtGhiChu"
-                                             Style="{StaticResource MaterialDesignOutlinedTextBox}" Height="120" 
-                                             AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" 
-                                             Padding="12,10" materialDesign:HintAssist.Hint="Nhập ghi chú..."
-                                             materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"/>
+                                    <TextBox x:Name="txtGhiChu" Style="{StaticResource MaterialDesignOutlinedTextBox}" Height="80" 
+                                                AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top" Padding="12,10"/>
                                 </StackPanel>
 
                                 <!-- BUTTON XÁC NHẬN -->

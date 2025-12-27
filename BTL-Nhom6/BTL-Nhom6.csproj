@@ -166,16 +166,36 @@
     <Compile Include="Models\DeviceModel.cs" />
     <Compile Include="Models\DeviceStatus.cs" />
     <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\MaintenanceRequest.cs" />
+    <Compile Include="Models\MaintenanceSchedule.cs" />
     <Compile Include="Models\Material.cs" />
+    <Compile Include="Models\MaterialViewModel.cs" />
     <Compile Include="Models\ProductUnit.cs" />
+    <Compile Include="Models\RequestImage.cs" />
     <Compile Include="Models\Role.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="Models\Supplier.cs" />
     <Compile Include="Models\SupplierQuoteDTO.cs" />
     <Compile Include="Models\TechnicianSkillViewModel.cs" />
+    <Compile Include="Models\TechnicianViewModel.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\WorkOrder.cs" />
+    <Compile Include="Models\WorkOrderStatus.cs" />
+    <Compile Include="Models\WorkOrderViewModel.cs" />
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\AssignTaskDialog.xaml.cs">
+      <DependentUpon>AssignTaskDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CapNhatTrangThaiViec.xaml.cs">
+      <DependentUpon>CapNhatTrangThaiViec.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CapNhatYeuCau.xaml.cs">
+      <DependentUpon>CapNhatYeuCau.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChiTietCongViecKTV.xaml.cs">
       <DependentUpon>ChiTietCongViecKTV.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChonVatTuDialog.xaml.cs">
+      <DependentUpon>ChonVatTuDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\CNPCV.xaml.cs">
       <DependentUpon>CNPCV.xaml</DependentUpon>
@@ -188,6 +208,12 @@
     </Compile>
     <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\QLYCBT.xaml.cs">
       <DependentUpon>QLYCBT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\TaoYeuCauMoi.xaml.cs">
+      <DependentUpon>TaoYeuCauMoi.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Bao_Tri_Va_Su_Co\XemAnhChiTiet.xaml.cs">
+      <DependentUpon>XemAnhChiTiet.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Kho_Vat_Tu\DMVT_va_DM.xaml.cs">
       <DependentUpon>DMVT_va_DM.xaml</DependentUpon>
@@ -288,13 +314,18 @@
     <Compile Include="Services\DeviceStatusService.cs" />
     <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\LoggerService.cs" />
+    <Compile Include="Services\MaintenanceRequestService.cs" />
+    <Compile Include="Services\MaintenanceScheduleService.cs" />
     <Compile Include="Services\MaterialService.cs" />
+    <Compile Include="Services\RequestImagesService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\SkillService.cs" />
     <Compile Include="Services\SupplierQuoteDTOService.cs" />
     <Compile Include="Services\SupplierService.cs" />
+    <Compile Include="Services\TechnicianService.cs" />
     <Compile Include="Services\UnitService.cs" />
     <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\WorkOrderService.cs" />
     <Compile Include="Trang_Chu.xaml.cs">
       <DependentUpon>Trang_Chu.xaml</DependentUpon>
     </Compile>
@@ -390,7 +421,23 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\AssignTaskDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\CapNhatTrangThaiViec.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\CapNhatYeuCau.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChiTietCongViecKTV.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\ChonVatTuDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -407,6 +454,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\QLYCBT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\TaoYeuCauMoi.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Bao_Tri_Va_Su_Co\XemAnhChiTiet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

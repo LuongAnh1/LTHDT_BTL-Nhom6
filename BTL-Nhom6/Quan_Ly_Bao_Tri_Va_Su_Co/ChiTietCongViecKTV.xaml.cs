@@ -1,93 +1,137 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using BTL_Nhom6.Helper;
+using BTL_Nhom6.Models;
+using BTL_Nhom6.Services;
+using System.Collections.Generic;
+using System.Linq; // Để dùng hàm Where tìm kiếm
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Controls;
+using System.Windows.Media.Effects;
 
 namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 {
     public partial class ChiTietCongViecKTV : Window
     {
-        public ObservableCollection<PhieuCongViecModel> DanhSachPhieu { get; set; }
+        // Khai báo Service
+        private readonly UserService _userService = new UserService();
+        private readonly WorkOrderService _woService = new WorkOrderService(); // Cần có hàm lấy việc theo ID User
 
-        public ChiTietCongViecKTV(KyThuatVienModel ktv)
+        // Biến lưu trữ ID và danh sách gốc để tìm kiếm
+        private int _userId;
+        private List<WorkOrderViewModel> _allTasks; // Danh sách gốc để lọc
+
+        public ChiTietCongViecKTV(int userId)
         {
             InitializeComponent();
+            _userId = userId;
 
-            if (ktv != null)
-            {
-                // Hiển thị thông tin KTV lên header
-                txtTenKTV.Text = ktv.TenKTV;
-                txtMaNV.Text = "Mã NV: " + ktv.MaNV;
-                txtChuyenMon.Text = "Chuyên môn: " + ktv.ChuyenMon;
-                txtInitials.Text = ktv.Initials;
-                txtTrangThai.Text = ktv.TrangThai;
-            }
-
-            LoadCongViecSample();
-            this.DataContext = this;
+            // Load dữ liệu ngay khi khởi tạo
+            LoadTechnicianInfo();
+            LoadTasks();
         }
 
-        private void LoadCongViecSample()
-        {
-            var converter = new HeaderJobConverter();
-            DanhSachPhieu = new ObservableCollection<PhieuCongViecModel>
-            {
-                new PhieuCongViecModel {
-                    MaPhieu = "PCV001", TenThietBi = "Máy tính Dell OptiPlex",
-                    MoTaLoi = "Thay RAM và nâng cấp SSD", MucUuTien = "Cao",
-                    PriorityBg = (SolidColorBrush)converter.Convert("#FEE2E2"),
-                    PriorityFg = Brushes.Red,
-                    TrangThai = "Đang thực hiện", StatusColor = Brushes.Blue, StatusIcon = "ProgressWrench"
-                },
-                new PhieuCongViecModel {
-                    MaPhieu = "PCV042", TenThietBi = "Máy in HP LaserJet",
-                    MoTaLoi = "Kẹt giấy liên tục và mờ chữ", MucUuTien = "Trung bình",
-                    PriorityBg = (SolidColorBrush)converter.Convert("#FEF3C7"),
-                    PriorityFg = Brushes.DarkOrange,
-                    TrangThai = "Chờ linh kiện", StatusColor = Brushes.Orange, StatusIcon = "ClockOutline"
-                },
-                new PhieuCongViecModel {
-                    MaPhieu = "PCV089", TenThietBi = "Điều hòa Daikin 12000BTU",
-                    MoTaLoi = "Vệ sinh định kỳ và nạp gas", MucUuTien = "Thấp",
-                    PriorityBg = (SolidColorBrush)converter.Convert("#DCFCE7"),
-                    PriorityFg = Brushes.Green,
-                    TrangThai = "Hoàn thành", StatusColor = Brushes.Green, StatusIcon = "CheckCircleOutline"
-                }
-            };
-            dgCongViec.ItemsSource = DanhSachPhieu;
-        }
-
-        // PHẢI CÓ HÀM NÀY ĐỂ XAML KHÔNG LỖI
         private void SidebarMenu_Loaded(object sender, RoutedEventArgs e)
         {
+            // Xử lý sidebar nếu cần
         }
 
-        private void Button_Back_Click(object sender, RoutedEventArgs e)
+        // 1. Tải thông tin cá nhân KTV
+        private void LoadTechnicianInfo()
         {
-            this.Close();
+            var user = _userService.GetUserById(_userId);
+            if (user != null)
+            {
+                txtTenKTV.Text = user.FullName;
+                txtMaNV.Text = $"Mã NV: NV{user.UserID:D3}";
+
+                // Lấy 2 chữ cái đầu
+                string initials = "NV";
+                if (!string.IsNullOrEmpty(user.FullName))
+                {
+                    var parts = user.FullName.Trim().Split(' ');
+                    if (parts.Length == 1) initials = parts[0].Substring(0, 1).ToUpper();
+                    else initials = (parts[0].Substring(0, 1) + parts[parts.Length - 1].Substring(0, 1)).ToUpper();
+                }
+                txtInitials.Text = initials;
+
+                // Nếu bạn có lưu chuyên môn trong User hoặc cần lấy từ bảng khác
+                // Ở đây mình ví dụ gán cứng hoặc lấy từ hàm GetUserSkills nếu có
+                // txtChuyenMon.Text = "Chuyên môn: " + _userService.GetUserSkills(_userId);
+            }
         }
 
-        private void Button_CapNhatTienDo_Click(object sender, RoutedEventArgs e)
+        // 2. Tải danh sách công việc
+        private void LoadTasks()
         {
-            MessageBox.Show("Mở Form cập nhật tiến độ công việc...");
+            // Gọi Service lấy danh sách việc của User này
+            // Bạn cần thêm hàm GetWorkOrdersByTechId vào WorkOrderService
+            _allTasks = _woService.GetWorkOrdersByTechId(_userId);
+
+            // Hiển thị lên lưới
+            dgCongViec.ItemsSource = _allTasks;
         }
-    }
 
-    public class PhieuCongViecModel
-    {
-        public string MaPhieu { get; set; }
-        public string TenThietBi { get; set; }
-        public string MoTaLoi { get; set; }
-        public string MucUuTien { get; set; }
-        public SolidColorBrush PriorityBg { get; set; }
-        public SolidColorBrush PriorityFg { get; set; }
-        public string TrangThai { get; set; }
-        public SolidColorBrush StatusColor { get; set; }
-        public string StatusIcon { get; set; }
-    }
+        // 3. Sự kiện tìm kiếm
+        private void TxtSearchTask_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (_allTasks == null) return;
 
-    public class HeaderJobConverter
-    {
-        public object Convert(string hex) => (SolidColorBrush)new BrushConverter().ConvertFrom(hex);
+            string keyword = txtSearchTask.Text.ToLower().Trim();
+
+            if (string.IsNullOrEmpty(keyword))
+            {
+                dgCongViec.ItemsSource = _allTasks;
+            }
+            else
+            {
+                // Lọc theo Mã phiếu hoặc Tên thiết bị
+                var filtered = _allTasks.Where(x =>
+                    x.MaPhieu.ToLower().Contains(keyword) ||
+                    x.TenThietBi.ToLower().Contains(keyword)
+                ).ToList();
+
+                dgCongViec.ItemsSource = filtered;
+            }
+        }
+
+        // 4. Nút Quay lại
+        private void BtnBack_Click(object sender, RoutedEventArgs e)
+        {
+            // Quay lại trang CNPCV
+            NavigationHelper.Navigate(this, new CNPCV());
+        }
+
+        // 5. Nút Cập nhật trên lưới
+        private void BtnUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            var task = btn.DataContext as WorkOrderViewModel;
+
+            if (task != null)
+            {
+                // 1. Làm mờ form hiện tại
+                BlurEffect blur = new BlurEffect { Radius = 15 };
+                this.Effect = blur;
+
+                // 2. Mở form cập nhật
+                CapNhatTrangThaiViec dialog = new CapNhatTrangThaiViec(
+                    task.WorkOrderID,
+                    task.MaPhieu,
+                    task.TrangThai,
+                    task.MoTaLoi // Hoặc truyền Solution nếu Model có trường riêng
+                );
+
+                bool? result = dialog.ShowDialog();
+
+                // 3. Xóa hiệu ứng mờ
+                this.Effect = null;
+
+                // 4. Nếu cập nhật thành công -> Load lại dữ liệu
+                if (result == true)
+                {
+                    LoadTasks();
+                }
+            }
+        }
+
     }
 }
