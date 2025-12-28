@@ -124,6 +124,7 @@
                         <Grid>
                             <materialDesign:PackIcon Kind="Magnify" Foreground="Gray" VerticalAlignment="Center" Margin="12,0,0,0" Width="20" Height="20"/>
                             <TextBox x:Name="txtSearch" 
+                                     KeyDown="TxtSearch_KeyDown"
                                      BorderThickness="0" 
                                      Padding="40,0,10,0" 
                                      VerticalAlignment="Center" 
@@ -140,7 +141,8 @@
                             BorderThickness="0" 
                             Height="40" 
                             Padding="16,0" 
-                            materialDesign:ButtonAssist.CornerRadius="4">
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Click="Button_TaoPhieu_Click">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="20" Height="20" Margin="0,0,8,0" VerticalAlignment="Center"/>
                             <TextBlock Text="Tạo phiếu nhập mới" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold"/>
@@ -264,8 +266,8 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <!-- 6. Hành động -->
-                            <DataGridTemplateColumn Header="HÀNH ĐỘNG" Width="140">
+                            <!-- Cột 6: Hành động -->
+                            <DataGridTemplateColumn Header="HÀNH ĐỘNG" Width="180">
                                 <DataGridTemplateColumn.HeaderStyle>
                                     <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
                                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -274,18 +276,53 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <!-- Nút Xem chi tiết -->
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Xem chi tiết">
+
+                                            <!-- NÚT DUYỆT (Mới thêm) -->
+                                            <Button
+                                                    ToolTip="Duyệt nhập kho"
+                                                    Tag="APPROVE"
+                                                    Click="Button_Action_Click"
+                                                    Foreground="#2E7D32">
+                                                <!-- Màu xanh lá -->
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="18" Height="18"/>
+
+                                                <!-- Trigger: Chỉ hiện khi TrangThai == 'Chờ duyệt' -->
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource IconActionButton}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <!-- Mặc định ẩn -->
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Chờ duyệt">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <!-- Nút Xem chi tiết: Tag="VIEW" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                        ToolTip="Xem chi tiết"
+                        Tag="VIEW"
+                        Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="EyeOutline" Foreground="Gray" Width="18" Height="18"/>
                                             </Button>
-                                            <!-- Nút Sửa -->
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Chỉnh sửa">
+
+                                            <!-- Nút Sửa: Tag="EDIT" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                        ToolTip="Chỉnh sửa"
+                        Tag="EDIT"
+                        Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="Pencil" Foreground="{StaticResource HighlightBlueBrush}" Width="16" Height="16"/>
                                             </Button>
-                                            <!-- Nút Xóa -->
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Xóa">
+
+                                            <!-- Nút Xóa: Tag="DELETE" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                        ToolTip="Hủy phiếu"
+                        Tag="DELETE"
+                        Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="Delete" Foreground="{StaticResource DeleteIconBrush}" Width="16" Height="16"/>
                                             </Button>
+
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

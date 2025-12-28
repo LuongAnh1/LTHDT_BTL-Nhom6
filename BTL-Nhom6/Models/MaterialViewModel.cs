@@ -9,7 +9,19 @@ namespace BTL_Nhom6.Models
         public int MaterialID { get; set; }
         public string TenVatTu { get; set; }
         public string DonVi { get; set; } // Tên đơn vị tính (Cái, Hộp...)
-        public decimal DonGia { get; set; }
+        
+        private decimal _donGia;
+        public decimal DonGia
+        {
+            get => _donGia;
+            set
+            {
+                _donGia = value;
+                OnPropertyChanged();
+                // QUAN TRỌNG: Khi sửa giá, phải báo tính lại Thành tiền
+                OnPropertyChanged(nameof(ThanhTien));
+            }
+        }
 
         private int _soLuong;
         public int SoLuong
@@ -19,12 +31,12 @@ namespace BTL_Nhom6.Models
             {
                 _soLuong = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(ThanhTien)); // Báo cho giao diện cập nhật Thành tiền
+                // QUAN TRỌNG: Khi sửa số lượng, phải báo tính lại Thành tiền
+                OnPropertyChanged(nameof(ThanhTien));
             }
         }
 
-        // Thành tiền = Đơn giá * Số lượng
-        public decimal ThanhTien => DonGia * SoLuong;
+        public decimal ThanhTien => SoLuong * DonGia;
 
         // Sự kiện cập nhật giao diện
         public event PropertyChangedEventHandler PropertyChanged;

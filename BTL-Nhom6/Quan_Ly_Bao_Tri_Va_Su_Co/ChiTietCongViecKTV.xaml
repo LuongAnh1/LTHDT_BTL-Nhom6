@@ -116,17 +116,18 @@
                 <!-- DataGrid -->
                 <Border Grid.Row="1" Background="White" CornerRadius="8" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True">
                     <DataGrid x:Name="dgCongViec" 
-                              AutoGenerateColumns="False" 
-                              CanUserAddRows="False"
-                              HeadersVisibility="Column" 
-                              Background="White"
-                              BorderThickness="0"
-                              GridLinesVisibility="Horizontal"
-                              HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
-                              ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}"
-                              VerticalScrollBarVisibility="Auto">
+              AutoGenerateColumns="False" 
+              CanUserAddRows="False"
+              HeadersVisibility="Column" 
+              Background="White"
+              BorderThickness="0"
+              GridLinesVisibility="Horizontal"
+              HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
+              ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}"
+              VerticalScrollBarVisibility="Auto">
 
                         <DataGrid.Columns>
+                            <!-- Các cột thông tin giữ nguyên -->
                             <DataGridTextColumn Header="MÃ PHIẾU" Binding="{Binding MaPhieu}" Width="120" FontWeight="Bold"/>
                             <DataGridTextColumn Header="THIẾT BỊ" Binding="{Binding TenThietBi}" Width="220"/>
                             <DataGridTextColumn Header="MÔ TẢ LỖI" Binding="{Binding MoTaLoi}" Width="*"/>
@@ -154,21 +155,62 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <!-- Hành động -->
-                            <DataGridTemplateColumn Header="THAO TÁC" Width="140">
+                            <!-- ================================================================= -->
+                            <!-- CỘT THAO TÁC (ĐÃ SỬA: Xử lý ẩn hiện nút Cập nhật / Xóa) -->
+                            <!-- ================================================================= -->
+                            <DataGridTemplateColumn Header="THAO TÁC" Width="160">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Content="Cập nhật" 
-                                                Foreground="White"
-                                                Style="{StaticResource MaterialDesignRaisedButton}" 
-                                                Background="{StaticResource PrimaryBlueBrush}"
-                                                BorderThickness="0"
-                                                Height="30" Padding="12,0" FontSize="12"
-                                                materialDesign:ButtonAssist.CornerRadius="4"
-                                                Click="BtnUpdate_Click"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                                            <!-- NÚT 1: CẬP NHẬT (Ẩn nếu trạng thái là Hủy bỏ) -->
+                                            <Button Content="Cập nhật" 
+                                    Foreground="White"
+                                    Background="{StaticResource PrimaryBlueBrush}"
+                                    BorderThickness="0"
+                                    Height="30" Padding="12,0" FontSize="12"
+                                    materialDesign:ButtonAssist.CornerRadius="4"
+                                    Click="BtnUpdate_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <!-- Nếu trạng thái là Hủy bỏ -> Ẩn nút Cập nhật -->
+                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Hủy bỏ">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- NÚT 2: XÓA -->
+                                            <Button ToolTip="Xóa phiếu đã hủy"
+        Height="30" Width="30" Margin="8,0,0,0"
+        Click="BtnDeleteWO_Click">
+
+                                                <materialDesign:PackIcon Kind="DeleteForever" Foreground="Red" Width="20" Height="20"/>
+
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+                                                        <!-- MẶC ĐỊNH LÀ ẨN (Collapsed) -->
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+
+                                                        <Style.Triggers>
+                                                            <!-- CHỈ HIỆN KHI TRẠNG THÁI LÀ "Hủy bỏ" -->
+                                                            <DataTrigger Binding="{Binding TrangThai}" Value="Hủy bỏ">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                        </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+
                         </DataGrid.Columns>
                     </DataGrid>
                 </Border>

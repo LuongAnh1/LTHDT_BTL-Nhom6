@@ -133,5 +133,44 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
             }
         }
 
+        // 6. Nút Xóa trên lưới 
+        private void BtnDeleteWO_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            var task = btn.DataContext as WorkOrderViewModel;
+
+            if (task != null)
+            {
+                // 1. KIỂM TRA LOGIC CHẶN XÓA
+                // Chỉ cho phép xóa nếu trạng thái là "Hủy bỏ"
+                // (Lưu ý: Chuỗi "Hủy bỏ" phải khớp với dữ liệu hiển thị trên lưới)
+                if (task.TrangThai != "Hủy bỏ")
+                {
+                    MessageBox.Show("Chỉ được phép xóa các phiếu đã có trạng thái 'Hủy bỏ'!",
+                                    "Cảnh báo",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    return; // Dừng lại, không xóa
+                }
+
+                // 2. XÁC NHẬN XÓA
+                if (MessageBox.Show($"Bạn có chắc chắn muốn xóa vĩnh viễn phiếu {task.MaPhieu}?\nHành động này không thể hoàn tác.",
+                                    "Xác nhận",
+                                    MessageBoxButton.YesNo,
+                                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+                {
+                    // 3. GỌI SERVICE XÓA
+                    if (_woService.DeleteWorkOrder(task.WorkOrderID))
+                    {
+                        MessageBox.Show("Đã xóa thành công!", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
+                        LoadTasks(); // Tải lại danh sách để cập nhật giao diện
+                    }
+                    else
+                    {
+                        MessageBox.Show("Lỗi khi xóa phiếu. Vui lòng thử lại.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
     }
 }
