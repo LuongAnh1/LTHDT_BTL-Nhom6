@@ -37,5 +37,12 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
                 MessageBox.Show("Vui lòng chọn một vật tư!");
             }
         }
+
+        // Sự kiện Click đúp vào dòng
+        private void DgKho_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Gọi lại hàm xử lý của nút Chọn
+            BtnChon_Click(sender, e);
+        }
     }
 }

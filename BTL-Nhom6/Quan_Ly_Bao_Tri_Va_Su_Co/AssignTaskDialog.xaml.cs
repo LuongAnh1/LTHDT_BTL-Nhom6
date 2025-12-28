@@ -49,9 +49,7 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
         {
             try
             {
-                // Gọi hàm lấy danh sách User với RoleID = 3 (Kỹ thuật viên)
-                // Hàm này bạn đã có trong UserService: GetAllUsers(string keyword, int roleID)
-                var technicians = _userService.GetAllUsers("", 3);
+                var technicians = _userService.GetTechnicians();
 
                 cboTechnician.ItemsSource = technicians;
 

@@ -90,35 +90,6 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
             }
         }
 
-        // Xử lý nút SỬA / DUYỆT
-        private void Button_Edit_Click(object sender, RoutedEventArgs e)
-        {
-            // Lấy dòng hiện tại
-            Button btn = sender as Button;
-            MaintenanceRequest selectedReq = btn.DataContext as MaintenanceRequest;
-
-            if (selectedReq != null)
-            {
-                // Hiệu ứng làm mờ
-                System.Windows.Media.Effects.BlurEffect blurObj = new System.Windows.Media.Effects.BlurEffect();
-                blurObj.Radius = 15;
-                this.Effect = blurObj;
-
-                // Mở form cập nhật và truyền object vào
-                CapNhatYeuCau form = new CapNhatYeuCau(selectedReq);
-                bool? result = form.ShowDialog();
-
-                // Gỡ hiệu ứng mờ
-                this.Effect = null;
-
-                // Nếu lưu thành công thì load lại data
-                if (result == true)
-                {
-                    LoadData();
-                }
-            }
-        }
-
         // Xử lý nút XÓA
         private void Button_Delete_Click(object sender, RoutedEventArgs e)
         {
@@ -127,26 +98,42 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 
             if (selectedReq != null)
             {
-                // Chỉ cho xóa nếu trạng thái là Pending
-                if (selectedReq.Status != "Pending")
+                // --- SỬA ĐỔI TẠI ĐÂY ---
+                // Logic cũ: Chỉ cho xóa Pending hoặc Rejected
+                // Logic mới: Chỉ chặn xóa "Approved" (Đang thực hiện). 
+                // Còn lại (Pending, Rejected, Completed) đều cho xóa.
+
+                if (selectedReq.Status == "Approved" || selectedReq.Status == "Đang thực hiện")
                 {
-                    MessageBox.Show("Chỉ có thể xóa yêu cầu đang chờ xử lý!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Không thể xóa yêu cầu đang được kỹ thuật viên xử lý!\n" +
+                                    "Vui lòng Hủy phiếu công việc trước hoặc đợi hoàn thành.",
+                                    "Cảnh báo",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
                     return;
                 }
 
-                var result = MessageBox.Show($"Bạn có chắc muốn xóa yêu cầu của thiết bị {selectedReq.MaThietBi}?",
-                    "Xác nhận", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                // Cảnh báo kỹ hơn nếu xóa mục đã hoàn thành
+                string warningMsg = $"Bạn có chắc chắn muốn xóa yêu cầu: {selectedReq.DeviceName}?";
+                if (selectedReq.Status == "Completed")
+                {
+                    warningMsg += "\n\nCẢNH BÁO: Yêu cầu này ĐÃ HOÀN THÀNH. " +
+                                  "Việc xóa sẽ làm mất vĩnh viễn lịch sử bảo trì và phiếu công việc liên quan!";
+                }
+
+                var result = MessageBox.Show(warningMsg, "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
+                    // Gọi Service xóa (Hàm này phải xử lý Transaction xóa WorkOrder trước)
                     if (_service.DeleteRequest(selectedReq.RequestID))
                     {
                         LoadData();
-                        MessageBox.Show("Đã xóa thành công.");
+                        MessageBox.Show("Đã xóa dữ liệu thành công.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
                     else
                     {
-                        MessageBox.Show("Lỗi khi xóa.");
+                        MessageBox.Show("Có lỗi xảy ra khi xóa (Có thể do ràng buộc dữ liệu).", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
             }

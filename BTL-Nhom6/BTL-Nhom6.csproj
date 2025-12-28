@@ -165,10 +165,12 @@
     <Compile Include="Models\DeviceAssignment.cs" />
     <Compile Include="Models\DeviceModel.cs" />
     <Compile Include="Models\DeviceStatus.cs" />
+    <Compile Include="Models\ImportViewModel.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\MaintenanceRequest.cs" />
     <Compile Include="Models\MaintenanceSchedule.cs" />
     <Compile Include="Models\Material.cs" />
+    <Compile Include="Models\MaterialCatalogViewModel.cs" />
     <Compile Include="Models\MaterialViewModel.cs" />
     <Compile Include="Models\ProductUnit.cs" />
     <Compile Include="Models\RequestImage.cs" />
@@ -223,6 +225,12 @@
     </Compile>
     <Compile Include="Quan_Ly_Kho_Vat_Tu\NKVT.xaml.cs">
       <DependentUpon>NKVT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Kho_Vat_Tu\TaoPhieuNhapDialog.xaml.cs">
+      <DependentUpon>TaoPhieuNhapDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Kho_Vat_Tu\ThemVatTuDialog.xaml.cs">
+      <DependentUpon>ThemVatTuDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Kho_Vat_Tu\XKVT.xaml.cs">
       <DependentUpon>XKVT.xaml</DependentUpon>
@@ -312,6 +320,7 @@
     <Compile Include="Services\DeviceModelService.cs" />
     <Compile Include="Services\DeviceService.cs" />
     <Compile Include="Services\DeviceStatusService.cs" />
+    <Compile Include="Services\ImportService.cs" />
     <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\LoggerService.cs" />
     <Compile Include="Services\MaintenanceRequestService.cs" />
@@ -474,6 +483,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Ly_Kho_Vat_Tu\NKVT.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Kho_Vat_Tu\TaoPhieuNhapDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Kho_Vat_Tu\ThemVatTuDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

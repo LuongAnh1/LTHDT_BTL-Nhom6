@@ -157,14 +157,38 @@ namespace BTL_Nhom6.Services
         // 4. Xóa yêu cầu (Chỉ cho phép khi Pending)
         public bool DeleteRequest(int requestId)
         {
-            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                // Check status trước khi xóa nếu cần
-                string sql = "DELETE FROM MaintenanceRequests WHERE RequestID = @ID AND Status = 'Pending'";
-                MySqlCommand cmd = new MySqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@ID", requestId);
-                return cmd.ExecuteNonQuery() > 0;
+                using (var transaction = conn.BeginTransaction()) // <--- Bắt buộc phải có Transaction
+                {
+                    try
+                    {
+                        MySqlCommand cmd = new MySqlCommand("", conn, transaction);
+
+                        // 1. Xóa WorkOrders (Phiếu công việc) liên quan trước
+                        // Vì mục Completed chắc chắn có phiếu công việc đi kèm
+                        cmd.CommandText = "DELETE FROM WorkOrders WHERE RequestID = @ID";
+                        cmd.Parameters.AddWithValue("@ID", requestId);
+                        cmd.ExecuteNonQuery();
+
+                        // 2. Xóa Ảnh minh chứng (nếu bảng ảnh ko có ON DELETE CASCADE trong SQL)
+                        cmd.CommandText = "DELETE FROM RequestImages WHERE RequestID = @ID";
+                        cmd.ExecuteNonQuery();
+
+                        // 3. Sau đó mới xóa Yêu cầu
+                        cmd.CommandText = "DELETE FROM MaintenanceRequests WHERE RequestID = @ID";
+                        int rows = cmd.ExecuteNonQuery();
+
+                        transaction.Commit();
+                        return rows > 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+                }
             }
         }
 
@@ -221,6 +245,21 @@ namespace BTL_Nhom6.Services
                     cmd.Parameters.AddWithValue("@ActualCompletion", DBNull.Value);
 
                 return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
+        // Hàm kiểm tra xem RequestID này đã có WorkOrder nào chưa
+        public bool HasWorkOrder(int requestId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string sql = "SELECT COUNT(*) FROM WorkOrders WHERE RequestID = @ID";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@ID", requestId);
+
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+                return count > 0;
             }
         }
     }

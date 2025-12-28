@@ -35,8 +35,20 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 
         private void BtnHuy_Click(object sender, RoutedEventArgs e)
         {
-            this.DialogResult = false;
-            this.Close();
+            // 1. Hiển thị hộp thoại xác nhận
+            MessageBoxResult result = MessageBox.Show("Bạn có chắc chắn muốn hủy bỏ thao tác này không?\nDữ liệu đang nhập sẽ không được lưu.",
+                                                      "Xác nhận hủy",
+                                                      MessageBoxButton.YesNo,
+                                                      MessageBoxImage.Question);
+
+            // 2. Kiểm tra kết quả người dùng chọn
+            if (result == MessageBoxResult.Yes)
+            {
+                // Nếu chọn Yes -> Đóng form
+                this.DialogResult = false;
+                this.Close();
+            }
+            // Nếu chọn No -> Không làm gì cả, giữ nguyên màn hình
         }
 
         private void BtnLuu_Click(object sender, RoutedEventArgs e)

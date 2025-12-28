@@ -263,5 +263,43 @@ namespace BTL_Nhom6.Services
                 return updateCmd.ExecuteNonQuery() > 0;
             }
         }
+
+        // 10. Lấy danh sách Kỹ thuật viên (RoleName chứa "Kỹ thuật viên")
+        public List<User> GetTechnicians()
+        {
+            List<User> list = new List<User>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // Logic: Lấy tất cả User mà tên Vai trò có chứa chữ "Kỹ thuật viên"
+                string sql = @"SELECT u.*, r.RoleName 
+                       FROM Users u 
+                       JOIN Roles r ON u.RoleID = r.RoleID
+                       WHERE r.RoleName LIKE '%Kỹ thuật viên%' 
+                       AND u.IsActive = TRUE";
+
+                // Hoặc nếu bạn muốn fix cứng ID 3, 4, 5 thì dùng câu này:
+                // string sql = "SELECT * FROM Users WHERE RoleID IN (3, 4, 5) AND IsActive = TRUE";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new User()
+                        {
+                            UserID = Convert.ToInt32(reader["UserID"]),
+                            Username = reader["Username"].ToString(),
+                            FullName = reader["FullName"].ToString(),
+                            RoleID = Convert.ToInt32(reader["RoleID"]),
+                            // ... map thêm các trường khác nếu cần
+                        });
+                    }
+                }
+            }
+            return list;
+        }
     }
 }
