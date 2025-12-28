@@ -304,16 +304,54 @@
                             <DataGridTemplateColumn Header="TÁC VỤ" Width="Auto" MinWidth="150">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Button Style="{StaticResource MaterialDesignOutlinedButton}" 
-                                                Height="32" Padding="10,0" Margin="5,0"
-                                                HorizontalAlignment="Center"
-                                                BorderBrush="#00695C" Foreground="#00695C"
-                                                Click="BtnThucHienDinhKy_Click" ToolTip="Lên lịch thực hiện ngay">
-                                            <StackPanel Orientation="Horizontal">
-                                                <materialDesign:PackIcon Kind="PlayBoxOutline" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                                                <TextBlock Text="Thực hiện" FontSize="12" FontWeight="Bold"/>
-                                            </StackPanel>
-                                        </Button>
+                                        <Grid>
+                                            <!-- 1. NÚT THỰC HIỆN -->
+                                            <!-- Mặc định là HIỆN. Nếu IsProcessing = True thì ẨN -->
+                                            <Button Height="32" Padding="10,0" Margin="5,0"
+                        HorizontalAlignment="Center"
+                        BorderBrush="#00695C" Foreground="#00695C"
+                        Click="BtnThucHienDinhKy_Click" 
+                        ToolTip="Lên lịch thực hiện ngay">
+
+                                                <StackPanel Orientation="Horizontal">
+                                                    <materialDesign:PackIcon Kind="PlayBoxOutline" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Thực hiện" FontSize="12" FontWeight="Bold"/>
+                                                </StackPanel>
+
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+                                                        <!-- Mặc định hiện -->
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <!-- Trigger: Nếu IsProcessing = True (Đang có người làm) -> Ẩn nút đi -->
+                                                            <DataTrigger Binding="{Binding IsProcessing}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <!-- 2. THÔNG BÁO NGƯỜI ĐANG LÀM -->
+                                            <!-- Mặc định là ẨN. Nếu IsProcessing = True thì HIỆN -->
+                                            <Border Background="#FFF3E0" CornerRadius="4" Padding="8,4" HorizontalAlignment="Center">
+                                                <TextBlock Text="{Binding TechnicianName, StringFormat='Đang làm: {0}'}" 
+                               FontSize="12" Foreground="#E65100" FontWeight="Bold"/>
+
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <!-- Mặc định ẩn -->
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <!-- Trigger: Nếu IsProcessing = True -> Hiện thông báo lên -->
+                                                            <DataTrigger Binding="{Binding IsProcessing}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                            </Border>
+                                        </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

@@ -133,26 +133,87 @@ namespace BTL_Nhom6.Services
         {
             using (MySqlConnection conn = DatabaseHelper.GetConnection())
             {
-                try
+                conn.Open();
+                // Sử dụng Transaction để đảm bảo tính toàn vẹn dữ liệu
+                using (var trans = conn.BeginTransaction())
                 {
-                    conn.Open();
-                    string sql = @"UPDATE WorkOrders 
-                           SET StatusID = @Stat, 
-                               Solution = @Sol,
-                               EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END
-                           WHERE WorkOrderID = @ID";
+                    try
+                    {
+                        MySqlCommand cmd = new MySqlCommand("", conn, trans);
 
-                    MySqlCommand cmd = new MySqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@Stat", newStatusId);
-                    cmd.Parameters.AddWithValue("@Sol", solution ?? "");
-                    cmd.Parameters.AddWithValue("@ID", workOrderId);
+                        // 1. Cập nhật trạng thái WorkOrder (Bảng con)
+                        // Cập nhật ngày kết thúc nếu trạng thái là Hoàn thành (Giả sử ID 3 là Hoàn thành)
+                        string sqlUpdateWO = @"UPDATE WorkOrders 
+                                       SET StatusID = @Stat, 
+                                           Solution = @Sol,
+                                           EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END
+                                       WHERE WorkOrderID = @ID";
 
-                    return cmd.ExecuteNonQuery() > 0;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Lỗi UpdateWorkOrder: " + ex.Message);
-                    return false;
+                        cmd.CommandText = sqlUpdateWO;
+                        cmd.Parameters.AddWithValue("@Stat", newStatusId);
+                        cmd.Parameters.AddWithValue("@Sol", solution ?? "");
+                        cmd.Parameters.AddWithValue("@ID", workOrderId);
+                        cmd.ExecuteNonQuery();
+
+                        // 2. ĐỒNG BỘ TRẠNG THÁI SANG MAINTENANCE REQUEST (Bảng cha)
+                        // Bước 2.1: Lấy RequestID liên quan đến WorkOrder này
+                        cmd.Parameters.Clear();
+                        cmd.CommandText = "SELECT RequestID FROM WorkOrders WHERE WorkOrderID = @WOID";
+                        cmd.Parameters.AddWithValue("@WOID", workOrderId);
+
+                        object reqIdObj = cmd.ExecuteScalar();
+
+                        if (reqIdObj != null && reqIdObj != DBNull.Value)
+                        {
+                            int requestId = Convert.ToInt32(reqIdObj);
+                            string reqStatus = "";
+
+                            // Bước 2.2: Xác định trạng thái cần update cho Request
+                            // Giả sử: 3 = Hoàn thành, 4 (hoặc 5) = Hủy bỏ. Bạn cần check lại bảng WorkOrderStatus của bạn.
+                            if (newStatusId == 3)
+                            {
+                                reqStatus = "Completed"; // Đồng bộ sang bảng Request
+                            }
+                            else if (newStatusId == 4 || newStatusId == 5) // Ví dụ 4 là Hủy
+                            {
+                                // Nếu hủy phiếu làm việc, trạng thái yêu cầu quay về Chờ xử lý để phân công người khác
+                                // Hoặc chuyển sang Rejected tùy nghiệp vụ của bạn
+                                reqStatus = "Pending";
+                            }
+
+                            // Bước 2.3: Thực hiện Update bảng MaintenanceRequests
+                            if (!string.IsNullOrEmpty(reqStatus))
+                            {
+                                cmd.Parameters.Clear();
+                                string sqlUpdateReq = "";
+
+                                if (reqStatus == "Completed")
+                                {
+                                    // Nếu hoàn thành thì cập nhật cả ngày hoàn tất
+                                    sqlUpdateReq = "UPDATE MaintenanceRequests SET Status = @RStat, ActualCompletion = NOW() WHERE RequestID = @RID";
+                                }
+                                else
+                                {
+                                    sqlUpdateReq = "UPDATE MaintenanceRequests SET Status = @RStat WHERE RequestID = @RID";
+                                }
+
+                                cmd.CommandText = sqlUpdateReq;
+                                cmd.Parameters.AddWithValue("@RStat", reqStatus);
+                                cmd.Parameters.AddWithValue("@RID", requestId);
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+
+                        // 3. Commit Transaction
+                        trans.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        trans.Rollback();
+                        Console.WriteLine(ex.Message);
+                        return false;
+                    }
                 }
             }
         }
@@ -326,6 +387,20 @@ namespace BTL_Nhom6.Services
                 }
             }
             return result;
+        }
+
+        // 9. Xóa Phiếu công việc (Chỉ khi trạng thái là Hủy bỏ)
+        public bool DeleteWorkOrder(int workOrderId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                // Chỉ cho phép xóa nếu trạng thái là Hủy bỏ (StatusID = 5 - Ví dụ)
+                string sql = "DELETE FROM WorkOrders WHERE WorkOrderID = @ID AND StatusID = 5";
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@ID", workOrderId);
+                return cmd.ExecuteNonQuery() > 0;
+            }
         }
     }
 }

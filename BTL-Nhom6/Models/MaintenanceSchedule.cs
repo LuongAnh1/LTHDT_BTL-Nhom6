@@ -22,5 +22,8 @@ namespace BTL_Nhom6.Models
         public string TenCongViec => TaskName;
         public int TanSuat => FrequencyDays;
         public DateTime NgayDenHan => NextMaintenanceDate;
+
+        public bool IsProcessing { get; set; } // Đang có người làm
+        public string TechnicianName { get; set; } // Tên người làm
     }
 }

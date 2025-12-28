@@ -16,8 +16,20 @@
             <TextBlock Text="KHO VẬT TƯ" FontSize="20" FontWeight="Bold" Margin="0,0,0,16"/>
 
             <!-- Listbox hoặc Datagrid để chọn -->
-            <DataGrid x:Name="dgKho" Grid.Row="1" AutoGenerateColumns="False" CanUserAddRows="False" SelectionMode="Single">
+            <DataGrid x:Name="dgKho" 
+          Grid.Row="1" 
+          AutoGenerateColumns="False" 
+          CanUserAddRows="False" 
+          SelectionMode="Single"
+          
+          IsReadOnly="True"          
+          SelectionUnit="FullRow"    
+          
+          MouseDoubleClick="DgKho_MouseDoubleClick">
+                <!-- (Tùy chọn) Thêm sự kiện click đúp để chọn nhanh -->
+
                 <DataGrid.Columns>
+                    <!-- Các cột giữ nguyên -->
                     <DataGridTextColumn Header="Tên vật tư" Binding="{Binding TenVatTu}" Width="*"/>
                     <DataGridTextColumn Header="Đơn vị" Binding="{Binding DonVi}" Width="100"/>
                     <DataGridTextColumn Header="Giá" Binding="{Binding DonGia, StringFormat={}{0:N0}}" Width="100"/>
