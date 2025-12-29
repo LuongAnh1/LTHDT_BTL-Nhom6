@@ -158,7 +158,8 @@
                     Background="{StaticResource PrimaryBlueBrush}" 
                     BorderThickness="0" 
                     Height="36" 
-                    materialDesign:ButtonAssist.CornerRadius="4">
+                    materialDesign:ButtonAssist.CornerRadius="4"
+                    Click="BtnFilter_Click">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="FilterVariant" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
                     <TextBlock Text="Lọc dữ liệu" Foreground="White" VerticalAlignment="Center" FontWeight="Medium"/>
