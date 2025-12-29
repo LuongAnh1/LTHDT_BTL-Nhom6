@@ -171,14 +171,33 @@
                                     <DataGridTextColumn Header="SL ĐÃ XUẤT" Binding="{Binding SoLuongXuat}" Width="120" IsReadOnly="True" FontWeight="Bold"/>
 
                                     <!-- CỘT SỬA: SL THỰC TẾ (KTV nhập) -->
+                                    <!-- Cột SL THỰC TẾ (Đã sửa lỗi bị chèn chữ) -->
                                     <DataGridTemplateColumn Header="SL THỰC TẾ" Width="120">
+
+                                        <!-- 1. Ghi đè CellStyle để bỏ Padding của ô lưới, tạo không gian tối đa -->
+                                        <DataGridTemplateColumn.CellStyle>
+                                            <Style TargetType="DataGridCell" BasedOn="{StaticResource CustomDataGridCell}">
+                                                <Setter Property="Padding" Value="4"/>
+                                                <!-- Giảm padding xuống nhỏ nhất -->
+                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                            </Style>
+                                        </DataGridTemplateColumn.CellStyle>
+
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
+                                                <!-- 2. Tinh chỉnh TextBox -->
                                                 <TextBox Text="{Binding SoLuong, UpdateSourceTrigger=PropertyChanged}" 
-                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                             Height="40" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                             IsReadOnly="False"/>
-                                                <!-- Cho phép sửa -->
+                                                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     
+                                                         Height="40" 
+                                                         Padding="0"
+                                                         VerticalContentAlignment="Center"
+                                                         HorizontalContentAlignment="Center"
+                     
+                                                         BorderThickness="1"
+                     
+                                                         materialDesign:TextFieldAssist.DecorationVisibility="Collapsed" />
+                                                <!-- DecorationVisibility="Collapsed" giúp ẩn phần gạch chân báo lỗi ẩn, giúp TextBox gọn lại -->
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>

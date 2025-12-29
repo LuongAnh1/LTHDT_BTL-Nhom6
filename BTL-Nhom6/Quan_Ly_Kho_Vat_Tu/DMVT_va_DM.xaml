@@ -64,10 +64,9 @@
                 <uc:WindowControlBar />
             </Grid>
 
-            <!-- 2. TABS NAVIGATION -->
-            <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
+            <!-- 2. TABS -->
+            <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,10,32,24">
                 <StackPanel Orientation="Horizontal">
-                    <!-- Tab Active -->
                     <Button Content="Danh mục vật tư &amp; Định mức" 
                             Style="{StaticResource ActiveTabButtonStyle}" 
                             Padding="0,8" Margin="0" 
@@ -83,6 +82,7 @@
                             Padding="0,8" Margin="32,0,0,0" 
                             Click="Button_XuatKho_Click"/>
 
+                    <!-- ACTIVE: Thẻ kho -->
                     <Button Content="Thẻ kho" 
                             Style="{StaticResource TabButtonStyle}" 
                             Padding="0,8" Margin="32,0,0,0" 
