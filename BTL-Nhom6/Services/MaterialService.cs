@@ -15,9 +15,11 @@ namespace BTL_Nhom6.Services
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                string sql = @"SELECT m.MaterialID, m.MaterialName, u.UnitName, m.UnitPrice 
-                               FROM Materials m
-                               JOIN Units u ON m.UnitID = u.UnitID";
+
+                // 1. Thêm m.CurrentStock vào câu SQL
+                string sql = @"SELECT m.MaterialID, m.MaterialName, u.UnitName, m.UnitPrice, m.CurrentStock 
+                       FROM Materials m
+                       JOIN Units u ON m.UnitID = u.UnitID";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 using (var reader = cmd.ExecuteReader())
@@ -30,6 +32,10 @@ namespace BTL_Nhom6.Services
                             TenVatTu = reader["MaterialName"].ToString(),
                             DonVi = reader["UnitName"].ToString(),
                             DonGia = Convert.ToDecimal(reader["UnitPrice"]),
+
+                            // 2. Gán giá trị lấy được vào Model
+                            CurrentStock = reader["CurrentStock"] != DBNull.Value ? Convert.ToInt32(reader["CurrentStock"]) : 0,
+
                             SoLuong = 1
                         });
                     }

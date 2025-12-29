@@ -9,7 +9,8 @@ namespace BTL_Nhom6.Models
         public int MaterialID { get; set; }
         public string TenVatTu { get; set; }
         public string DonVi { get; set; } // Tên đơn vị tính (Cái, Hộp...)
-        
+        public int CurrentStock { get; set; } // Số lượng tồn kho hiện tại
+
         private decimal _donGia;
         public decimal DonGia
         {
@@ -44,5 +45,7 @@ namespace BTL_Nhom6.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+
+        public int SoLuongXuat { get; set; } // Số lượng kho đã xuất cho phiếu này
     }
 }
