@@ -165,6 +165,7 @@
     <Compile Include="Models\DeviceAssignment.cs" />
     <Compile Include="Models\DeviceModel.cs" />
     <Compile Include="Models\DeviceStatus.cs" />
+    <Compile Include="Models\ExportViewModel.cs" />
     <Compile Include="Models\ImportViewModel.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\MaintenanceRequest.cs" />
@@ -228,6 +229,9 @@
     </Compile>
     <Compile Include="Quan_Ly_Kho_Vat_Tu\TaoPhieuNhapDialog.xaml.cs">
       <DependentUpon>TaoPhieuNhapDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Quan_Ly_Kho_Vat_Tu\TaoPhieuXuatDialog.xaml.cs">
+      <DependentUpon>TaoPhieuXuatDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Quan_Ly_Kho_Vat_Tu\ThemVatTuDialog.xaml.cs">
       <DependentUpon>ThemVatTuDialog.xaml</DependentUpon>
@@ -320,6 +324,7 @@
     <Compile Include="Services\DeviceModelService.cs" />
     <Compile Include="Services\DeviceService.cs" />
     <Compile Include="Services\DeviceStatusService.cs" />
+    <Compile Include="Services\ExportService.cs" />
     <Compile Include="Services\ImportService.cs" />
     <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\LoggerService.cs" />
@@ -487,6 +492,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Quan_Ly_Kho_Vat_Tu\TaoPhieuNhapDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Quan_Ly_Kho_Vat_Tu\TaoPhieuXuatDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

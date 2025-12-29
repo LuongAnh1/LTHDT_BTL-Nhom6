@@ -324,20 +324,33 @@ namespace BTL_Nhom6.Services
                 }
             }
         }
-    
+
         // 7. Lấy chi tiết vật tư đã kê khai của 1 phiếu
-        public List<MaterialViewModel> GetWorkOrderDetails(int workOrderId)
+        public List<MaterialViewModel> GetExportedMaterialsForWO(int workOrderId)
         {
             List<MaterialViewModel> list = new List<MaterialViewModel>();
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                string sql = @"SELECT wod.MaterialID, m.MaterialName, u.UnitName, 
-                              wod.QuantityUsed, wod.UnitPrice
-                       FROM WorkOrderDetails wod
-                       JOIN Materials m ON wod.MaterialID = m.MaterialID
-                       JOIN Units u ON m.UnitID = u.UnitID
-                       WHERE wod.WorkOrderID = @WOID";
+
+                string sql = @"
+                            SELECT 
+                                t.MaterialID, 
+                                m.MaterialName, 
+                                u.UnitName, 
+                                SUM(t.Quantity) AS SoLuongXuat, 
+                                m.UnitPrice AS DonGia
+                            FROM MaterialTransactions t
+                            JOIN Materials m ON t.MaterialID = m.MaterialID
+                            JOIN Units u ON m.UnitID = u.UnitID
+                            -- JOIN THÊM BẢNG NÀY ĐỂ CHECK TRẠNG THÁI
+                            JOIN ExportReceipts e ON t.ExportID = e.ExportID
+            
+                            WHERE t.WorkOrderID = @WOID 
+                              AND t.TransactionType = 'EXPORT'
+                              AND e.Status != 'Cancelled' -- QUAN TRỌNG: Loại bỏ phiếu đã Hủy
+            
+                            GROUP BY t.MaterialID, m.MaterialName, u.UnitName, m.UnitPrice";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@WOID", workOrderId);
@@ -346,14 +359,16 @@ namespace BTL_Nhom6.Services
                 {
                     while (reader.Read())
                     {
+                        int slXuat = Convert.ToInt32(reader["SoLuongXuat"]);
                         list.Add(new MaterialViewModel
                         {
                             MaterialID = Convert.ToInt32(reader["MaterialID"]),
                             TenVatTu = reader["MaterialName"].ToString(),
                             DonVi = reader["UnitName"].ToString(),
-                            SoLuong = Convert.ToInt32(reader["QuantityUsed"]),
-                            DonGia = Convert.ToDecimal(reader["UnitPrice"])
-                            // Tự động tính Thành tiền nhờ Model đã cài đặt
+                            DonGia = Convert.ToDecimal(reader["DonGia"]),
+
+                            SoLuongXuat = slXuat,
+                            SoLuong = slXuat // Mặc định SL thực tế = SL xuất (KTV sửa giảm đi nếu dùng ít hơn)
                         });
                     }
                 }
