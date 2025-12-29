@@ -159,42 +159,66 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
         }
 
         // 5. SỰ KIỆN NÚT LƯU TẠM
+        // Sự kiện Nút "Lưu tạm"
         private void Button_LuuTam_Click(object sender, RoutedEventArgs e)
         {
-            // Gọi hàm lưu chung, tham số false nghĩa là KHÔNG đóng phiếu
+            // Lưu tạm thì không cần kiểm tra trạng thái "Hoàn thành", 
+            // cho phép lưu chi phí dở dang bất cứ lúc nào.
             SaveData(false);
         }
 
-        // 6. SỰ KIỆN NÚT HOÀN THÀNH (Sửa lại hàm cũ để gọi hàm chung)
+        // Sự kiện Nút "Hoàn thành & Đóng phiếu"
         private void Button_HoanThanh_Click(object sender, RoutedEventArgs e)
         {
-            // Gọi hàm lưu chung, tham số true nghĩa là ĐÓNG phiếu luôn
-            SaveData(true);
-        }
-
-        // HÀM XỬ LÝ LƯU CHUNG (Private Helper)
-        private void SaveData(bool isCloseTicket)
-        {
-            // A. Kiểm tra chọn phiếu
+            // 1. Kiểm tra đã chọn phiếu chưa
             if (cboWorkOrder.SelectedValue == null)
             {
-                MessageBox.Show("Vui lòng chọn phiếu công việc!", "Cảnh báo", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Vui lòng chọn phiếu công việc!", "Cảnh báo");
                 return;
             }
 
+            // 2. Lấy đối tượng phiếu đang chọn để kiểm tra trạng thái
+            var wo = cboWorkOrder.SelectedItem as WorkOrderViewModel;
+
+            // --- [LOGIC QUAN TRỌNG] ---
+            // Chỉ cho phép nghiệm thu nếu KTV đã báo cáo trạng thái là "Hoàn thành"
+            // (Điều này ngăn chặn việc đóng phiếu khi công việc đang làm dở)
+            if (wo.TrangThai != "Hoàn thành")
+            {
+                MessageBox.Show($"Phiếu này đang ở trạng thái: '{wo.TrangThai}'.\n" +
+                                "Kỹ thuật viên phải cập nhật trạng thái sang 'Hoàn thành' trước khi bạn thực hiện nghiệm thu.",
+                                "Sai quy trình",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                return; // Dừng lại, không gọi SaveData
+            }
+
+            // 3. Nếu hợp lệ -> Gọi hàm lưu chung để đóng phiếu
+            SaveData(true);
+        }
+
+        // HÀM XỬ LÝ LƯU CHUNG
+        private void SaveData(bool isCloseTicket)
+        {
+            // A. Kiểm tra chọn phiếu (Check lại cho chắc chắn)
+            if (cboWorkOrder.SelectedValue == null) return;
+
             int woId = (int)cboWorkOrder.SelectedValue;
 
-            // B. Lấy dữ liệu từ TextBox (Xử lý chuỗi rỗng và dấu phẩy nếu có)
+            // B. Lấy dữ liệu từ TextBox
             decimal laborCost = ParseCurrency(txtNhanCong.Text);
             decimal transportCost = ParseCurrency(txtVanChuyen.Text);
             decimal otherCost = ParseCurrency(txtChiPhiKhac.Text);
             string otherDesc = txtMoTaKhac.Text.Trim();
 
             // C. Gọi Service
+            // Hàm này trong Service đã được sửa để:
+            // - Tính toán lượng vật tư dư thừa (Tổng xuất - Đã trả - Thực dùng)
+            // - Tự động tạo phiếu nhập hoàn trả kho
             bool success = _woService.SaveAcceptance(
                 woId,
                 _listVatTu.ToList(),
-                isCloseTicket, // Truyền biến này vào để quyết định trạng thái (2 hay 3)
+                isCloseTicket,
                 laborCost,
                 transportCost,
                 otherCost,
@@ -204,21 +228,19 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
             // D. Thông báo kết quả
             if (success)
             {
-                string msg = isCloseTicket ? "Đã nghiệm thu và đóng phiếu thành công!" : "Đã lưu thông tin tạm thời thành công!";
+                string msg = isCloseTicket ? "Nghiệm thu, hoàn trả vật tư dư và đóng phiếu thành công!" : "Đã lưu thông tin chi phí tạm thời!";
                 MessageBox.Show(msg, "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // Nếu đóng phiếu -> Load lại list (phiếu sẽ mất khỏi list vì list chỉ hiện phiếu chưa đóng)
-                // Nếu lưu tạm -> Vẫn giữ nguyên để sửa tiếp hoặc Load lại để cập nhật số liệu chuẩn
+                // Load lại danh sách phiếu (để cập nhật trạng thái hoặc ẩn phiếu đã đóng đi)
                 LoadWorkOrders();
 
                 if (isCloseTicket)
                 {
-                    ResetForm(); // Xóa trắng màn hình nếu đã đóng
+                    ResetForm(); // Xóa trắng màn hình nếu đã đóng xong
                 }
                 else
                 {
-                    // Nếu lưu tạm, giữ nguyên màn hình nhưng load lại data để đảm bảo đồng bộ
-                    // (Hoặc có thể giữ nguyên không làm gì)
+                    // Nếu lưu tạm thì giữ nguyên màn hình để nhập tiếp
                 }
             }
             else

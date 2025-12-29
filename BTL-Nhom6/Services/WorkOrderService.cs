@@ -226,13 +226,13 @@ namespace BTL_Nhom6.Services
             {
                 conn.Open();
                 string sql = @"SELECT wo.WorkOrderID, wo.DeviceCode, d.DeviceName, u.FullName AS TenKTV, stt.StatusName
-                               FROM WorkOrders wo
-                               JOIN Devices d ON wo.DeviceCode = d.DeviceCode
-                               JOIN Users u ON wo.TechnicianID = u.UserID
-                               JOIN WorkOrderStatus stt ON wo.StatusID = stt.StatusID
-                               WHERE wo.StatusID != 3 -- Chưa đóng phiếu
-                               ORDER BY wo.WorkOrderID DESC";
-
+                       FROM WorkOrders wo
+                       JOIN Devices d ON wo.DeviceCode = d.DeviceCode
+                       JOIN Users u ON wo.TechnicianID = u.UserID
+                       JOIN WorkOrderStatus stt ON wo.StatusID = stt.StatusID
+                       WHERE wo.StatusID IN (2, 3) 
+                       
+                       ORDER BY wo.WorkOrderID DESC";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -254,7 +254,7 @@ namespace BTL_Nhom6.Services
 
         // 6. LƯU NGHIỆM THU (Đã sửa đầy đủ)
         public bool SaveAcceptance(int workOrderId, List<MaterialViewModel> materials, bool isCloseTicket,
-                                   decimal laborCost, decimal transportCost, decimal otherCost, string otherDesc)
+                           decimal laborCost, decimal transportCost, decimal otherCost, string otherDesc)
         {
             using (var conn = DatabaseHelper.GetConnection())
             {
@@ -264,54 +264,123 @@ namespace BTL_Nhom6.Services
                 {
                     MySqlCommand cmd = new MySqlCommand("", conn, trans);
 
-                    // B1: Xóa vật tư cũ
+                    // 1. Xóa chi tiết cũ (Để lưu lại từ đầu)
                     cmd.CommandText = "DELETE FROM WorkOrderDetails WHERE WorkOrderID = @WOID";
                     cmd.Parameters.AddWithValue("@WOID", workOrderId);
                     cmd.ExecuteNonQuery();
 
-                    // B2: Thêm danh sách vật tư mới (Bao gồm cả UnitPrice)
+                    // 2. Lưu chi tiết sử dụng thực tế (WorkOrderDetails)
                     if (materials != null && materials.Count > 0)
                     {
                         StringBuilder sb = new StringBuilder();
                         sb.Append("INSERT INTO WorkOrderDetails (WorkOrderID, MaterialID, QuantityUsed, UnitPrice) VALUES ");
-
                         List<string> rows = new List<string>();
                         for (int i = 0; i < materials.Count; i++)
                         {
-                            // Thêm tham số UnitPrice vào SQL
                             rows.Add($"(@WOID, @mat{i}, @qty{i}, @price{i})");
                             cmd.Parameters.AddWithValue($"@mat{i}", materials[i].MaterialID);
-                            cmd.Parameters.AddWithValue($"@qty{i}", materials[i].SoLuong);
+                            cmd.Parameters.AddWithValue($"@qty{i}", materials[i].SoLuong); // Đây là SL thực tế dùng
                             cmd.Parameters.AddWithValue($"@price{i}", materials[i].DonGia);
                         }
                         sb.Append(string.Join(",", rows));
-
                         cmd.CommandText = sb.ToString();
                         cmd.ExecuteNonQuery();
                     }
 
-                    // B3: Cập nhật thông tin chi phí và trạng thái WorkOrder
+                    // 3. Cập nhật thông tin phiếu công việc (WorkOrders)
                     string sqlUpdate = @"UPDATE WorkOrders 
-                                         SET StatusID = @Stat, 
-                                             EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END,
-                                             LaborCost = @Labor,
-                                             TransportCost = @Trans,
-                                             OtherCost = @Other,
-                                             OtherCostDescription = @Desc
-                                         WHERE WorkOrderID = @WOID";
+                                 SET StatusID = @Stat, 
+                                     EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END,
+                                     LaborCost = @Labor, TransportCost = @Trans, OtherCost = @Other, OtherCostDescription = @Desc
+                                 WHERE WorkOrderID = @WOID";
 
                     cmd.CommandText = sqlUpdate;
-                    // Xóa tham số cũ (để tránh trùng tên với params của vật tư nếu có) và add lại params cho update
-                    // Tuy nhiên trong MySql.Data, add chồng vẫn được nếu tên khác nhau.
-                    // Ở đây tốt nhất là add các tham số update riêng biệt
-
-                    cmd.Parameters.AddWithValue("@Stat", isCloseTicket ? 3 : 2); // 3: Hoàn thành, 2: Đang làm
+                    cmd.Parameters.AddWithValue("@Stat", isCloseTicket ? 3 : 2); // 3: Hoàn thành
                     cmd.Parameters.AddWithValue("@Labor", laborCost);
                     cmd.Parameters.AddWithValue("@Trans", transportCost);
                     cmd.Parameters.AddWithValue("@Other", otherCost);
                     cmd.Parameters.AddWithValue("@Desc", otherDesc ?? "");
-
                     cmd.ExecuteNonQuery();
+
+                    // ====================================================================================
+                    // 4. XỬ LÝ HOÀN NHẬP KHO (LOGIC MỚI: CHỐNG TRÙNG LẶP)
+                    // ====================================================================================
+                    if (isCloseTicket && materials != null)
+                    {
+                        var returnList = new List<dynamic>();
+
+                        foreach (var item in materials)
+                        {
+                            // A. Lấy tổng số lượng đã xuất (EXPORT)
+                            cmd.Parameters.Clear();
+                            cmd.CommandText = @"SELECT COALESCE(SUM(Quantity), 0) FROM MaterialTransactions 
+                            WHERE WorkOrderID = @WOID AND MaterialID = @MatID AND TransactionType = 'EXPORT'";
+                            cmd.Parameters.AddWithValue("@WOID", workOrderId);
+                            cmd.Parameters.AddWithValue("@MatID", item.MaterialID);
+                            int totalExported = Convert.ToInt32(cmd.ExecuteScalar());
+
+                            // B. Lấy tổng số lượng ĐÃ THU HỒI trước đó (IMPORT có gắn WOID)
+                            // Đây là bước quan trọng để tránh cộng dồn vô hạn
+                            cmd.CommandText = @"SELECT COALESCE(SUM(Quantity), 0) FROM MaterialTransactions 
+                            WHERE WorkOrderID = @WOID AND MaterialID = @MatID AND TransactionType = 'IMPORT'";
+                            // Tham số @WOID và @MatID đã add ở trên, dùng lại được
+                            int alreadyReturned = Convert.ToInt32(cmd.ExecuteScalar());
+
+                            // C. Tính số lượng thực tế đang "giữ" ở công trường
+                            int currentOnSite = totalExported - alreadyReturned;
+
+                            // D. Tính số lượng cần thu hồi thêm
+                            // Nếu (Đang giữ) > (Thực dùng nhập vào) => Thì mới thu hồi phần thừa
+                            int usedQty = item.SoLuong;
+                            int qtyToReturn = currentOnSite - usedQty;
+
+                            if (qtyToReturn > 0)
+                            {
+                                returnList.Add(new
+                                {
+                                    MatID = item.MaterialID,
+                                    Qty = qtyToReturn,
+                                    Price = item.DonGia
+                                });
+                            }
+                        }
+
+                        // Nếu có vật tư thừa -> Tạo phiếu nhập thu hồi
+                        if (returnList.Count > 0)
+                        {
+                            // ... (Giữ nguyên phần tạo phiếu Import và Insert Transaction như cũ) ...
+                            // Copy lại đoạn tạo ImportReceipts từ code cũ của bạn vào đây
+
+                            // 4.1 Tạo Header phiếu nhập
+                            string returnCode = $"TH-WO{workOrderId}-{DateTime.Now.Ticks % 10000}";
+                            cmd.Parameters.Clear();
+                            cmd.CommandText = @"INSERT INTO ImportReceipts (ReceiptCode, ImportDate, Status, Note) 
+                            VALUES (@Code, NOW(), 'Completed', @Note)";
+                            cmd.Parameters.AddWithValue("@Code", returnCode);
+                            cmd.Parameters.AddWithValue("@Note", $"Thu hồi vật tư thừa từ phiếu WO-{workOrderId:D4}");
+                            cmd.ExecuteNonQuery();
+
+                            cmd.CommandText = "SELECT LAST_INSERT_ID()";
+                            int receiptId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                            // 4.2 Insert chi tiết
+                            foreach (var retItem in returnList)
+                            {
+                                cmd.Parameters.Clear();
+                                cmd.CommandText = @"INSERT INTO MaterialTransactions (MaterialID, ReceiptID, TransactionType, Quantity, TransactionDate, UnitPrice, WorkOrderID) 
+                                VALUES (@MatID, @RecID, 'IMPORT', @Qty, NOW(), @Price, @WOID)";
+                                cmd.Parameters.AddWithValue("@MatID", retItem.MatID);
+                                cmd.Parameters.AddWithValue("@RecID", receiptId);
+                                cmd.Parameters.AddWithValue("@Qty", retItem.Qty);
+                                cmd.Parameters.AddWithValue("@Price", retItem.Price);
+                                cmd.Parameters.AddWithValue("@WOID", workOrderId);
+                                cmd.ExecuteNonQuery();
+
+                                cmd.CommandText = "UPDATE Materials SET CurrentStock = CurrentStock + @Qty WHERE MaterialID = @MatID";
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
 
                     trans.Commit();
                     return true;
@@ -319,7 +388,7 @@ namespace BTL_Nhom6.Services
                 catch (Exception ex)
                 {
                     trans.Rollback();
-                    Console.WriteLine("Lỗi SaveAcceptance: " + ex.Message);
+                    Console.WriteLine(ex.Message);
                     return false;
                 }
             }
@@ -333,24 +402,35 @@ namespace BTL_Nhom6.Services
             {
                 conn.Open();
 
+                // LOGIC MỚI:
+                // Tính tổng Xuất (EXPORT) trừ đi tổng Nhập trả lại (IMPORT)
                 string sql = @"
-                            SELECT 
-                                t.MaterialID, 
-                                m.MaterialName, 
-                                u.UnitName, 
-                                SUM(t.Quantity) AS SoLuongXuat, 
-                                m.UnitPrice AS DonGia
-                            FROM MaterialTransactions t
-                            JOIN Materials m ON t.MaterialID = m.MaterialID
-                            JOIN Units u ON m.UnitID = u.UnitID
-                            -- JOIN THÊM BẢNG NÀY ĐỂ CHECK TRẠNG THÁI
-                            JOIN ExportReceipts e ON t.ExportID = e.ExportID
+            SELECT 
+                t.MaterialID, 
+                m.MaterialName, 
+                u.UnitName, 
+                
+                -- CÔNG THỨC MỚI: (Tổng Xuất - Tổng Trả)
+                SUM(CASE WHEN t.TransactionType = 'EXPORT' THEN t.Quantity ELSE 0 END) -
+                SUM(CASE WHEN t.TransactionType = 'IMPORT' THEN t.Quantity ELSE 0 END) 
+                AS SoLuongXuat, 
+
+                m.UnitPrice AS DonGia
+            FROM MaterialTransactions t
+            JOIN Materials m ON t.MaterialID = m.MaterialID
+            JOIN Units u ON m.UnitID = u.UnitID
+            LEFT JOIN ExportReceipts e ON t.ExportID = e.ExportID
             
-                            WHERE t.WorkOrderID = @WOID 
-                              AND t.TransactionType = 'EXPORT'
-                              AND e.Status != 'Cancelled' -- QUAN TRỌNG: Loại bỏ phiếu đã Hủy
+            WHERE t.WorkOrderID = @WOID 
+              -- Lấy cả Export (xuất đi) và Import (trả về) của WO này
+              AND (t.TransactionType = 'EXPORT' OR t.TransactionType = 'IMPORT')
+              -- Loại bỏ phiếu xuất đã Hủy (chỉ check nếu là dòng Export)
+              AND (e.Status IS NULL OR e.Status != 'Cancelled')
             
-                            GROUP BY t.MaterialID, m.MaterialName, u.UnitName, m.UnitPrice";
+            GROUP BY t.MaterialID, m.MaterialName, u.UnitName, m.UnitPrice
+            
+            -- Chỉ hiện những dòng có số lượng > 0 (Nếu đã trả hết = 0 thì ẩn luôn)
+            HAVING SoLuongXuat > 0";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@WOID", workOrderId);
@@ -359,7 +439,7 @@ namespace BTL_Nhom6.Services
                 {
                     while (reader.Read())
                     {
-                        int slXuat = Convert.ToInt32(reader["SoLuongXuat"]);
+                        int slConLai = Convert.ToInt32(reader["SoLuongXuat"]);
                         list.Add(new MaterialViewModel
                         {
                             MaterialID = Convert.ToInt32(reader["MaterialID"]),
@@ -367,8 +447,10 @@ namespace BTL_Nhom6.Services
                             DonVi = reader["UnitName"].ToString(),
                             DonGia = Convert.ToDecimal(reader["DonGia"]),
 
-                            SoLuongXuat = slXuat,
-                            SoLuong = slXuat // Mặc định SL thực tế = SL xuất (KTV sửa giảm đi nếu dùng ít hơn)
+                            // SL Đã xuất hiển thị bây giờ là SL thực tế đang giữ
+                            SoLuongXuat = slConLai,
+                            // Mặc định SL thực tế = SL đang giữ
+                            SoLuong = slConLai
                         });
                     }
                 }

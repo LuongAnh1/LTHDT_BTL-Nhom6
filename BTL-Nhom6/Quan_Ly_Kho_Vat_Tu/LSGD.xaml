@@ -18,16 +18,62 @@
         Background="{StaticResource AppBackgroundBrush}">
 
     <Window.Resources>
-        <!-- Style Header DataGrid -->
-        <Style x:Key="CustomDataGridColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-            <Setter Property="Background" Value="#232E3E"/>
-            <Setter Property="Foreground" Value="White"/>
+        <!-- 2. STYLE HEADER CỦA BẠN (Header màu tối, chữ trắng) -->
+        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextWhiteBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="Padding" Value="16,0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="12,12"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <!-- Thêm Template để đảm bảo Material Design không ghi đè màu nền -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="{TemplateBinding Background}" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                  VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
+
+        <!-- 3. STYLE CHO Ô DỮ LIỆU (Giữ lại để căn lề đẹp) -->
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Padding="{TemplateBinding Padding}" 
+                    Background="{TemplateBinding Background}" 
+                    SnapsToDevicePixels="True">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#E3F2FD"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 4. STYLE NÚT HÀNH ĐỘNG (Của bạn) -->
+        <Style x:Key="IconActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="2,0"/>
+        </Style>
+        
 
         <!-- Style Cell -->
         <Style x:Key="CustomDataGridCell" TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
@@ -181,18 +227,14 @@
                     </Grid.RowDefinitions>
 
                     <DataGrid Grid.Row="0" x:Name="dgLichSu" 
-                              AutoGenerateColumns="False" 
-                              CanUserAddRows="False"
-                              CanUserResizeColumns="True"
-                              SelectionMode="Single"
-                              Background="White"
-                              BorderThickness="0"
-                              HeadersVisibility="Column"
-                              GridLinesVisibility="Horizontal"
-                              HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
-                              ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}"
-                              CellStyle="{StaticResource CustomDataGridCell}"
-                              RowStyle="{StaticResource MaterialDesignDataGridRow}">
+                                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
+          
+                                  ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                  CellStyle="{StaticResource DataGridCellStyle}"
+          
+                                  RowHeight="45" Background="White" BorderThickness="0,1,0,0">
 
                         <DataGrid.Columns>
                             <!-- 1. Ngày -->
@@ -269,7 +311,7 @@
                             <!-- 4. Số lượng (Đã sửa lỗi Converter) -->
                             <DataGridTextColumn Header="SỐ LƯỢNG" Binding="{Binding SoLuong}" Width="120" IsReadOnly="True" FontWeight="Bold">
                                 <DataGridTextColumn.HeaderStyle>
-                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
+                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource DataGridHeaderStyle}">
                                         <Setter Property="HorizontalContentAlignment" Value="Right"/>
                                     </Style>
                                 </DataGridTextColumn.HeaderStyle>
