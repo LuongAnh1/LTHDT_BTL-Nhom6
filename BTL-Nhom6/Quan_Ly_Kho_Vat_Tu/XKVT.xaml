@@ -140,7 +140,8 @@
                             BorderThickness="0" 
                             Height="40" 
                             Padding="16,0" 
-                            materialDesign:ButtonAssist.CornerRadius="4">
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Click="Button_TaoPhieu_Click">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="20" Height="20" Margin="0,0,8,0" VerticalAlignment="Center"/>
                             <TextBlock Text="Tạo phiếu xuất mới" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold"/>
@@ -253,7 +254,7 @@
                             </DataGridTemplateColumn>
 
                             <!-- 6. Hành động -->
-                            <DataGridTemplateColumn Header="HÀNH ĐỘNG" Width="140">
+                            <DataGridTemplateColumn Header="HÀNH ĐỘNG" Width="160">
                                 <DataGridTemplateColumn.HeaderStyle>
                                     <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
                                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -262,15 +263,41 @@
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Xem chi tiết">
+                                            <!-- NÚT DUYỆT (Chỉ hiện khi Pending) -->
+                                            <Button Style="{StaticResource IconActionButton}"
+                                                    ToolTip="Duyệt xuất kho"
+                                                    Tag="APPROVE"
+                                                    Click="Button_Action_Click"
+                                                    Foreground="#2E7D32">
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="18" Height="18"/>
+                                            </Button>
+                                            <!-- Nút Xem chi tiết -->
+                                            <!-- Thêm: Tag="VIEW" và Click="Button_Action_Click" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                                                    ToolTip="Xem chi tiết"
+                                                    Tag="VIEW"
+                                                    Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="EyeOutline" Foreground="Gray" Width="18" Height="18"/>
                                             </Button>
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Chỉnh sửa">
+
+                                            <!-- Nút Sửa -->
+                                            <!-- Thêm: Tag="EDIT" và Click="Button_Action_Click" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                                                    ToolTip="Chỉnh sửa"
+                                                    Tag="EDIT"
+                                                    Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="Pencil" Foreground="{StaticResource HighlightBlueBrush}" Width="16" Height="16"/>
                                             </Button>
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Xóa">
+
+                                            <!-- Nút Xóa -->
+                                            <!-- Thêm: Tag="DELETE" và Click="Button_Action_Click" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                                                    ToolTip="Xóa"
+                                                    Tag="DELETE"
+                                                    Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="Delete" Foreground="{StaticResource DeleteIconBrush}" Width="16" Height="16"/>
                                             </Button>
+
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

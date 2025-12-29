@@ -50,11 +50,11 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 
                 // 2. LOAD VẬT TƯ ĐÃ KÊ KHAI (Đổ dữ liệu vào bảng dgVatTu)
                 _listVatTu.Clear();
-                var details = _woService.GetWorkOrderDetails(wo.WorkOrderID);
+                var exportedItems = _woService.GetExportedMaterialsForWO(wo.WorkOrderID);
 
-                foreach (var item in details)
+                foreach (var item in exportedItems)
                 {
-                    // Đăng ký sự kiện tính tổng tiền khi sửa số lượng (quan trọng)
+                    // Đăng ký sự kiện tính tiền
                     item.PropertyChanged += (s, args) =>
                     {
                         if (args.PropertyName == nameof(MaterialViewModel.ThanhTien))
