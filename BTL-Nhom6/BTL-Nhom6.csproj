@@ -181,6 +181,7 @@
     <Compile Include="Models\SupplierQuoteDTO.cs" />
     <Compile Include="Models\TechnicianSkillViewModel.cs" />
     <Compile Include="Models\TechnicianViewModel.cs" />
+    <Compile Include="Models\TransactionViewModel.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\WorkOrder.cs" />
     <Compile Include="Models\WorkOrderStatus.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Services\DeviceService.cs" />
     <Compile Include="Services\DeviceStatusService.cs" />
     <Compile Include="Services\ExportService.cs" />
+    <Compile Include="Services\HistoryService.cs" />
     <Compile Include="Services\ImportService.cs" />
     <Compile Include="Services\LocationService.cs" />
     <Compile Include="Services\LoggerService.cs" />
