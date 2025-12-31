@@ -18,38 +18,63 @@
         Background="{StaticResource AppBackgroundBrush}">
 
     <Window.Resources>
-        <!-- 1. Style cho nút hành động nhỏ -->
-        <Style x:Key="IconActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
-            <Setter Property="Width" Value="28"/>
-            <Setter Property="Height" Value="28"/>
-            <Setter Property="Padding" Value="4"/>
-            <Setter Property="Margin" Value="4,0"/>
-        </Style>
-
-        <!-- 2. Style Header DataGrid -->
-        <Style x:Key="CustomDataGridColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-            <Setter Property="Background" Value="#232E3E"/>
-            <Setter Property="Foreground" Value="White"/>
+        <!-- 2. STYLE HEADER CỦA BẠN (Header màu tối, chữ trắng) -->
+        <Style x:Key="DataGridHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextWhiteBrush}"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="Padding" Value="16,0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="12,12"/>
             <Setter Property="BorderThickness" Value="0"/>
-        </Style>
-
-        <!-- 3. Style Cell -->
-        <Style x:Key="CustomDataGridCell" TargetType="DataGridCell" BasedOn="{StaticResource MaterialDesignDataGridCell}">
-            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <!-- Thêm Template để đảm bảo Material Design không ghi đè màu nền -->
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="DataGridCell">
-                        <Border Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    <ControlTemplate TargetType="DataGridColumnHeader">
+                        <Border Background="{TemplateBinding Background}" 
+                    BorderBrush="{TemplateBinding BorderBrush}" 
+                    BorderThickness="{TemplateBinding BorderThickness}" 
+                    Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                  VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- 3. STYLE CHO Ô DỮ LIỆU (Giữ lại để căn lề đẹp) -->
+        <Style x:Key="DataGridCellStyle" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="12,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="DataGridCell">
+                        <Border Padding="{TemplateBinding Padding}" 
+                    Background="{TemplateBinding Background}" 
+                    SnapsToDevicePixels="True">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#E3F2FD"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- 4. STYLE NÚT HÀNH ĐỘNG (Của bạn) -->
+        <Style x:Key="IconActionButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignIconForegroundButton}">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="2,0"/>
+        </Style>
+
+        
     </Window.Resources>
 
     <Grid>
@@ -140,7 +165,8 @@
                             BorderThickness="0" 
                             Height="40" 
                             Padding="16,0" 
-                            materialDesign:ButtonAssist.CornerRadius="4">
+                            materialDesign:ButtonAssist.CornerRadius="4"
+                            Click="Button_TaoPhieu_Click">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="20" Height="20" Margin="0,0,8,0" VerticalAlignment="Center"/>
                             <TextBlock Text="Tạo phiếu xuất mới" Foreground="White" VerticalAlignment="Center" FontWeight="SemiBold"/>
@@ -151,24 +177,20 @@
                 <!-- DATAGRID -->
                 <Border Grid.Row="1" Background="White" CornerRadius="8" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True">
                     <DataGrid x:Name="dgXuatKho" 
-                              AutoGenerateColumns="False" 
-                              CanUserAddRows="False"
-                              CanUserResizeColumns="True"
-                              SelectionMode="Single"
-                              Background="White"
-                              BorderThickness="0"
-                              HeadersVisibility="Column"
-                              GridLinesVisibility="Horizontal"
-                              HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
-                              ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}"
-                              CellStyle="{StaticResource CustomDataGridCell}"
-                              RowStyle="{StaticResource MaterialDesignDataGridRow}">
+                                  AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True"
+                                  HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{StaticResource BorderLightBrush}"
+          
+                                  ColumnHeaderStyle="{StaticResource DataGridHeaderStyle}"
+                                  CellStyle="{StaticResource DataGridCellStyle}"
+          
+                                  RowHeight="45" Background="White" BorderThickness="0,1,0,0">
 
                         <DataGrid.Columns>
                             <!-- 1. Mã phiếu xuất -->
                             <DataGridTextColumn Header="MÃ PHIẾU" Binding="{Binding MaPhieu}" Width="140" IsReadOnly="True" FontWeight="Medium" ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}">
                                 <DataGridTextColumn.HeaderStyle>
-                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
+                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource DataGridHeaderStyle}">
                                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                     </Style>
                                 </DataGridTextColumn.HeaderStyle>
@@ -198,7 +220,7 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                                 <DataGridTextColumn.HeaderStyle>
-                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
+                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource DataGridHeaderStyle}">
                                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                     </Style>
                                 </DataGridTextColumn.HeaderStyle>
@@ -207,7 +229,7 @@
                             <!-- 5. Trạng thái -->
                             <DataGridTemplateColumn Header="TRẠNG THÁI" Width="150">
                                 <DataGridTemplateColumn.HeaderStyle>
-                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
+                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource DataGridHeaderStyle}">
                                         <Setter Property="HorizontalContentAlignment" Value="Left"/>
                                     </Style>
                                 </DataGridTemplateColumn.HeaderStyle>
@@ -253,24 +275,50 @@
                             </DataGridTemplateColumn>
 
                             <!-- 6. Hành động -->
-                            <DataGridTemplateColumn Header="HÀNH ĐỘNG" Width="140">
+                            <DataGridTemplateColumn Header="HÀNH ĐỘNG" Width="160">
                                 <DataGridTemplateColumn.HeaderStyle>
-                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
+                                    <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource DataGridHeaderStyle}">
                                         <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                     </Style>
                                 </DataGridTemplateColumn.HeaderStyle>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Xem chi tiết">
+                                            <!-- NÚT DUYỆT (Chỉ hiện khi Pending) -->
+                                            <Button Style="{StaticResource IconActionButton}"
+                                                    ToolTip="Duyệt xuất kho"
+                                                    Tag="APPROVE"
+                                                    Click="Button_Action_Click"
+                                                    Foreground="#2E7D32">
+                                                <materialDesign:PackIcon Kind="CheckBold" Width="18" Height="18"/>
+                                            </Button>
+                                            <!-- Nút Xem chi tiết -->
+                                            <!-- Thêm: Tag="VIEW" và Click="Button_Action_Click" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                                                    ToolTip="Xem chi tiết"
+                                                    Tag="VIEW"
+                                                    Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="EyeOutline" Foreground="Gray" Width="18" Height="18"/>
                                             </Button>
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Chỉnh sửa">
+
+                                            <!-- Nút Sửa -->
+                                            <!-- Thêm: Tag="EDIT" và Click="Button_Action_Click" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                                                    ToolTip="Chỉnh sửa"
+                                                    Tag="EDIT"
+                                                    Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="Pencil" Foreground="{StaticResource HighlightBlueBrush}" Width="16" Height="16"/>
                                             </Button>
-                                            <Button Style="{StaticResource IconActionButton}" ToolTip="Xóa">
+
+                                            <!-- Nút Xóa -->
+                                            <!-- Thêm: Tag="DELETE" và Click="Button_Action_Click" -->
+                                            <Button Style="{StaticResource IconActionButton}" 
+                                                    ToolTip="Xóa"
+                                                    Tag="DELETE"
+                                                    Click="Button_Action_Click">
                                                 <materialDesign:PackIcon Kind="Delete" Foreground="{StaticResource DeleteIconBrush}" Width="16" Height="16"/>
                                             </Button>
+
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>

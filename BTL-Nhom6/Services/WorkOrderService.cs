@@ -244,7 +244,7 @@ namespace BTL_Nhom6.Services
         // 6. LƯU NGHIỆM THU
         // ==========================================================
         public bool SaveAcceptance(int workOrderId, List<MaterialViewModel> materials, bool isCloseTicket,
-                                   decimal laborCost, decimal transportCost, decimal otherCost, string otherDesc)
+                           decimal laborCost, decimal transportCost, decimal otherCost, string otherDesc)
         {
             using (var conn = DatabaseHelper.GetConnection())
             {
@@ -265,7 +265,6 @@ namespace BTL_Nhom6.Services
                         cmd.Parameters.Clear();
                         StringBuilder sb = new StringBuilder();
                         sb.Append("INSERT INTO WorkOrderDetails (WorkOrderID, MaterialID, QuantityUsed, UnitPrice) VALUES ");
-
                         List<string> rows = new List<string>();
                         for (int i = 0; i < materials.Count; i++)
                         {
@@ -283,13 +282,10 @@ namespace BTL_Nhom6.Services
                     // Cập nhật chi phí tổng
                     cmd.Parameters.Clear();
                     string sqlUpdate = @"UPDATE WorkOrders 
-                                         SET StatusID = @Stat, 
-                                             EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END,
-                                             LaborCost = @Labor,
-                                             TransportCost = @Trans,
-                                             OtherCost = @Other,
-                                             OtherCostDescription = @Desc
-                                         WHERE WorkOrderID = @WOID";
+                                 SET StatusID = @Stat, 
+                                     EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END,
+                                     LaborCost = @Labor, TransportCost = @Trans, OtherCost = @Other, OtherCostDescription = @Desc
+                                 WHERE WorkOrderID = @WOID";
 
                     cmd.CommandText = sqlUpdate;
                     cmd.Parameters.AddWithValue("@Stat", isCloseTicket ? 3 : 2);
@@ -299,7 +295,78 @@ namespace BTL_Nhom6.Services
                     cmd.Parameters.AddWithValue("@Desc", otherDesc ?? "");
                     cmd.Parameters.AddWithValue("@WOID", workOrderId);
 
-                    cmd.ExecuteNonQuery();
+                        foreach (var item in materials)
+                        {
+                            // A. Lấy tổng số lượng đã xuất (EXPORT)
+                            cmd.Parameters.Clear();
+                            cmd.CommandText = @"SELECT COALESCE(SUM(Quantity), 0) FROM MaterialTransactions 
+                            WHERE WorkOrderID = @WOID AND MaterialID = @MatID AND TransactionType = 'EXPORT'";
+                            cmd.Parameters.AddWithValue("@WOID", workOrderId);
+                            cmd.Parameters.AddWithValue("@MatID", item.MaterialID);
+                            int totalExported = Convert.ToInt32(cmd.ExecuteScalar());
+
+                            // B. Lấy tổng số lượng ĐÃ THU HỒI trước đó (IMPORT có gắn WOID)
+                            // Đây là bước quan trọng để tránh cộng dồn vô hạn
+                            cmd.CommandText = @"SELECT COALESCE(SUM(Quantity), 0) FROM MaterialTransactions 
+                            WHERE WorkOrderID = @WOID AND MaterialID = @MatID AND TransactionType = 'IMPORT'";
+                            // Tham số @WOID và @MatID đã add ở trên, dùng lại được
+                            int alreadyReturned = Convert.ToInt32(cmd.ExecuteScalar());
+
+                            // C. Tính số lượng thực tế đang "giữ" ở công trường
+                            int currentOnSite = totalExported - alreadyReturned;
+
+                            // D. Tính số lượng cần thu hồi thêm
+                            // Nếu (Đang giữ) > (Thực dùng nhập vào) => Thì mới thu hồi phần thừa
+                            int usedQty = item.SoLuong;
+                            int qtyToReturn = currentOnSite - usedQty;
+
+                            if (qtyToReturn > 0)
+                            {
+                                returnList.Add(new
+                                {
+                                    MatID = item.MaterialID,
+                                    Qty = qtyToReturn,
+                                    Price = item.DonGia
+                                });
+                            }
+                        }
+
+                        // Nếu có vật tư thừa -> Tạo phiếu nhập thu hồi
+                        if (returnList.Count > 0)
+                        {
+                            // ... (Giữ nguyên phần tạo phiếu Import và Insert Transaction như cũ) ...
+                            // Copy lại đoạn tạo ImportReceipts từ code cũ của bạn vào đây
+
+                            // 4.1 Tạo Header phiếu nhập
+                            string returnCode = $"TH-WO{workOrderId}-{DateTime.Now.Ticks % 10000}";
+                            cmd.Parameters.Clear();
+                            cmd.CommandText = @"INSERT INTO ImportReceipts (ReceiptCode, ImportDate, Status, Note) 
+                            VALUES (@Code, NOW(), 'Completed', @Note)";
+                            cmd.Parameters.AddWithValue("@Code", returnCode);
+                            cmd.Parameters.AddWithValue("@Note", $"Thu hồi vật tư thừa từ phiếu WO-{workOrderId:D4}");
+                            cmd.ExecuteNonQuery();
+
+                            cmd.CommandText = "SELECT LAST_INSERT_ID()";
+                            int receiptId = Convert.ToInt32(cmd.ExecuteScalar());
+
+                            // 4.2 Insert chi tiết
+                            foreach (var retItem in returnList)
+                            {
+                                cmd.Parameters.Clear();
+                                cmd.CommandText = @"INSERT INTO MaterialTransactions (MaterialID, ReceiptID, TransactionType, Quantity, TransactionDate, UnitPrice, WorkOrderID) 
+                                VALUES (@MatID, @RecID, 'IMPORT', @Qty, NOW(), @Price, @WOID)";
+                                cmd.Parameters.AddWithValue("@MatID", retItem.MatID);
+                                cmd.Parameters.AddWithValue("@RecID", receiptId);
+                                cmd.Parameters.AddWithValue("@Qty", retItem.Qty);
+                                cmd.Parameters.AddWithValue("@Price", retItem.Price);
+                                cmd.Parameters.AddWithValue("@WOID", workOrderId);
+                                cmd.ExecuteNonQuery();
+
+                                cmd.CommandText = "UPDATE Materials SET CurrentStock = CurrentStock + @Qty WHERE MaterialID = @MatID";
+                                cmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
 
                     trans.Commit();
                     return true;
@@ -336,6 +403,7 @@ namespace BTL_Nhom6.Services
                 {
                     while (reader.Read())
                     {
+                        int slConLai = Convert.ToInt32(reader["SoLuongXuat"]);
                         list.Add(new MaterialViewModel
                         {
                             MaterialID = Convert.ToInt32(reader["MaterialID"]),

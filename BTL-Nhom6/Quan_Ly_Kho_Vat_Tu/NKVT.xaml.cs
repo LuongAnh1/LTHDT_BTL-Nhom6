@@ -178,11 +178,11 @@ namespace BTL_Nhom6.Quan_Ly_Kho_Vat_Tu
         private void Button_NhapKho_Click(object sender, RoutedEventArgs e) { /* Trang hiện tại */ }
         private void Button_XuatKho_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new XuatKho()); 
+            NavigationHelper.Navigate(this, new XKVT()); 
         }
         private void Button_TheKho_Click(object sender, RoutedEventArgs e)
         {
-            // NavigationHelper.Navigate(this, new TheKho()); 
+            NavigationHelper.Navigate(this, new LSGD()); 
         }
         #endregion
     }
