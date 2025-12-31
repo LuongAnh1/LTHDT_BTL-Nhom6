@@ -134,5 +134,29 @@ namespace BTL_Nhom6.Services
             }
             return list;
         }
+
+        // Thêm vào class SupplierService
+        public List<SupplierEvaluationDTO> GetSupplierEvaluations()
+        {
+            List<SupplierEvaluationDTO> list = new List<SupplierEvaluationDTO>();
+            var allSuppliers = GetAllSuppliers(); // Tận dụng hàm cũ của bạn
+
+            foreach (var sup in allSuppliers)
+            {
+                // LOGIC ĐÁNH GIÁ GIẢ LẬP (Bạn có thể thay bằng logic thật đếm số lần giao hàng trễ)
+                // Ví dụ: ID chẵn là Tốt, ID lẻ là Trung bình
+                string rating = (sup.SupplierID % 2 == 0) ? "Tốt" : "Trung bình";
+
+                list.Add(new SupplierEvaluationDTO
+                {
+                    SupplierID = sup.SupplierID,
+                    TenCongTy = sup.SupplierName,
+                    LienHe = $"{sup.ContactPerson} - {sup.Phone}",
+                    MoTa = string.IsNullOrEmpty(sup.Address) ? "Chưa cập nhật địa chỉ" : sup.Address,
+                    DanhGia = rating
+                });
+            }
+            return list;
+        }
     }
 }

@@ -111,6 +111,43 @@ namespace BTL_Nhom6.Services
             }
         }
 
+        // Hàm này lấy danh sách Phân Xưởng nhưng trả về dưới dạng List<Location>
+        // Để bạn đỡ phải tạo class PhanXuong mới
+        public List<Location> GetPhanXuongAsLocations()
+        {
+            List<Location> list = new List<Location>();
+
+            using (MySqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // LOGIC MỚI: Lấy các Location có ParentLocationID là NULL (tức là cấp cao nhất/Phân xưởng)
+                string sql = @"
+            SELECT LocationID, LocationName 
+            FROM Locations 
+            WHERE ParentLocationID IS NULL 
+            ORDER BY LocationName ASC";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Location
+                        {
+                            LocationID = Convert.ToInt32(reader["LocationID"]),
+                            LocationName = reader["LocationName"].ToString(),
+                            // Gán mặc định các giá trị khác
+                            Description = "Phân xưởng (Vị trí gốc)",
+                            ParentLocationID = null
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
         // 5. Tìm kiếm (Theo tên hoặc mã - optional cho ô tìm kiếm trên giao diện)
         public List<Location> SearchLocations(string keyword)
         {
