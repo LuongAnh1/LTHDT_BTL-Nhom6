@@ -20,9 +20,7 @@
         <!-- STYLE: Custom Header cho DataGrid -->
         <Style x:Key="CustomDataGridColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
             <Setter Property="Background" Value="#F9FAFB"/>
-            <!-- bg-gray-50 -->
             <Setter Property="Foreground" Value="#374151"/>
-            <!-- text-gray-700 -->
             <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Height" Value="45"/>
             <Setter Property="Padding" Value="16,0"/>
@@ -54,7 +52,7 @@
 
             <!-- HEADER -->
             <Grid Grid.Row="0">
-                <TextBlock Text="Báo cáo tình trạng thiết bị" 
+                <TextBlock Text="Báo cáo lỗi &amp; sự cố" 
                      FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
                      Margin="32,24,0,10" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                 <uc:WindowControlBar />
@@ -98,7 +96,7 @@
                                     Style="{StaticResource MaterialDesignFlatButton}"
                                     Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"
                                     Height="32" Padding="12,0" FontSize="13" FontWeight="Bold"
-                                    materialDesign:ButtonAssist.CornerRadius="4"/>                                                  
+                                    materialDesign:ButtonAssist.CornerRadius="4"/>
                             </Grid>
 
                             <!-- Hàng 2: Các ô nhập liệu -->
@@ -117,35 +115,34 @@
                                     <!-- Nút Áp dụng -->
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Cột 1: Phạm vi ngày (Dùng DatePicker cho hợp logic báo cáo lỗi) -->
+                                <!-- Cột 1: Phạm vi ngày (Đã thêm x:Name) -->
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Phạm vi ngày" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <DatePicker Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                                    <TextBlock Text="Từ ngày" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="dpTuNgay"
+                                        Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
                                         Height="48" 
                                         Padding="12,0"
                                         VerticalContentAlignment="Center"
-                                        materialDesign:HintAssist.Hint="Chọn ngày"/>                                                        
+                                        materialDesign:HintAssist.Hint="Chọn ngày bắt đầu"/>
                                 </StackPanel>
 
-                                <!-- Cột 2: Loại thiết bị -->
+                                <!-- Cột 2: Loại thiết bị (Đã thêm x:Name và XÓA item cứng) -->
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                    <ComboBox x:Name="cboCategory"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
                                           Height="48" 
                                           Padding="12,0" 
-                                          VerticalContentAlignment="Center"
-                                          SelectedIndex="0">                                                    
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Máy bơm"/>
-                                        <ComboBoxItem Content="Hệ thống HVAC"/>
-                                        <ComboBoxItem Content="Dây chuyền sản xuất"/>
+                                          VerticalContentAlignment="Center">
+                                        <!-- Item sẽ được nạp từ C# -->
                                     </ComboBox>
                                 </StackPanel>
 
-                                <!-- Cột 3: Phân loại lỗi -->
+                                <!-- Cột 3: Phân loại lỗi (Đã thêm x:Name) -->
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Phân loại lỗi" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                    <ComboBox x:Name="cboErrorType"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}" 
                                           Height="48" 
                                           Padding="12,0" 
                                           VerticalContentAlignment="Center"
@@ -154,6 +151,7 @@
                                         <ComboBoxItem Content="Lỗi cơ khí"/>
                                         <ComboBoxItem Content="Lỗi điện"/>
                                         <ComboBoxItem Content="Lỗi phần mềm"/>
+                                        <ComboBoxItem Content="Khác"/>
                                     </ComboBox>
                                 </StackPanel>
 
@@ -176,9 +174,8 @@
                     <!-- SECTION 2: BIỂU ĐỒ PHÂN BỐ LỖI -->
                     <Border Background="White" CornerRadius="8" BorderBrush="#E5E7EB" BorderThickness="1" Padding="24" Margin="0,0,0,24">
                         <StackPanel>
-                            <TextBlock Text="Biểu đồ phân bố lỗi" FontWeight="SemiBold" FontSize="18" Foreground="#1F2937" Margin="0,0,0,20"/>
+                            <TextBlock Text="Top 8 thiết bị gặp sự cố nhiều nhất" FontWeight="SemiBold" FontSize="18" Foreground="#1F2937" Margin="0,0,0,20"/>
 
-                            <!-- Container chính của biểu đồ -->
                             <Grid Height="300">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="30"/>
@@ -187,8 +184,7 @@
                                     <!-- Cột chứa các thanh biểu đồ -->
                                 </Grid.ColumnDefinitions>
 
-                                <!-- 1. TRỤC Y (Thang đo cố định: 0 - 20) -->
-                                <!-- Margin Bottom 25 khớp với chiều cao dành cho nhãn trục X -->
+                                <!-- 1. TRỤC Y -->
                                 <UniformGrid Grid.Column="0" Columns="1" Margin="0,0,10,25">
                                     <TextBlock Text="20" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
                                     <TextBlock Text="15" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
@@ -196,68 +192,56 @@
                                     <TextBlock Text="5"  VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
                                     <TextBlock Text="0"  VerticalAlignment="Bottom" HorizontalAlignment="Right" FontSize="12" Foreground="#6B7280"/>
                                 </UniformGrid>
-
-                                <!-- Đường kẻ dọc trục Y -->
                                 <Border Grid.Column="0" BorderBrush="#D1D5DB" BorderThickness="0,0,1,0" Margin="0,0,0,25"/>
 
-                                <!-- 2. VÙNG VẼ CỘT (Dynamic Chart) -->
+                                <!-- 2. VÙNG VẼ CỘT -->
                                 <Grid Grid.Column="1">
-                                    <!-- Đường kẻ ngang trục X -->
                                     <Border BorderBrush="#D1D5DB" BorderThickness="0,0,0,1" VerticalAlignment="Bottom" Margin="0,0,0,25"/>
 
-                                    <!-- ItemsControl: Tự động sinh ra các cột dựa trên Binding -->
                                     <ItemsControl ItemsSource="{Binding DuLieuBieuDo}" VerticalAlignment="Bottom">
-
-                                        <!-- Panel chứa các cột: UniformGrid giúp chia đều khoảng cách ngang -->
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <UniformGrid Rows="1"/>
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
 
-                                        <!-- Template cho từng cột -->
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel VerticalAlignment="Bottom">
-
                                                     <!-- THANH BIỂU ĐỒ -->
-                                                    <!-- Height được Binding vào HeightValue tính toán từ C# -->
                                                     <Border Width="50" 
-                                        CornerRadius="4,4,0,0" 
-                                        Background="#3B82F6"
-                                        Margin="5,0">
+                                                            CornerRadius="4,4,0,0" 
+                                                            Background="#3B82F6"
+                                                            Margin="5,0">
 
-                                                        <!-- Hiệu ứng Animation: Cột mọc lên khi dữ liệu thay đổi -->
+                                                        <!-- Animation -->
                                                         <Border.Triggers>
                                                             <EventTrigger RoutedEvent="Loaded">
                                                                 <BeginStoryboard>
                                                                     <Storyboard>
                                                                         <DoubleAnimation Storyboard.TargetProperty="Height"
-                                                                     From="0" 
-                                                                     To="{Binding HeightValue}" 
-                                                                     Duration="0:0:0.6" 
-                                                                     DecelerationRatio="0.9"/>
+                                                                             From="0" 
+                                                                             To="{Binding HeightValue}" 
+                                                                             Duration="0:0:0.6" 
+                                                                             DecelerationRatio="0.9"/>
                                                                     </Storyboard>
                                                                 </BeginStoryboard>
                                                             </EventTrigger>
                                                         </Border.Triggers>
 
-                                                        <!-- Style Hover: Đổi màu khi di chuột vào -->
+                                                        <!-- Style & Tooltip -->
                                                         <Border.Style>
                                                             <Style TargetType="Border">
-                                                                <!-- Chiều cao mặc định lấy từ Binding -->
                                                                 <Setter Property="Height" Value="{Binding HeightValue}"/>
                                                                 <Style.Triggers>
                                                                     <Trigger Property="IsMouseOver" Value="True">
                                                                         <Setter Property="Background" Value="#2563EB"/>
-                                                                        <!-- Xanh đậm hơn -->
                                                                         <Setter Property="Cursor" Value="Hand"/>
                                                                     </Trigger>
                                                                 </Style.Triggers>
                                                             </Style>
                                                         </Border.Style>
 
-                                                        <!-- Tooltip hiển thị số liệu chi tiết -->
                                                         <Border.ToolTip>
                                                             <ToolTip>
                                                                 <StackPanel>
@@ -268,15 +252,14 @@
                                                         </Border.ToolTip>
                                                     </Border>
 
-                                                    <!-- NHÃN TRỤC X (Tên thiết bị/Lỗi) -->
+                                                    <!-- NHÃN TRỤC X -->
                                                     <TextBlock Text="{Binding Label}" 
-                                           HorizontalAlignment="Center" 
-                                           Margin="0,10,0,0" 
-                                           FontSize="12" 
-                                           Foreground="#4B5563"
-                                           TextTrimming="CharacterEllipsis"
-                                           ToolTip="{Binding Label}"/>
-                                                    <!-- Tooltip nếu tên quá dài -->
+                                                           HorizontalAlignment="Center" 
+                                                           Margin="0,10,0,0" 
+                                                           FontSize="12" 
+                                                           Foreground="#4B5563"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           ToolTip="{Binding Label}"/>
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -286,41 +269,36 @@
                         </StackPanel>
                     </Border>
 
-<!-- SECTION 3: DANH SÁCH CHI TIẾT -->
- <!-- Đã thêm Margin="32,0,32,32" để co bảng lại, tạo khoảng cách với 2 bên lề -->
-                    <!-- Border thay đổi: CornerRadius=0, BorderThickness chỉ trên/dưới, Margin=0 để tràn viền -->
+                    <!-- SECTION 3: DANH SÁCH CHI TIẾT -->
                     <Border Background="White" 
-         CornerRadius="0" 
-         BorderBrush="#E5E7EB" 
-         BorderThickness="0, 1, 0, 1" 
-         ClipToBounds="True"
-         Margin="0, 10, 0, 24">
+                            CornerRadius="0" 
+                            BorderBrush="#E5E7EB" 
+                            BorderThickness="0, 1, 0, 1" 
+                            ClipToBounds="True"
+                            Margin="0, 10, 0, 24">
 
                         <StackPanel>
-                            <!-- Tiêu đề: Đặt trong Grid với Margin chuẩn giống Bảng 2, bỏ Separator -->
                             <Grid Margin="24,20,24,0">
                                 <TextBlock Text="Danh sách sự cố chi tiết" 
-                        FontSize="18" 
-                        FontWeight="Bold" 
-                        Foreground="#1F2937"/>
+                                       FontSize="18" 
+                                       FontWeight="Bold" 
+                                       Foreground="#1F2937"/>
                             </Grid>
 
-                            <!-- DataGrid: Thêm Margin 24 các bên để nội dung thụt vào trong giống Bảng 2 -->
                             <DataGrid ItemsSource="{Binding DanhSachSuCo}" 
-                   Margin="24, 20, 24, 20"
-                   AutoGenerateColumns="False" 
-                   CanUserAddRows="False" 
-                   IsReadOnly="True" 
-                   HeadersVisibility="Column"
-                   Background="Transparent" 
-                   BorderThickness="0"
-                   GridLinesVisibility="Horizontal"
-                   HorizontalGridLinesBrush="#E5E7EB"
-                   RowHeight="55">
+                                      Margin="24, 20, 24, 20"
+                                      AutoGenerateColumns="False" 
+                                      CanUserAddRows="False" 
+                                      IsReadOnly="True" 
+                                      HeadersVisibility="Column"
+                                      Background="Transparent" 
+                                      BorderThickness="0"
+                                      GridLinesVisibility="Horizontal"
+                                      HorizontalGridLinesBrush="#E5E7EB"
+                                      RowHeight="55">
 
-                                <!-- CÁC RESOURCE VÀ STYLE (GIỮ NGUYÊN) -->
                                 <DataGrid.Resources>
-                                    <!-- Style Header màu xanh đậm (Giữ nguyên theo thiết kế cũ của bạn) -->
+                                    <!-- Style Header -->
                                     <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
                                         <Setter Property="Background" Value="#2C3E50"/>
                                         <Setter Property="Foreground" Value="White"/>
@@ -354,12 +332,13 @@
                                     </Style>
                                 </DataGrid.Resources>
 
-                                <!-- CÁC CỘT (GIỮ NGUYÊN) -->
+                                <!-- CÁC CỘT DỮ LIỆU -->
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding MaSC}" Header="MÃ SỰ CỐ" Width="140" Foreground="#4B5563"/>
+                                    <DataGridTextColumn Binding="{Binding MaSC}" Header="MÃ SỰ CỐ" Width="120" Foreground="#4B5563"/>
                                     <DataGridTextColumn Binding="{Binding ThietBi}" Header="THIẾT BỊ" Width="200" FontWeight="SemiBold" Foreground="#111827"/>
-                                    <DataGridTextColumn Binding="{Binding LoaiLoi}" Header="LOẠI LỖI" Width="*" Foreground="#4B5563"/>
-                                    <DataGridTextColumn Binding="{Binding Ngay, StringFormat=yyyy-MM-dd}" Header="NGÀY GHI NHẬN" Width="160" Foreground="#4B5563"/>
+                                    <DataGridTextColumn Binding="{Binding LoaiLoi}" Header="MÔ TẢ LỖI" Width="*" Foreground="#4B5563"/>
+                                    <DataGridTextColumn Binding="{Binding Ngay, StringFormat=dd/MM/yyyy}" Header="NGÀY GHI NHẬN" Width="160" Foreground="#4B5563"/>
+
                                     <DataGridTemplateColumn Header="MỨC ĐỘ ƯU TIÊN" Width="180">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
@@ -370,6 +349,10 @@
                                                     <DataTrigger Binding="{Binding MucDo}" Value="High">
                                                         <Setter TargetName="Badge" Property="Background" Value="#FEE2E2"/>
                                                         <Setter TargetName="BadgeText" Property="Foreground" Value="#991B1B"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding MucDo}" Value="Critical">
+                                                        <Setter TargetName="Badge" Property="Background" Value="#991B1B"/>
+                                                        <Setter TargetName="BadgeText" Property="Foreground" Value="White"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding MucDo}" Value="Medium">
                                                         <Setter TargetName="Badge" Property="Background" Value="#FEF3C7"/>
@@ -387,7 +370,6 @@
                             </DataGrid>
                         </StackPanel>
                     </Border>
-
                 </StackPanel>
             </ScrollViewer>
         </Grid>
