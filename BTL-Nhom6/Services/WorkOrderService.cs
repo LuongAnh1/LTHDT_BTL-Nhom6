@@ -3,13 +3,17 @@ using BTL_Nhom6.Models;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Windows; // Thư viện để hiện MessageBox
 
 namespace BTL_Nhom6.Services
 {
     public class WorkOrderService
     {
+        // ==========================================================
         // 1. Lấy danh sách việc của KTV theo ID
+        // ==========================================================
         public List<WorkOrderViewModel> GetWorkOrdersByTechId(int userId)
         {
             List<WorkOrderViewModel> list = new List<WorkOrderViewModel>();
@@ -53,13 +57,15 @@ namespace BTL_Nhom6.Services
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Lỗi GetWorkOrdersByTechId: " + ex.Message);
+                    MessageBox.Show("Lỗi GetWorkOrdersByTechId: " + ex.Message);
                 }
             }
             return list;
         }
 
+        // ==========================================================
         // 2. Lấy danh sách trạng thái
+        // ==========================================================
         public List<WorkOrderStatus> GetAllStatuses()
         {
             List<WorkOrderStatus> list = new List<WorkOrderStatus>();
@@ -83,7 +89,9 @@ namespace BTL_Nhom6.Services
             return list;
         }
 
+        // ==========================================================
         // 3. Tạo Phiếu công việc mới
+        // ==========================================================
         public bool CreateWorkOrder(WorkOrder wo)
         {
             using (MySqlConnection conn = DatabaseHelper.GetConnection())
@@ -122,13 +130,15 @@ namespace BTL_Nhom6.Services
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    Console.WriteLine("Lỗi CreateWO: " + ex.Message);
+                    MessageBox.Show("Lỗi CreateWO: " + ex.Message);
                     return false;
                 }
             }
         }
 
-        // 4. Cập nhật trạng thái Phiếu công việc (Dùng cho form cập nhật tiến độ)
+        // ==========================================================
+        // 4. Cập nhật tiến độ WorkOrder
+        // ==========================================================
         public bool UpdateWorkOrder(int workOrderId, int newStatusId, string solution)
         {
             using (MySqlConnection conn = DatabaseHelper.GetConnection())
@@ -218,7 +228,9 @@ namespace BTL_Nhom6.Services
             }
         }
 
+        // ==========================================================
         // 5. Lấy danh sách WO để nghiệm thu
+        // ==========================================================
         public List<WorkOrderViewModel> GetWorkOrdersForAcceptance()
         {
             List<WorkOrderViewModel> list = new List<WorkOrderViewModel>();
@@ -226,13 +238,13 @@ namespace BTL_Nhom6.Services
             {
                 conn.Open();
                 string sql = @"SELECT wo.WorkOrderID, wo.DeviceCode, d.DeviceName, u.FullName AS TenKTV, stt.StatusName
-                       FROM WorkOrders wo
-                       JOIN Devices d ON wo.DeviceCode = d.DeviceCode
-                       JOIN Users u ON wo.TechnicianID = u.UserID
-                       JOIN WorkOrderStatus stt ON wo.StatusID = stt.StatusID
-                       WHERE wo.StatusID IN (2, 3) 
-                       
-                       ORDER BY wo.WorkOrderID DESC";
+                               FROM WorkOrders wo
+                               JOIN Devices d ON wo.DeviceCode = d.DeviceCode
+                               JOIN Users u ON wo.TechnicianID = u.UserID
+                               JOIN WorkOrderStatus stt ON wo.StatusID = stt.StatusID
+                               WHERE wo.StatusID != 3 
+                               ORDER BY wo.WorkOrderID DESC";
+
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -252,7 +264,9 @@ namespace BTL_Nhom6.Services
             return list;
         }
 
-        // 6. LƯU NGHIỆM THU (Đã sửa đầy đủ)
+        // ==========================================================
+        // 6. LƯU NGHIỆM THU (ĐÃ SỬA LỖI HOÀN CHỈNH)
+        // ==========================================================
         public bool SaveAcceptance(int workOrderId, List<MaterialViewModel> materials, bool isCloseTicket,
                            decimal laborCost, decimal transportCost, decimal otherCost, string otherDesc)
         {
@@ -394,7 +408,9 @@ namespace BTL_Nhom6.Services
             }
         }
 
-        // 7. Lấy chi tiết vật tư đã kê khai của 1 phiếu
+        // ==========================================================
+        // 7. Lấy chi tiết vật tư đã kê khai của một phiếu 
+        // ==========================================================
         public List<MaterialViewModel> GetExportedMaterialsForWO(int workOrderId)
         {
             List<MaterialViewModel> list = new List<MaterialViewModel>();
@@ -458,7 +474,46 @@ namespace BTL_Nhom6.Services
             return list;
         }
 
-        // 8. Lấy thông tin chi phí phụ (Nhân công, Vận chuyển...) của 1 phiếu
+        // ==========================================================
+        // 8. Lấy chi tiết vật tư
+        // ==========================================================
+        public List<MaterialViewModel> GetWorkOrderDetails(int workOrderId)
+        {
+            List<MaterialViewModel> list = new List<MaterialViewModel>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string sql = @"SELECT wod.MaterialID, m.MaterialName, u.UnitName, 
+                                      wod.QuantityUsed, wod.UnitPrice
+                               FROM WorkOrderDetails wod
+                               JOIN Materials m ON wod.MaterialID = m.MaterialID
+                               JOIN Units u ON m.UnitID = u.UnitID
+                               WHERE wod.WorkOrderID = @WOID";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@WOID", workOrderId);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new MaterialViewModel
+                        {
+                            MaterialID = Convert.ToInt32(reader["MaterialID"]),
+                            TenVatTu = reader["MaterialName"].ToString(),
+                            DonVi = reader["UnitName"].ToString(),
+                            SoLuong = Convert.ToInt32(reader["QuantityUsed"]),
+                            DonGia = Convert.ToDecimal(reader["UnitPrice"])
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        // ==========================================================
+        // 9. Lấy chi phí phụ
+        // ==========================================================
         public WorkOrderViewModel GetWorkOrderCosts(int workOrderId)
         {
             WorkOrderViewModel result = null;
@@ -486,18 +541,149 @@ namespace BTL_Nhom6.Services
             return result;
         }
 
-        // 9. Xóa Phiếu công việc (Chỉ khi trạng thái là Hủy bỏ)
+        // ==========================================================
+        // 10. Xóa Phiếu (Dành cho KTV/Admin)
+        // ==========================================================
         public bool DeleteWorkOrder(int workOrderId)
         {
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                // Chỉ cho phép xóa nếu trạng thái là Hủy bỏ (StatusID = 5 - Ví dụ)
-                string sql = "DELETE FROM WorkOrders WHERE WorkOrderID = @ID AND StatusID = 5";
+                string sql = "DELETE FROM WorkOrders WHERE WorkOrderID = @ID";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@ID", workOrderId);
                 return cmd.ExecuteNonQuery() > 0;
             }
+        }
+
+        // ==========================================================
+        // 11. Lấy danh sách Phân xưởng từ bảng LOCATIONS
+        // ==========================================================
+        public List<string> GetDanhSachPhanXuong()
+        {
+            List<string> list = new List<string>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+                    string sql = "SELECT LocationName FROM Locations ORDER BY LocationName";
+
+                    MySqlCommand cmd = new MySqlCommand(sql, conn);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(reader["LocationName"].ToString());
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi lấy danh sách Phân xưởng: " + ex.Message);
+                }
+            }
+            return list;
+        }
+
+        // ==========================================================
+        // 12. Lấy Dữ liệu Báo Cáo
+        // ==========================================================
+        public List<ChiPhiDTO> GetReportData(int? month = null, int? year = null)
+        {
+            List<ChiPhiDTO> list = new List<ChiPhiDTO>();
+
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                try
+                {
+                    conn.Open();
+
+                    StringBuilder queryBuilder = new StringBuilder();
+
+                    queryBuilder.Append(@"
+                        SELECT * FROM (
+                            -- 1. VẬT TƯ
+                            SELECT 
+                                CONCAT('WO-', wo.WorkOrderID) AS MaPhieu, 
+                                'Vật tư' AS LoaiChiPhi, 
+                                m.MaterialName AS NoiDung, 
+                                COALESCE(wo.EndDate, wo.StartDate) AS Ngay, 
+                                (wod.QuantityUsed * wod.UnitPrice) AS SoTien,
+                                l.LocationName AS TenPhanXuong,  
+                                wo.StatusID
+                            FROM WorkOrders wo
+                            JOIN WorkOrderDetails wod ON wo.WorkOrderID = wod.WorkOrderID
+                            JOIN Materials m ON wod.MaterialID = m.MaterialID
+                            JOIN Devices d ON wo.DeviceCode = d.DeviceCode 
+                            LEFT JOIN Locations l ON d.LocationID = l.LocationID
+
+                            UNION ALL
+
+                            -- 2. NHÂN CÔNG
+                            SELECT 
+                                CONCAT('WO-', wo.WorkOrderID) AS MaPhieu, 
+                                'Nhân công' AS LoaiChiPhi, 
+                                'Chi phí nhân công' AS NoiDung, 
+                                COALESCE(wo.EndDate, wo.StartDate) AS Ngay, 
+                                wo.LaborCost AS SoTien,
+                                l.LocationName AS TenPhanXuong, 
+                                wo.StatusID
+                            FROM WorkOrders wo
+                            JOIN Devices d ON wo.DeviceCode = d.DeviceCode
+                            LEFT JOIN Locations l ON d.LocationID = l.LocationID
+                            WHERE wo.LaborCost > 0
+
+                            UNION ALL
+
+                            -- 3. CHI PHÍ KHÁC
+                            SELECT 
+                                CONCAT('WO-', wo.WorkOrderID) AS MaPhieu, 
+                                'Chi phí khác' AS LoaiChiPhi, 
+                                COALESCE(wo.OtherCostDescription, 'Phụ phí') AS NoiDung, 
+                                COALESCE(wo.EndDate, wo.StartDate) AS Ngay, 
+                                (wo.TransportCost + wo.OtherCost) AS SoTien,
+                                l.LocationName AS TenPhanXuong, 
+                                wo.StatusID
+                            FROM WorkOrders wo
+                            JOIN Devices d ON wo.DeviceCode = d.DeviceCode
+                            LEFT JOIN Locations l ON d.LocationID = l.LocationID
+                            WHERE (wo.TransportCost > 0 OR wo.OtherCost > 0)
+                        ) AS T
+                        WHERE T.StatusID = 3 ");
+
+                    if (month.HasValue) queryBuilder.Append(" AND MONTH(T.Ngay) = @Month ");
+                    if (year.HasValue) queryBuilder.Append(" AND YEAR(T.Ngay) = @Year ");
+
+                    queryBuilder.Append(" ORDER BY T.Ngay DESC");
+
+                    MySqlCommand cmd = new MySqlCommand(queryBuilder.ToString(), conn);
+
+                    if (month.HasValue) cmd.Parameters.AddWithValue("@Month", month.Value);
+                    if (year.HasValue) cmd.Parameters.AddWithValue("@Year", year.Value);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new ChiPhiDTO
+                            {
+                                MaPhieu = reader["MaPhieu"].ToString(),
+                                LoaiChiPhi = reader["LoaiChiPhi"].ToString(),
+                                NoiDung = reader["NoiDung"].ToString(),
+                                Ngay = reader["Ngay"] != DBNull.Value ? Convert.ToDateTime(reader["Ngay"]) : DateTime.MinValue,
+                                SoTien = reader["SoTien"] != DBNull.Value ? Convert.ToDecimal(reader["SoTien"]) : 0,
+                                TenPhanXuong = reader["TenPhanXuong"] != DBNull.Value ? reader["TenPhanXuong"].ToString() : "Không xác định"
+                            });
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Lỗi lấy dữ liệu báo cáo: " + ex.Message, "Lỗi SQL", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            return list;
         }
     }
 }

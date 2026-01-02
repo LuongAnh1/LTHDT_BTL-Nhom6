@@ -89,11 +89,12 @@
                                     <TextBlock Text="Bộ lọc báo cáo" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                 </StackPanel>
 
-                                <Button HorizontalAlignment="Right" Content="Xuất báo cáo" 
-                    Style="{StaticResource MaterialDesignFlatButton}" 
-                    Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}" 
-                    Height="32" Padding="12,0" FontSize="13" FontWeight="Bold" 
-                    materialDesign:ButtonAssist.CornerRadius="4"/>
+                                <Button HorizontalAlignment="Right" Content="Xuất báo cáo"
+                                        Click="BtnXuatBaoCao_Click"
+                                        Style="{StaticResource MaterialDesignFlatButton}" 
+                                        Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}" 
+                                        Height="32" Padding="12,0" FontSize="13" FontWeight="Bold" 
+                                        materialDesign:ButtonAssist.CornerRadius="4"/>
                             </Grid>
 
                             <!-- Hàng 2: Các ô nhập liệu -->
@@ -115,54 +116,48 @@
                                 <!-- Cột 1: Phạm vi ngày hết hạn -->
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Phạm vi ngày hết hạn" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <DatePicker Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
-                            Height="48" 
-                            Padding="12,0"
-                            VerticalContentAlignment="Center"
-                            materialDesign:HintAssist.Hint="dd/MM/yyyy"/>
+                                    <DatePicker x:Name="dpExpiryDate"
+                                                Style="{StaticResource MaterialDesignOutlinedDatePicker}" 
+                                                Height="48" 
+                                                Padding="12,0"
+                                                VerticalContentAlignment="Center"
+                                                materialDesign:HintAssist.Hint="dd/MM/yyyy"/>
                                 </StackPanel>
 
                                 <!-- Cột 2: Nhà cung cấp -->
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Nhà cung cấp" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
-                          Height="48" 
-                          Padding="12,0" 
-                          VerticalContentAlignment="Center"
-                          SelectedIndex="0">
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Công ty TNHH Thiết bị A"/>
-                                        <ComboBoxItem Content="Công ty CP Kỹ thuật B"/>
-                                        <ComboBoxItem Content="Nhà phân phối C"/>
+                                    <ComboBox x:Name="cboSupplier"
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                              Height="48" 
+                                              Padding="12,0" 
+                                              VerticalContentAlignment="Center">
                                     </ComboBox>
                                 </StackPanel>
 
                                 <!-- Cột 3: Loại thiết bị -->
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
-                          Height="48" 
-                          Padding="12,0" 
-                          VerticalContentAlignment="Center"
-                          SelectedIndex="0">
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Máy CNC"/>
-                                        <ComboBoxItem Content="Hệ thống làm mát"/>
+                                    <ComboBox x:Name="cboCategory"
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                              Height="48" 
+                                              Padding="12,0" 
+                                              VerticalContentAlignment="Center">
                                     </ComboBox>
                                 </StackPanel>
 
                                 <!-- Cột 4: Nút Áp dụng -->
                                 <Button Grid.Column="6" 
-                    VerticalAlignment="Bottom" 
-                    Content="Áp dụng" 
-                    Click="BtnLocDuLieu_Click"
-                    Background="{StaticResource PrimaryBlueBrush}" 
-                    BorderThickness="0"
-                    Foreground="White" 
-                    FontWeight="SemiBold"
-                    Height="48" 
-                    Padding="24,0"
-                    materialDesign:ButtonAssist.CornerRadius="4"/>
+                                        VerticalAlignment="Bottom" 
+                                        Content="Áp dụng" 
+                                        Click="BtnLocDuLieu_Click"
+                                        Background="{StaticResource PrimaryBlueBrush}" 
+                                        BorderThickness="0"
+                                        Foreground="White" 
+                                        FontWeight="SemiBold"
+                                        Height="48" 
+                                        Padding="24,0"
+                                        materialDesign:ButtonAssist.CornerRadius="4"/>
                             </Grid>
                         </Grid>
                     </Border>
@@ -174,7 +169,15 @@
                                 <materialDesign:PackIcon Kind="CalendarAlert" Width="24" Height="24" Foreground="#F97316" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <TextBlock Text="Thiết bị sắp hết hạn bảo hành" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
                             </StackPanel>
-                            <DataGrid ItemsSource="{Binding DanhSachHetHanBaoHanh}" Margin="24, 20, 24, 20" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" HeadersVisibility="Column" Background="Transparent" ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}">
+
+                            <DataGrid x:Name="dgWarranty"
+                                      Margin="24, 20, 24, 20" 
+                                      AutoGenerateColumns="False" 
+                                      CanUserAddRows="False" 
+                                      IsReadOnly="True" 
+                                      HeadersVisibility="Column" 
+                                      Background="Transparent" 
+                                      ColumnHeaderStyle="{StaticResource CustomDataGridColumnHeader}">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Binding="{Binding MaTB}" Width="150" Header="MÃ THIẾT BỊ"/>
                                     <DataGridTextColumn Binding="{Binding TenTB}" Width="*" Header="TÊN THIẾT BỊ"/>
@@ -192,7 +195,6 @@
                     </Border>
 
                     <!-- SECTION 3: ĐÁNH GIÁ NHÀ CUNG CẤP -->
-                    <!-- Margin 14 để bù trừ cho padding của các item con (24 - 10 = 14) -->
                     <StackPanel Margin="14,0,14,20">
 
                         <StackPanel Orientation="Horizontal" Margin="10,0,0,16">
@@ -200,9 +202,7 @@
                             <TextBlock Text="Đánh giá Nhà cung cấp" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
                         </StackPanel>
 
-                        <!-- ITEMS CONTROL: Hiển thị danh sách động -->
-                        <ItemsControl ItemsSource="{Binding DanhSachNCC}">
-
+                        <ItemsControl x:Name="icSuppliers">
                             <!-- Bố cục: Chia đều thành 3 cột -->
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -213,7 +213,7 @@
                             <!-- Template: Giao diện của 1 thẻ -->
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <!-- Margin 10 tạo khoảng cách đều giữa các thẻ -->
+                                    <!-- [QUAN TRỌNG] Visual Tree cho mỗi Item -->
                                     <Border Margin="10" Background="{StaticResource ContentBackgroundBrush}" CornerRadius="8" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="20">
                                         <StackPanel>
                                             <Grid Margin="0,0,0,12">
@@ -222,7 +222,7 @@
                                                     <TextBlock Text="{Binding LienHe}" FontSize="12" Foreground="#6B7280" Margin="0,4,0,0"/>
                                                 </StackPanel>
 
-                                                <!-- Badge Đánh giá: Màu sắc thay đổi theo DataTrigger -->
+                                                <!-- Badge Đánh giá -->
                                                 <Border x:Name="BadgeBorder" HorizontalAlignment="Right" VerticalAlignment="Top" CornerRadius="12" Padding="8,4">
                                                     <TextBlock x:Name="BadgeText" Text="{Binding DanhGia}" FontSize="11" FontWeight="Bold"/>
                                                 </Border>
@@ -230,22 +230,14 @@
 
                                             <TextBlock Text="{Binding MoTa}" TextWrapping="Wrap" FontSize="13" Foreground="#4B5563" LineHeight="20"/>
                                         </StackPanel>
-
-                                        <!-- Xử lý logic màu sắc -->
-                                        <Border.Triggers>
-                                            <!-- Mặc định (hoặc Kém) -->
-                                        </Border.Triggers>
                                     </Border>
 
-                                    <!-- DataTriggers để đổi màu Badge dựa trên giá trị "DanhGia" -->
+                                    <!-- [ĐÃ SỬA] DataTemplate.Triggers nằm ở đây (ngang hàng với Border), không nằm trong Border -->
                                     <DataTemplate.Triggers>
-                                        <!-- Trường hợp: Tốt -->
                                         <DataTrigger Binding="{Binding DanhGia}" Value="Tốt">
                                             <Setter TargetName="BadgeBorder" Property="Background" Value="#DCFCE7"/>
                                             <Setter TargetName="BadgeText" Property="Foreground" Value="#166534"/>
                                         </DataTrigger>
-
-                                        <!-- Trường hợp: Trung bình -->
                                         <DataTrigger Binding="{Binding DanhGia}" Value="Trung bình">
                                             <Setter TargetName="BadgeBorder" Property="Background" Value="#FEF9C3"/>
                                             <Setter TargetName="BadgeText" Property="Foreground" Value="#854D0E"/>
@@ -257,7 +249,6 @@
                     </StackPanel>
 
                 </StackPanel>
-               
             </ScrollViewer>
         </Grid>
     </Grid>

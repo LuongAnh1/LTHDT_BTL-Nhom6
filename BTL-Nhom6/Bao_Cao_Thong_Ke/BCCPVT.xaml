@@ -17,7 +17,6 @@
         TextElement.FontSize="14"
         Background="{StaticResource AppBackgroundBrush}">
 
-    <!-- 1. RESOURCES (Đã thêm để sửa lỗi "Resource not found") -->
     <Window.Resources>
         <!-- STYLE: HEADER DATAGRID -->
         <Style x:Key="CustomDataGridColumnHeader" TargetType="DataGridColumnHeader" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
@@ -102,6 +101,7 @@
                                 </StackPanel>
 
                                 <Button HorizontalAlignment="Right" Content="Xuất báo cáo"
+                                        Click="BtnXuatBaoCao_Click"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"
                                         Height="32" Padding="12,0" FontSize="13" FontWeight="Bold"
@@ -122,31 +122,55 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
+                                <!-- 1. DATE PICKER -->
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Thời gian" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <DatePicker materialDesign:HintAssist.Hint="Chọn tháng/năm" Style="{StaticResource MaterialDesignOutlinedDatePicker}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                    <TextBlock Text="Năm thống kê" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <ComboBox x:Name="cbbNam"
+                                          ItemsSource="{Binding DanhSachNam}"
+                                          SelectedItem="{Binding SelectedYear}"
+                                          materialDesign:HintAssist.Hint="Chọn năm"
+                                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                          BorderBrush="{StaticResource BorderLightBrush}"
+                                          Background="White" Height="42" Padding="10,8"/>
                                 </StackPanel>
 
+                                <!-- 2. COMBOBOX LOẠI CHI PHÍ -->
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Loại chi phí" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox materialDesign:HintAssist.Hint="Tất cả" Style="{StaticResource MaterialDesignOutlinedComboBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8">
-                                        <ComboBoxItem Content="Tất cả"/>
+                                    <ComboBox x:Name="cbbLoaiChiPhi"
+                                              materialDesign:HintAssist.Hint="Tất cả" 
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                              BorderBrush="{StaticResource BorderLightBrush}" 
+                                              Background="White" Height="42" Padding="10,8">
+                                        <ComboBoxItem Content="Tất cả" IsSelected="True"/>
                                         <ComboBoxItem Content="Chi phí nhân công"/>
                                         <ComboBoxItem Content="Chi phí vật tư"/>
                                     </ComboBox>
                                 </StackPanel>
 
+                                <!-- 3. COMBOBOX PHÂN XƯỞNG (ĐÃ SỬA: THÊM BINDING) -->
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Phân xưởng" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox materialDesign:HintAssist.Hint="Toàn nhà máy" Style="{StaticResource MaterialDesignOutlinedComboBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                    <ComboBox x:Name="cbbPhanXuong"
+                                              ItemsSource="{Binding DanhSachPhanXuong}"
+                                              SelectedItem="{Binding SelectedPhanXuong}"
+                                              materialDesign:HintAssist.Hint="Toàn nhà máy" 
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                              BorderBrush="{StaticResource BorderLightBrush}" 
+                                              Background="White" Height="42" Padding="10,8"/>
                                 </StackPanel>
 
+                                <!-- 4. TEXTBOX TÌM KIẾM -->
                                 <StackPanel Grid.Column="6">
                                     <TextBlock Text="Tìm kiếm" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <TextBox materialDesign:HintAssist.Hint="Mã phiếu, nội dung..." Style="{StaticResource MaterialDesignOutlinedTextBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                    <TextBox x:Name="txtTimKiem"
+                                             materialDesign:HintAssist.Hint="Mã phiếu, nội dung..." 
+                                             Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                                             BorderBrush="{StaticResource BorderLightBrush}" 
+                                             Background="White" Height="42" Padding="10,8"/>
                                 </StackPanel>
 
-                                <!-- Nút Áp dụng có sự kiện Click -->
+                                <!-- 5. BUTTON ÁP DỤNG -->
                                 <Button Grid.Column="8" VerticalAlignment="Bottom" 
                                         Content="Áp dụng" Click="BtnLocDuLieu_Click"
                                         Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0"
@@ -156,7 +180,7 @@
                         </Grid>
                     </Border>
 
-                    <!-- SECTION 2: BIỂU ĐỒ (LIVECHARTS - Đã sửa lỗi Separator) -->
+                    <!-- SECTION 2: BIỂU ĐỒ -->
                     <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="24" Margin="0,0,0,40">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -178,7 +202,6 @@
                             <!-- LiveChart Control -->
                             <lvc:CartesianChart Grid.Row="1" Series="{Binding SeriesCollection}" LegendLocation="None">
                                 <lvc:CartesianChart.AxisX>
-                                    <!-- CHỈ GIỮ LẠI LABELS, KHÔNG DÙNG SEPARATOR Ở THẺ MỞ -->
                                     <lvc:Axis Labels="{Binding Labels}">
                                         <lvc:Axis.Separator>
                                             <lvc:Separator Step="1" StrokeThickness="0" />
@@ -252,6 +275,9 @@
                                                                 <DataTrigger Binding="{Binding LoaiChiPhi}" Value="Vật tư">
                                                                     <Setter Property="Background" Value="#DCFCE7"/>
                                                                 </DataTrigger>
+                                                                <DataTrigger Binding="{Binding LoaiChiPhi}" Value="Chi phí khác">
+                                                                    <Setter Property="Background" Value="#F3F4F6"/>
+                                                                </DataTrigger>
                                                             </Style.Triggers>
                                                         </Style>
                                                     </Border.Style>
@@ -264,6 +290,9 @@
                                                                     </DataTrigger>
                                                                     <DataTrigger Binding="{Binding LoaiChiPhi}" Value="Vật tư">
                                                                         <Setter Property="Foreground" Value="{StaticResource SuccessGreenBrush}"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding LoaiChiPhi}" Value="Chi phí khác">
+                                                                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
                                                             </Style>
@@ -289,7 +318,7 @@
                                     </DataGridTextColumn>
 
                                     <!-- 4. NGÀY -->
-                                    <DataGridTextColumn Binding="{Binding Ngay}" Width="160" Foreground="{StaticResource TextSecondaryBrush}">
+                                    <DataGridTextColumn Binding="{Binding NgayHienThi}" Width="160" Foreground="{StaticResource TextSecondaryBrush}">
                                         <DataGridTextColumn.Header>
                                             <TextBlock Text="NGÀY GHI NHẬN" Margin="16,0,0,0" VerticalAlignment="Center"/>
                                         </DataGridTextColumn.Header>
@@ -302,7 +331,7 @@
                                     </DataGridTextColumn>
 
                                     <!-- 5. SỐ TIỀN -->
-                                    <DataGridTextColumn Binding="{Binding SoTienString}" Width="160" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
+                                    <DataGridTextColumn Binding="{Binding SoTienHienThi}" Width="160" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}">
                                         <DataGridTextColumn.HeaderStyle>
                                             <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource CustomDataGridColumnHeader}">
                                                 <Setter Property="HorizontalContentAlignment" Value="Right"/>

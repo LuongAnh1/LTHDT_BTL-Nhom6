@@ -86,74 +86,53 @@
                                     <TextBlock Text="Bộ lọc báo cáo" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Button HorizontalAlignment="Right" Content="Xuất báo cáo"
+                                     Click="BtnXuatBaoCao_Click"
                                      Style="{StaticResource MaterialDesignFlatButton}"
                                      Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"
                                      Height="32" Padding="12,0" FontSize="13" FontWeight="Bold"
                                      materialDesign:ButtonAssist.CornerRadius="4"/>
                             </Grid>
-                            <!-- Thay thế đoạn Filter Inputs cũ bằng đoạn này -->
+
+                            <!-- [ĐÃ SỬA] Filter Inputs: CHIA LẠI CỘT Ở ĐÂY -->
                             <Grid Grid.Row="1">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <!-- Cột 0: Phân xưởng -->
-                                    <ColumnDefinition Width="16"/>
-                                    <!-- Cột 1: Khoảng cách -->
-                                    <ColumnDefinition Width="1*"/>
-                                    <!-- Cột 2: Khu vực -->
-                                    <ColumnDefinition Width="16"/>
-                                    <!-- Cột 3: Khoảng cách -->
-                                    <ColumnDefinition Width="1*"/>
-                                    <!-- Cột 4: Loại thiết bị -->
-                                    <ColumnDefinition Width="16"/>
-                                    <!-- Cột 5: Khoảng cách -->
+                                    <!-- Cột 1: Khu vực (Chiếm 50%) -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Khoảng cách -->
+                                    <ColumnDefinition Width="24"/>
+                                    <!-- Cột 2: Loại thiết bị (Chiếm 50%) -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Khoảng cách -->
+                                    <ColumnDefinition Width="24"/>
+                                    <!-- Cột 3: Nút bấm -->
                                     <ColumnDefinition Width="Auto"/>
-                                    <!-- Cột 6: Nút Áp dụng -->
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Phân xưởng -->
+
+                                <!-- 1. Khu vực (Đặt ở Column 0) -->
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Phân xưởng" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
-                                      Height="48" 
-                                      Padding="12,0" 
-                                      VerticalContentAlignment="Center"
-                                      SelectedIndex="0">
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Xưởng A"/>
-                                        <ComboBoxItem Content="Xưởng B"/>
-                                    </ComboBox>
-                                </StackPanel>
-
-                                <!-- Khu vực -->
-                                <StackPanel Grid.Column="2">
                                     <TextBlock Text="Khu vực" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
-                                      Height="48" 
-                                      Padding="12,0" 
-                                      VerticalContentAlignment="Center"
-                                      SelectedIndex="0">
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Khu vực 1"/>
-                                        <ComboBoxItem Content="Khu vực 2"/>
+                                    <ComboBox x:Name="cboLocation"
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                              Height="48" 
+                                              Padding="12,0" 
+                                              VerticalContentAlignment="Center">
                                     </ComboBox>
                                 </StackPanel>
 
-                                <!-- Loại thiết bị -->
-                                <StackPanel Grid.Column="4">
+                                <!-- 2. Loại thiết bị (Đặt ở Column 2) -->
+                                <StackPanel Grid.Column="2">
                                     <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" 
-                                      Height="48" 
-                                      Padding="12,0" 
-                                      VerticalContentAlignment="Center"
-                                      SelectedIndex="0">
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Máy CNC"/>
-                                        <ComboBoxItem Content="Băng chuyền"/>
+                                    <ComboBox x:Name="cboCategory"
+                                              Style="{StaticResource MaterialDesignOutlinedComboBox}" 
+                                              Height="48" 
+                                              Padding="12,0" 
+                                              VerticalContentAlignment="Center">
                                     </ComboBox>
                                 </StackPanel>
 
-                                <!-- Nút Áp dụng: Đã sửa Column thành 6 và Height thành 48 -->
-                                <Button Grid.Column="6" 
+                                <!-- 3. Nút Áp dụng (Đặt ở Column 4) -->
+                                <Button Grid.Column="4" 
                                     VerticalAlignment="Bottom" 
                                     Content="Áp dụng" 
                                     Click="BtnLocDuLieu_Click"
@@ -162,7 +141,7 @@
                                     Foreground="White" 
                                     FontWeight="SemiBold"
                                     Height="48" 
-                                    Padding="24,0"
+                                    Padding="32,0"
                                     materialDesign:ButtonAssist.CornerRadius="4"/>
                             </Grid>
                         </Grid>
@@ -173,6 +152,7 @@
                         <StackPanel>
                             <TextBlock Text="Biểu đồ tình trạng thiết bị" FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
                             <Grid Height="300">
+                                <!-- Binding Series từ Code-behind -->
                                 <lvc:PieChart Series="{Binding StatusSeries}" LegendLocation="Right" InnerRadius="60">
                                     <lvc:PieChart.ChartLegend>
                                         <lvc:DefaultLegend BulletSize="12" FontSize="14"/>
@@ -191,7 +171,6 @@
                         Margin="0, 10, 0, 24">
 
                         <StackPanel>
-                            <!-- Tiêu đề: Margin 24 để chữ không bị dính vào sidebar -->
                             <Grid Margin="24,20,24,0">
                                 <TextBlock Text="Chi tiết thiết bị" 
                                    FontSize="18" 
@@ -199,7 +178,7 @@
                                    Foreground="{StaticResource TextPrimaryBrush}"/>
                             </Grid>
 
-                            <!-- DataGrid: Margin 24 ở hai bên để bảng vẫn nằm lùi vào trong -->
+                            <!-- DataGrid Binding DanhSachThietBi -->
                             <DataGrid ItemsSource="{Binding DanhSachThietBi}" 
                                   Margin="24, 20, 24, 20" 
                                   ColumnHeaderHeight="50"
@@ -302,4 +281,4 @@
             </ScrollViewer>
         </Grid>
     </Grid>
-</Window>                         
+</Window>

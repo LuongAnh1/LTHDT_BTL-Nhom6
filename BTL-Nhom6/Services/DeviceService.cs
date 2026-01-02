@@ -268,8 +268,72 @@ namespace BTL_Nhom6.Services
             cmd.Parameters.AddWithValue("@Sup", dev.SupplierID.HasValue ? dev.SupplierID.Value : (object)DBNull.Value);
         }
 
-        // [MỚI HOÀN TOÀN] 10. Hàm Điều Chuyển & Bàn Giao (Có Transaction)
-        // Hàm này thay thế hàm UpdateDeviceLocation cũ
+        // Thêm vào class DeviceService
+        // Trong file Services/DeviceService.cs
+
+        // Trong file DeviceService.cs
+
+        // Đổi tên tham số từ expiryLimit thành startDate cho đúng ý nghĩa
+        public List<DeviceWarrantyDTO> GetWarrantyReport(DateTime? startDate, int? supplierId, int? categoryId)
+        {
+            List<DeviceWarrantyDTO> list = new List<DeviceWarrantyDTO>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // Xử lý nếu ngày không được chọn thì lấy ngày hiện tại
+                DateTime dateFrom = startDate.HasValue ? startDate.Value : DateTime.Now;
+
+                System.Text.StringBuilder sql = new System.Text.StringBuilder(@"
+                    SELECT d.DeviceCode, d.DeviceName, d.PurchaseDate, d.WarrantyExpiry
+                    FROM Devices d
+                    LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID 
+                    WHERE 1=1 ");
+
+                // --- LOGIC MỚI: TÌM TRONG 30 NGÀY TỚI ---
+
+                // 1. Chặn dưới: Ngày hết hạn phải >= Ngày bạn chọn
+                sql.Append(" AND d.WarrantyExpiry >= @DateFrom ");
+
+                // 2. Chặn trên: Ngày hết hạn phải <= Ngày bạn chọn + 30 ngày
+                sql.Append(" AND d.WarrantyExpiry <= DATE_ADD(@DateFrom, INTERVAL 30 DAY) ");
+
+                // --- CÁC BỘ LỌC KHÁC ---
+                if (supplierId.HasValue && supplierId.Value > 0)
+                    sql.Append(" AND d.SupplierID = @SupID ");
+
+                if (categoryId.HasValue && categoryId.Value > 0)
+                    sql.Append(" AND m.CategoryID = @CatID ");
+
+                sql.Append(" ORDER BY d.WarrantyExpiry ASC");
+
+                MySqlCommand cmd = new MySqlCommand(sql.ToString(), conn);
+
+                // Thêm tham số ngày bắt đầu
+                cmd.Parameters.AddWithValue("@DateFrom", dateFrom);
+
+                if (supplierId.HasValue && supplierId.Value > 0)
+                    cmd.Parameters.AddWithValue("@SupID", supplierId.Value);
+
+                if (categoryId.HasValue && categoryId.Value > 0)
+                    cmd.Parameters.AddWithValue("@CatID", categoryId.Value);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new DeviceWarrantyDTO
+                        {
+                            MaTB = reader["DeviceCode"].ToString(),
+                            TenTB = reader["DeviceName"].ToString(),
+                            NgayMua = reader["PurchaseDate"] != DBNull.Value ? (DateTime?)reader["PurchaseDate"] : null,
+                            NgayHetHan = reader["WarrantyExpiry"] != DBNull.Value ? (DateTime?)reader["WarrantyExpiry"] : null
+                        });
+                    }
+                }
+            }
+            return list;
+        }
         public bool TransferAndHandover(string deviceCode, int newLocationId, int newUserId)
         {
             using (var conn = DatabaseHelper.GetConnection())
@@ -326,6 +390,130 @@ namespace BTL_Nhom6.Services
                     }
                 }
             }
+        }
+
+        // 11. Lấy danh sách chi tiết kèm Trạng thái (để đổ vào DataGrid)
+        // Sửa dòng khai báo để nhận 3 tham số
+        public List<DeviceStatusDTO> GetDeviceStatusList(int? locationId, int? categoryId, int? phanXuongId)
+        {
+            List<DeviceStatusDTO> list = new List<DeviceStatusDTO>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                System.Text.StringBuilder sql = new System.Text.StringBuilder(@"
+            SELECT d.DeviceCode, d.DeviceName, s.StatusName
+            FROM Devices d
+            JOIN DeviceStatus s ON d.StatusID = s.StatusID
+            LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID
+            JOIN Locations l ON d.LocationID = l.LocationID  -- JOIN thêm bảng Locations
+            WHERE 1=1 ");
+
+                // 1. Lọc Vị trí cụ thể (Con)
+                if (locationId.HasValue && locationId.Value > 0)
+                    sql.Append(" AND d.LocationID = @LocID ");
+
+                // 2. Lọc Loại thiết bị
+                if (categoryId.HasValue && categoryId.Value > 0)
+                    sql.Append(" AND m.CategoryID = @CatID ");
+
+                // 3. Lọc Phân xưởng (Chính là lọc theo ParentLocationID của vị trí)
+                if (phanXuongId.HasValue && phanXuongId.Value > 0)
+                {
+                    // Tìm các thiết bị nằm trong vị trí mà vị trí đó thuộc về Phân xưởng này
+                    sql.Append(" AND l.ParentLocationID = @PxID ");
+                }
+
+                sql.Append(" ORDER BY s.StatusName, d.DeviceName ASC");
+
+                MySqlCommand cmd = new MySqlCommand(sql.ToString(), conn);
+
+                if (locationId.HasValue && locationId.Value > 0)
+                    cmd.Parameters.AddWithValue("@LocID", locationId.Value);
+
+                if (categoryId.HasValue && categoryId.Value > 0)
+                    cmd.Parameters.AddWithValue("@CatID", categoryId.Value);
+
+                if (phanXuongId.HasValue && phanXuongId.Value > 0)
+                    cmd.Parameters.AddWithValue("@PxID", phanXuongId.Value);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new DeviceStatusDTO
+                        {
+                            MaTB = reader["DeviceCode"].ToString(),
+                            TenTB = reader["DeviceName"].ToString(),
+                            TrangThai = reader["StatusName"].ToString()
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        // 12. Lấy số liệu thống kê cho Biểu đồ tròn
+        public List<StatusChartDTO> GetStatusChartData(int? locationId, int? categoryId, int? phanXuongId)
+        {
+            List<StatusChartDTO> list = new List<StatusChartDTO>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // Query cơ bản
+                System.Text.StringBuilder sql = new System.Text.StringBuilder(@"
+            SELECT s.StatusName, COUNT(d.DeviceCode) AS Quantity
+            FROM Devices d
+            JOIN DeviceStatus s ON d.StatusID = s.StatusID
+            LEFT JOIN DeviceModels m ON d.ModelID = m.ModelID
+            WHERE 1=1 ");
+
+                // 1. Lọc theo Vị trí
+                if (locationId.HasValue && locationId.Value > 0)
+                    sql.Append(" AND d.LocationID = @LocID ");
+
+                // 2. Lọc theo Loại thiết bị
+                if (categoryId.HasValue && categoryId.Value > 0)
+                    sql.Append(" AND m.CategoryID = @CatID ");
+
+                // 3. Lọc theo Phân xưởng (MỚI BỔ SUNG)
+                if (phanXuongId.HasValue && phanXuongId.Value > 0)
+                {
+                    // LƯU Ý QUAN TRỌNG: Kiểm tra tên cột trong bảng Devices của bạn.
+                    // Nếu cột là 'MaPX' thì giữ nguyên, nếu là 'DepartmentID' thì sửa lại dòng dưới.
+                    sql.Append(" AND d.MaPX = @PxID ");
+                }
+
+                sql.Append(" GROUP BY s.StatusName ");
+
+                MySqlCommand cmd = new MySqlCommand(sql.ToString(), conn);
+
+                // Add tham số Vị trí
+                if (locationId.HasValue && locationId.Value > 0)
+                    cmd.Parameters.AddWithValue("@LocID", locationId.Value);
+
+                // Add tham số Loại thiết bị
+                if (categoryId.HasValue && categoryId.Value > 0)
+                    cmd.Parameters.AddWithValue("@CatID", categoryId.Value);
+
+                // Add tham số Phân xưởng (MỚI BỔ SUNG)
+                if (phanXuongId.HasValue && phanXuongId.Value > 0)
+                    cmd.Parameters.AddWithValue("@PxID", phanXuongId.Value);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new StatusChartDTO
+                        {
+                            StatusName = reader["StatusName"].ToString(),
+                            Quantity = Convert.ToInt32(reader["Quantity"])
+                        });
+                    }
+                }
+            }
+            return list;
         }
     }
 }
