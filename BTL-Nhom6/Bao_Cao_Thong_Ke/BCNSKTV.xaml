@@ -99,6 +99,7 @@
                                     <TextBlock Text="Bộ lọc dữ liệu" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Button HorizontalAlignment="Right" Content="Xuất báo cáo"
+                                     Click="BtnXuatBaoCao_Click"
                                      Style="{StaticResource MaterialDesignFlatButton}"
                                      Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"
                                      Height="32" Padding="12,0" FontSize="13" FontWeight="Bold"
@@ -122,36 +123,27 @@
                                 <!-- Phạm vi ngày -->
                                 <StackPanel Grid.Column="0">
                                     <TextBlock Text="Phạm vi ngày" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <DatePicker materialDesign:HintAssist.Hint="Chọn ngày" Style="{StaticResource MaterialDesignOutlinedDatePicker}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                    <DatePicker x:Name="dpNgay" materialDesign:HintAssist.Hint="Chọn ngày" Style="{StaticResource MaterialDesignOutlinedDatePicker}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
                                 </StackPanel>
 
                                 <!-- Phân xưởng -->
                                 <StackPanel Grid.Column="2">
                                     <TextBlock Text="Phân xưởng" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox materialDesign:HintAssist.Hint="Tất cả" Style="{StaticResource MaterialDesignOutlinedComboBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8">
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Xưởng A"/>
-                                        <ComboBoxItem Content="Xưởng B"/>
+                                    <ComboBox x:Name="cboPhanXuong" materialDesign:HintAssist.Hint="Tất cả" Style="{StaticResource MaterialDesignOutlinedComboBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8">
                                     </ComboBox>
                                 </StackPanel>
 
                                 <!-- Loại thiết bị -->
                                 <StackPanel Grid.Column="4">
                                     <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox materialDesign:HintAssist.Hint="Tất cả" Style="{StaticResource MaterialDesignOutlinedComboBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8">
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Cơ khí"/>
-                                        <ComboBoxItem Content="Điện"/>
+                                    <ComboBox x:Name="cboLoaiTB" materialDesign:HintAssist.Hint="Tất cả" Style="{StaticResource MaterialDesignOutlinedComboBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8">
                                     </ComboBox>
                                 </StackPanel>
 
                                 <!-- Kỹ thuật viên -->
                                 <StackPanel Grid.Column="6">
                                     <TextBlock Text="Kỹ thuật viên" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox materialDesign:HintAssist.Hint="Tất cả" Style="{StaticResource MaterialDesignOutlinedComboBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8">
-                                        <ComboBoxItem Content="Tất cả"/>
-                                        <ComboBoxItem Content="Nguyễn Văn An"/>
-                                        <ComboBoxItem Content="Trần Thị Bình"/>
+                                    <ComboBox x:Name="cboKTV" materialDesign:HintAssist.Hint="Tất cả" Style="{StaticResource MaterialDesignOutlinedComboBox}" BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8">
                                     </ComboBox>
                                 </StackPanel>
 
@@ -183,13 +175,10 @@
                                 <TextBlock Text="Top kỹ thuật viên (Số lượng công việc)" FontSize="16" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,20"/>
 
                                 <!-- LiveCharts RowSeries (Biểu đồ ngang) -->
-                                <!-- Tìm đoạn này trong file BCNSKTV.xaml -->
                                 <lvc:CartesianChart Grid.Row="1" 
                                      Series="{Binding TopKtvSeries}" 
                                      LegendLocation="None"
                                      Margin="15, 0, 15, 40">
-                                    <!-- Tăng Margin dưới từ 20 lên 40 để số có khoảng trống để "đứng" -->
-
                                     <lvc:CartesianChart.AxisY>
                                         <lvc:Axis Labels="{Binding KtvLabels}" FontSize="13" Foreground="#4B5563">
                                             <lvc:Axis.Separator>
@@ -199,17 +188,11 @@
                                     </lvc:CartesianChart.AxisY>
 
                                     <lvc:CartesianChart.AxisX>
-                                        <!-- 
-                                            FontSize="16": Làm số to rõ rệt
-                                            FontWeight="Bold": Làm nét chữ dày và cao hơn
-                                            Foreground="#1E293B": Màu xanh đen đậm tạo độ tương phản cực tốt
-                                        -->
                                         <lvc:Axis MinValue="0" 
                                               FontSize="16" 
                                               FontWeight="Bold" 
                                               Foreground="#1E293B">
                                             <lvc:Axis.Separator>
-                                                <!-- Stroke nhạt để làm nổi bật các con số chính -->
                                                 <lvc:Separator Stroke="#E2E8F0" StrokeThickness="1" />
                                             </lvc:Axis.Separator>
                                         </lvc:Axis>
@@ -263,7 +246,9 @@
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
 
+                                <!-- ĐÃ SỬA: Thêm sự kiện Click vào đây -->
                                 <Button Content="Xem bảng xếp hạng chi tiết" 
+                                    Click="BtnXemChiTiet_Click"
                                     Style="{StaticResource MaterialDesignFlatButton}" 
                                     Foreground="{StaticResource TextSecondaryBrush}" 
                                     FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,0"/>
@@ -271,16 +256,16 @@
                         </Border>
                     </Grid>
 
-        <!-- SECTION 3: BẢNG TRẠNG THÁI CÔNG VIỆC -->
-        <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True">
-            <StackPanel>
-                <!-- Table Title -->
-                <Grid Margin="24,20">
-                    <TextBlock Text="Trạng thái công việc hiện tại" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                </Grid>
+                    <!-- SECTION 3: BẢNG TRẠNG THÁI CÔNG VIỆC -->
+                    <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" ClipToBounds="True">
+                        <StackPanel>
+                            <!-- Table Title -->
+                            <Grid Margin="24,20">
+                                <TextBlock Text="Trạng thái công việc hiện tại" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            </Grid>
 
-                <!-- DataGrid -->
-                <DataGrid x:Name="dgCongViec"
+                            <!-- DataGrid -->
+                            <DataGrid x:Name="dgCongViec"
                                   ItemsSource="{Binding DanhSachCongViec}"
                                   Margin="0, 10, 0, 0"
                                   ColumnHeaderHeight="50"
@@ -297,131 +282,131 @@
                                   CellStyle="{StaticResource MaterialDesignDataGridCell}" 
                                   Width="1110">
 
-                    <DataGrid.Columns>
-                        <!-- 1. KỸ THUẬT VIÊN -->
-                        <DataGridTextColumn Binding="{Binding TenKTV}" Width="200" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}">
-                            <DataGridTextColumn.Header>
-                                <TextBlock Text="KỸ THUẬT VIÊN" Margin="16,0,0,0" VerticalAlignment="Center"/>
-                            </DataGridTextColumn.Header>
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Padding" Value="16,0,0,0"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                                <DataGrid.Columns>
+                                    <!-- 1. KỸ THUẬT VIÊN -->
+                                    <DataGridTextColumn Binding="{Binding TenKTV}" Width="200" FontWeight="Medium" Foreground="{StaticResource TextPrimaryBrush}">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="KỸ THUẬT VIÊN" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTextColumn.Header>
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="Padding" Value="16,0,0,0"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
 
-                        <!-- 2. MÃ CÔNG VIỆC -->
-                        <DataGridTextColumn Binding="{Binding MaCV}" Width="150" Foreground="{StaticResource TextSecondaryBrush}">
-                            <DataGridTextColumn.Header>
-                                <TextBlock Text="MÃ CÔNG VIỆC" Margin="16,0,0,0" VerticalAlignment="Center"/>
-                            </DataGridTextColumn.Header>
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Padding" Value="16,0,0,0"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                                    <!-- 2. MÃ CÔNG VIỆC -->
+                                    <DataGridTextColumn Binding="{Binding MaCV}" Width="150" Foreground="{StaticResource TextSecondaryBrush}">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="MÃ CÔNG VIỆC" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTextColumn.Header>
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="Padding" Value="16,0,0,0"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
 
-                        <!-- 3. MÔ TẢ (Width=*) -->
-                        <DataGridTextColumn Binding="{Binding MoTa}" Width="*" Foreground="{StaticResource TextPrimaryBrush}">
-                            <DataGridTextColumn.Header>
-                                <TextBlock Text="MÔ TẢ" Margin="16,0,0,0" VerticalAlignment="Center"/>
-                            </DataGridTextColumn.Header>
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Padding" Value="16,0,0,0"/>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                                    <!-- 3. MÔ TẢ (Width=*) -->
+                                    <DataGridTextColumn Binding="{Binding MoTa}" Width="*" Foreground="{StaticResource TextPrimaryBrush}">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="MÔ TẢ" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTextColumn.Header>
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="Padding" Value="16,0,0,0"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
 
-                        <!-- 4. TRẠNG THÁI (Badge màu) -->
-                        <DataGridTemplateColumn Width="180">
-                            <DataGridTemplateColumn.Header>
-                                <TextBlock Text="TRẠNG THÁI" Margin="16,0,0,0" VerticalAlignment="Center"/>
-                            </DataGridTemplateColumn.Header>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border CornerRadius="12" Padding="12,4" HorizontalAlignment="Left" Margin="16,0,0,0" VerticalAlignment="Center">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
+                                    <!-- 4. TRẠNG THÁI (Badge màu) -->
+                                    <DataGridTemplateColumn Width="180">
+                                        <DataGridTemplateColumn.Header>
+                                            <TextBlock Text="TRẠNG THÁI" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTemplateColumn.Header>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border CornerRadius="12" Padding="12,4" HorizontalAlignment="Left" Margin="16,0,0,0" VerticalAlignment="Center">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding TrangThai}" Value="Hoàn thành">
+                                                                    <Setter Property="Background" Value="#DCFCE7"/>
+                                                                    <!-- Xanh lá nhạt -->
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding TrangThai}" Value="Đang thực hiện">
+                                                                    <Setter Property="Background" Value="#FEF9C3"/>
+                                                                    <!-- Vàng nhạt -->
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding TrangThai}" Value="Mới">
+                                                                    <Setter Property="Background" Value="#DBEAFE"/>
+                                                                    <!-- Xanh dương nhạt -->
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <TextBlock Text="{Binding TrangThai}" FontSize="12" FontWeight="Bold">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding TrangThai}" Value="Hoàn thành">
+                                                                        <Setter Property="Foreground" Value="#166534"/>
+                                                                        <!-- Xanh lá đậm -->
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding TrangThai}" Value="Đang thực hiện">
+                                                                        <Setter Property="Foreground" Value="#854D0E"/>
+                                                                        <!-- Vàng nâu -->
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding TrangThai}" Value="Mới">
+                                                                        <Setter Property="Foreground" Value="#1E40AF"/>
+                                                                        <!-- Xanh dương đậm -->
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+
+                                    <!-- 5. ĐỘ ƯU TIÊN (Chữ màu) -->
+                                    <DataGridTextColumn Binding="{Binding DoUuTien}" Width="150" FontWeight="Bold">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="ĐỘ ƯU TIÊN" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                                        </DataGridTextColumn.Header>
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="Padding" Value="16,0,0,0"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding TrangThai}" Value="Hoàn thành">
-                                                        <Setter Property="Background" Value="#DCFCE7"/>
-                                                        <!-- Xanh lá nhạt -->
+                                                    <DataTrigger Binding="{Binding DoUuTien}" Value="Cao">
+                                                        <Setter Property="Foreground" Value="#DC2626"/>
+                                                        <!-- Đỏ -->
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding TrangThai}" Value="Đang thực hiện">
-                                                        <Setter Property="Background" Value="#FEF9C3"/>
-                                                        <!-- Vàng nhạt -->
+                                                    <DataTrigger Binding="{Binding DoUuTien}" Value="Trung bình">
+                                                        <Setter Property="Foreground" Value="#D97706"/>
+                                                        <!-- Cam -->
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding TrangThai}" Value="Mới">
-                                                        <Setter Property="Background" Value="#DBEAFE"/>
-                                                        <!-- Xanh dương nhạt -->
+                                                    <DataTrigger Binding="{Binding DoUuTien}" Value="Thấp">
+                                                        <Setter Property="Foreground" Value="#6B7280"/>
+                                                        <!-- Xám -->
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="{Binding TrangThai}" FontSize="12" FontWeight="Bold">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Hoàn thành">
-                                                            <Setter Property="Foreground" Value="#166534"/>
-                                                            <!-- Xanh lá đậm -->
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Đang thực hiện">
-                                                            <Setter Property="Foreground" Value="#854D0E"/>
-                                                            <!-- Vàng nâu -->
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding TrangThai}" Value="Mới">
-                                                            <Setter Property="Foreground" Value="#1E40AF"/>
-                                                            <!-- Xanh dương đậm -->
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
 
-                        <!-- 5. ĐỘ ƯU TIÊN (Chữ màu) -->
-                        <DataGridTextColumn Binding="{Binding DoUuTien}" Width="150" FontWeight="Bold">
-                            <DataGridTextColumn.Header>
-                                <TextBlock Text="ĐỘ ƯU TIÊN" Margin="16,0,0,0" VerticalAlignment="Center"/>
-                            </DataGridTextColumn.Header>
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Padding" Value="16,0,0,0"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding DoUuTien}" Value="Cao">
-                                            <Setter Property="Foreground" Value="#DC2626"/>
-                                            <!-- Đỏ -->
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding DoUuTien}" Value="Trung bình">
-                                            <Setter Property="Foreground" Value="#D97706"/>
-                                            <!-- Cam -->
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding DoUuTien}" Value="Thấp">
-                                            <Setter Property="Foreground" Value="#6B7280"/>
-                                            <!-- Xám -->
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </Border>
 
-                    </DataGrid.Columns>
-                </DataGrid>
-            </StackPanel>
-        </Border>
-
-        </StackPanel>
-        </ScrollViewer>
-    </Grid>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>

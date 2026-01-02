@@ -77,7 +77,7 @@
             <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Padding="32,0,32,40">
                 <StackPanel>
 
-                    <!-- SECTION 1: BỘ LỌC (FILTER) -->
+                    <!-- SECTION 1: BỘ LỌC (FILTER) - ĐÃ CẬP NHẬT -->
                     <Border Background="{StaticResource ContentBackgroundBrush}" CornerRadius="4" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="20" Margin="0,0,0,24">
                         <Grid>
                             <Grid.RowDefinitions>
@@ -94,6 +94,7 @@
 
                                 <!-- Nút Xuất báo cáo -->
                                 <Button HorizontalAlignment="Right"
+                                        Click="BtnXuatBaoCao_Click" 
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"
                                         Height="32" Padding="12,0" FontSize="13" FontWeight="Bold"
@@ -109,36 +110,59 @@
                             <Grid Grid.Row="1">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1*"/>
+                                    <!-- Từ ngày -->
                                     <ColumnDefinition Width="16"/>
                                     <ColumnDefinition Width="1*"/>
+                                    <!-- Đến ngày -->
                                     <ColumnDefinition Width="16"/>
-                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1.5*"/>
+                                    <!-- Loại thiết bị -->
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="1.5*"/>
+                                    <!-- KTV -->
                                     <ColumnDefinition Width="16"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <!-- Nút -->
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Date Range -->
+                                <!-- Từ Ngày (Start Date) -->
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock Text="Phạm vi ngày" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <DatePicker materialDesign:HintAssist.Hint="Chọn ngày" 
+                                    <TextBlock Text="Từ ngày" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="DpStart"
+                                                materialDesign:HintAssist.Hint="dd/MM/yyyy" 
                                                 Style="{StaticResource MaterialDesignOutlinedDatePicker}"
                                                 BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
                                 </StackPanel>
 
-                                <!-- Equipment Type (CÓ BINDING) -->
+                                <!-- Đến Ngày (End Date) -->
                                 <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Đến ngày" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
+                                    <DatePicker x:Name="DpEnd"
+                                                materialDesign:HintAssist.Hint="dd/MM/yyyy" 
+                                                Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                                BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
+                                </StackPanel>
+
+                                <!-- Equipment Type (CÓ BINDING + DISPLAY MEMBER) -->
+                                <StackPanel Grid.Column="4">
                                     <TextBlock Text="Loại thiết bị" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox ItemsSource="{Binding DanhSachThietBi}" 
+                                    <ComboBox x:Name="CboCategory"
+                                              ItemsSource="{Binding DanhSachThietBi}" 
+                                              DisplayMemberPath="CategoryName"
+                                              SelectedValuePath="CategoryID"
                                               SelectedIndex="0"
                                               materialDesign:HintAssist.Hint="Tất cả" 
                                               Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                               BorderBrush="{StaticResource BorderLightBrush}" Background="White" Height="42" Padding="10,8"/>
                                 </StackPanel>
 
-                                <!-- Technician (CÓ BINDING) -->
-                                <StackPanel Grid.Column="4">
+                                <!-- Technician (CÓ BINDING + DISPLAY MEMBER) -->
+                                <StackPanel Grid.Column="6">
                                     <TextBlock Text="Kỹ thuật viên" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,6"/>
-                                    <ComboBox ItemsSource="{Binding DanhSachKyThuatVien}"
+                                    <ComboBox x:Name="CboTechnician"
+                                              ItemsSource="{Binding DanhSachKyThuatVien}"
+                                              DisplayMemberPath="FullName"
+                                              SelectedValuePath="UserID"
                                               SelectedIndex="0"
                                               materialDesign:HintAssist.Hint="Tất cả" 
                                               Style="{StaticResource MaterialDesignOutlinedComboBox}"
@@ -151,7 +175,7 @@
                                     Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0"
                                     Foreground="White" FontWeight="SemiBold"
                                     Height="42" materialDesign:ButtonAssist.CornerRadius="4"/>
-                                </Grid>
+                            </Grid>
                         </Grid>
                     </Border>
 
@@ -197,17 +221,15 @@
 
                                         <!-- 2. Trục Tung (Y-Axis): Hiển thị Giờ -->
                                         <lvc:CartesianChart.AxisY>
-                                            <lvc:Axis MinValue="0" MaxValue="8" 
-                              Foreground="{StaticResource TextSecondaryBrush}"
-                              FontSize="12">
-                                                <!-- Đường kẻ ngang (Grid lines) -->
+                                            <!-- Xóa MaxValue để tự động co giãn -->
+                                            <lvc:Axis MinValue="0" 
+                                                  Foreground="{StaticResource TextSecondaryBrush}"
+                                                  FontSize="12">
                                                 <lvc:Axis.Separator>
-                                                    <!-- Step=2: Nhảy số 0, 2, 4, 6, 8 -->
-                                                    <lvc:Separator Step="2" 
-                                           Stroke="{StaticResource BorderLightBrush}" 
-                                           StrokeThickness="1"
-                                           StrokeDashArray="4"/>
-                                                    <!-- Nét đứt mờ -->
+                                                    <!-- Bỏ Step="2" nếu muốn LiveCharts tự chia vạch cho đẹp -->
+                                                    <lvc:Separator Stroke="{StaticResource BorderLightBrush}" 
+                                                       StrokeThickness="1"
+                                                       StrokeDashArray="4"/>
                                                 </lvc:Axis.Separator>
                                             </lvc:Axis>
                                         </lvc:CartesianChart.AxisY>
