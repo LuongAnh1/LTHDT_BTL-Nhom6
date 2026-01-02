@@ -144,18 +144,20 @@ namespace BTL_Nhom6.Services
             using (MySqlConnection conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
+                // Sử dụng Transaction để đảm bảo tính toàn vẹn dữ liệu
                 using (var trans = conn.BeginTransaction())
                 {
                     try
                     {
                         MySqlCommand cmd = new MySqlCommand("", conn, trans);
 
-                        // 4.1. Cập nhật bảng WorkOrders
+                        // 1. Cập nhật trạng thái WorkOrder (Bảng con)
+                        // Cập nhật ngày kết thúc nếu trạng thái là Hoàn thành (Giả sử ID 3 là Hoàn thành)
                         string sqlUpdateWO = @"UPDATE WorkOrders 
-                                               SET StatusID = @Stat, 
-                                                   Solution = @Sol,
-                                                   EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END
-                                               WHERE WorkOrderID = @ID";
+                                       SET StatusID = @Stat, 
+                                           Solution = @Sol,
+                                           EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END
+                                       WHERE WorkOrderID = @ID";
 
                         cmd.CommandText = sqlUpdateWO;
                         cmd.Parameters.AddWithValue("@Stat", newStatusId);
@@ -163,26 +165,47 @@ namespace BTL_Nhom6.Services
                         cmd.Parameters.AddWithValue("@ID", workOrderId);
                         cmd.ExecuteNonQuery();
 
-                        // 4.2. Đồng bộ trạng thái sang MaintenanceRequests (nếu có)
+                        // 2. ĐỒNG BỘ TRẠNG THÁI SANG MAINTENANCE REQUEST (Bảng cha)
+                        // Bước 2.1: Lấy RequestID liên quan đến WorkOrder này
                         cmd.Parameters.Clear();
                         cmd.CommandText = "SELECT RequestID FROM WorkOrders WHERE WorkOrderID = @WOID";
                         cmd.Parameters.AddWithValue("@WOID", workOrderId);
 
                         object reqIdObj = cmd.ExecuteScalar();
+
                         if (reqIdObj != null && reqIdObj != DBNull.Value)
                         {
                             int requestId = Convert.ToInt32(reqIdObj);
                             string reqStatus = "";
 
-                            if (newStatusId == 3) reqStatus = "Completed";
-                            else if (newStatusId == 4) reqStatus = "Pending";
+                            // Bước 2.2: Xác định trạng thái cần update cho Request
+                            // Giả sử: 3 = Hoàn thành, 4 (hoặc 5) = Hủy bỏ. Bạn cần check lại bảng WorkOrderStatus của bạn.
+                            if (newStatusId == 3)
+                            {
+                                reqStatus = "Completed"; // Đồng bộ sang bảng Request
+                            }
+                            else if (newStatusId == 4 || newStatusId == 5) // Ví dụ 4 là Hủy
+                            {
+                                // Nếu hủy phiếu làm việc, trạng thái yêu cầu quay về Chờ xử lý để phân công người khác
+                                // Hoặc chuyển sang Rejected tùy nghiệp vụ của bạn
+                                reqStatus = "Pending";
+                            }
 
+                            // Bước 2.3: Thực hiện Update bảng MaintenanceRequests
                             if (!string.IsNullOrEmpty(reqStatus))
                             {
                                 cmd.Parameters.Clear();
-                                string sqlUpdateReq = (reqStatus == "Completed")
-                                    ? "UPDATE MaintenanceRequests SET Status = @RStat, ActualCompletion = NOW() WHERE RequestID = @RID"
-                                    : "UPDATE MaintenanceRequests SET Status = @RStat WHERE RequestID = @RID";
+                                string sqlUpdateReq = "";
+
+                                if (reqStatus == "Completed")
+                                {
+                                    // Nếu hoàn thành thì cập nhật cả ngày hoàn tất
+                                    sqlUpdateReq = "UPDATE MaintenanceRequests SET Status = @RStat, ActualCompletion = NOW() WHERE RequestID = @RID";
+                                }
+                                else
+                                {
+                                    sqlUpdateReq = "UPDATE MaintenanceRequests SET Status = @RStat WHERE RequestID = @RID";
+                                }
 
                                 cmd.CommandText = sqlUpdateReq;
                                 cmd.Parameters.AddWithValue("@RStat", reqStatus);
@@ -191,13 +214,14 @@ namespace BTL_Nhom6.Services
                             }
                         }
 
+                        // 3. Commit Transaction
                         trans.Commit();
                         return true;
                     }
                     catch (Exception ex)
                     {
                         trans.Rollback();
-                        MessageBox.Show("Lỗi UpdateWO: " + ex.Message);
+                        Console.WriteLine(ex.Message);
                         return false;
                     }
                 }
@@ -241,7 +265,7 @@ namespace BTL_Nhom6.Services
         }
 
         // ==========================================================
-        // 6. LƯU NGHIỆM THU
+        // 6. LƯU NGHIỆM THU (ĐÃ SỬA LỖI HOÀN CHỈNH)
         // ==========================================================
         public bool SaveAcceptance(int workOrderId, List<MaterialViewModel> materials, bool isCloseTicket,
                            decimal laborCost, decimal transportCost, decimal otherCost, string otherDesc)
@@ -254,33 +278,30 @@ namespace BTL_Nhom6.Services
                 {
                     MySqlCommand cmd = new MySqlCommand("", conn, trans);
 
-                    // Xóa chi tiết cũ
+                    // 1. Xóa chi tiết cũ (Để lưu lại từ đầu)
                     cmd.CommandText = "DELETE FROM WorkOrderDetails WHERE WorkOrderID = @WOID";
                     cmd.Parameters.AddWithValue("@WOID", workOrderId);
                     cmd.ExecuteNonQuery();
 
-                    // Thêm chi tiết mới
+                    // 2. Lưu chi tiết sử dụng thực tế (WorkOrderDetails)
                     if (materials != null && materials.Count > 0)
                     {
-                        cmd.Parameters.Clear();
                         StringBuilder sb = new StringBuilder();
                         sb.Append("INSERT INTO WorkOrderDetails (WorkOrderID, MaterialID, QuantityUsed, UnitPrice) VALUES ");
                         List<string> rows = new List<string>();
                         for (int i = 0; i < materials.Count; i++)
                         {
-                            rows.Add($"(@wo_{i}, @mat_{i}, @qty_{i}, @price_{i})");
-                            cmd.Parameters.AddWithValue($"@wo_{i}", workOrderId);
-                            cmd.Parameters.AddWithValue($"@mat_{i}", materials[i].MaterialID);
-                            cmd.Parameters.AddWithValue($"@qty_{i}", materials[i].SoLuong);
-                            cmd.Parameters.AddWithValue($"@price_{i}", materials[i].DonGia);
+                            rows.Add($"(@WOID, @mat{i}, @qty{i}, @price{i})");
+                            cmd.Parameters.AddWithValue($"@mat{i}", materials[i].MaterialID);
+                            cmd.Parameters.AddWithValue($"@qty{i}", materials[i].SoLuong); // Đây là SL thực tế dùng
+                            cmd.Parameters.AddWithValue($"@price{i}", materials[i].DonGia);
                         }
                         sb.Append(string.Join(",", rows));
                         cmd.CommandText = sb.ToString();
                         cmd.ExecuteNonQuery();
                     }
 
-                    // Cập nhật chi phí tổng
-                    cmd.Parameters.Clear();
+                    // 3. Cập nhật thông tin phiếu công việc (WorkOrders)
                     string sqlUpdate = @"UPDATE WorkOrders 
                                  SET StatusID = @Stat, 
                                      EndDate = CASE WHEN @Stat = 3 THEN NOW() ELSE EndDate END,
@@ -288,12 +309,19 @@ namespace BTL_Nhom6.Services
                                  WHERE WorkOrderID = @WOID";
 
                     cmd.CommandText = sqlUpdate;
-                    cmd.Parameters.AddWithValue("@Stat", isCloseTicket ? 3 : 2);
+                    cmd.Parameters.AddWithValue("@Stat", isCloseTicket ? 3 : 2); // 3: Hoàn thành
                     cmd.Parameters.AddWithValue("@Labor", laborCost);
                     cmd.Parameters.AddWithValue("@Trans", transportCost);
                     cmd.Parameters.AddWithValue("@Other", otherCost);
                     cmd.Parameters.AddWithValue("@Desc", otherDesc ?? "");
-                    cmd.Parameters.AddWithValue("@WOID", workOrderId);
+                    cmd.ExecuteNonQuery();
+
+                    // ====================================================================================
+                    // 4. XỬ LÝ HOÀN NHẬP KHO (LOGIC MỚI: CHỐNG TRÙNG LẶP)
+                    // ====================================================================================
+                    if (isCloseTicket && materials != null)
+                    {
+                        var returnList = new List<dynamic>();
 
                         foreach (var item in materials)
                         {
@@ -374,14 +402,80 @@ namespace BTL_Nhom6.Services
                 catch (Exception ex)
                 {
                     trans.Rollback();
-                    MessageBox.Show("Lỗi SaveAcceptance: " + ex.Message);
+                    Console.WriteLine(ex.Message);
                     return false;
                 }
             }
         }
 
         // ==========================================================
-        // 7. Lấy chi tiết vật tư
+        // 7. Lấy chi tiết vật tư đã kê khai của một phiếu 
+        // ==========================================================
+        public List<MaterialViewModel> GetExportedMaterialsForWO(int workOrderId)
+        {
+            List<MaterialViewModel> list = new List<MaterialViewModel>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                // LOGIC MỚI:
+                // Tính tổng Xuất (EXPORT) trừ đi tổng Nhập trả lại (IMPORT)
+                string sql = @"
+            SELECT 
+                t.MaterialID, 
+                m.MaterialName, 
+                u.UnitName, 
+                
+                -- CÔNG THỨC MỚI: (Tổng Xuất - Tổng Trả)
+                SUM(CASE WHEN t.TransactionType = 'EXPORT' THEN t.Quantity ELSE 0 END) -
+                SUM(CASE WHEN t.TransactionType = 'IMPORT' THEN t.Quantity ELSE 0 END) 
+                AS SoLuongXuat, 
+
+                m.UnitPrice AS DonGia
+            FROM MaterialTransactions t
+            JOIN Materials m ON t.MaterialID = m.MaterialID
+            JOIN Units u ON m.UnitID = u.UnitID
+            LEFT JOIN ExportReceipts e ON t.ExportID = e.ExportID
+            
+            WHERE t.WorkOrderID = @WOID 
+              -- Lấy cả Export (xuất đi) và Import (trả về) của WO này
+              AND (t.TransactionType = 'EXPORT' OR t.TransactionType = 'IMPORT')
+              -- Loại bỏ phiếu xuất đã Hủy (chỉ check nếu là dòng Export)
+              AND (e.Status IS NULL OR e.Status != 'Cancelled')
+            
+            GROUP BY t.MaterialID, m.MaterialName, u.UnitName, m.UnitPrice
+            
+            -- Chỉ hiện những dòng có số lượng > 0 (Nếu đã trả hết = 0 thì ẩn luôn)
+            HAVING SoLuongXuat > 0";
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@WOID", workOrderId);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int slConLai = Convert.ToInt32(reader["SoLuongXuat"]);
+                        list.Add(new MaterialViewModel
+                        {
+                            MaterialID = Convert.ToInt32(reader["MaterialID"]),
+                            TenVatTu = reader["MaterialName"].ToString(),
+                            DonVi = reader["UnitName"].ToString(),
+                            DonGia = Convert.ToDecimal(reader["DonGia"]),
+
+                            // SL Đã xuất hiển thị bây giờ là SL thực tế đang giữ
+                            SoLuongXuat = slConLai,
+                            // Mặc định SL thực tế = SL đang giữ
+                            SoLuong = slConLai
+                        });
+                    }
+                }
+            }
+            return list;
+        }
+
+        // ==========================================================
+        // 8. Lấy chi tiết vật tư
         // ==========================================================
         public List<MaterialViewModel> GetWorkOrderDetails(int workOrderId)
         {
@@ -403,7 +497,6 @@ namespace BTL_Nhom6.Services
                 {
                     while (reader.Read())
                     {
-                        int slConLai = Convert.ToInt32(reader["SoLuongXuat"]);
                         list.Add(new MaterialViewModel
                         {
                             MaterialID = Convert.ToInt32(reader["MaterialID"]),
@@ -419,7 +512,7 @@ namespace BTL_Nhom6.Services
         }
 
         // ==========================================================
-        // 8. Lấy chi phí phụ
+        // 9. Lấy chi phí phụ
         // ==========================================================
         public WorkOrderViewModel GetWorkOrderCosts(int workOrderId)
         {
@@ -449,15 +542,13 @@ namespace BTL_Nhom6.Services
         }
 
         // ==========================================================
-        // 9. [ĐÃ CÓ TRỞ LẠI] Xóa Phiếu (Dành cho KTV/Admin)
+        // 10. Xóa Phiếu (Dành cho KTV/Admin)
         // ==========================================================
         public bool DeleteWorkOrder(int workOrderId)
         {
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                // Chỉ xóa được nếu phiếu đang ở trạng thái cho phép (ví dụ: Hủy - 5)
-                // Hoặc xóa thẳng nếu không cần check
                 string sql = "DELETE FROM WorkOrders WHERE WorkOrderID = @ID";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@ID", workOrderId);
@@ -466,7 +557,7 @@ namespace BTL_Nhom6.Services
         }
 
         // ==========================================================
-        // 10. [QUAN TRỌNG] Lấy danh sách Phân xưởng từ bảng LOCATIONS
+        // 11. Lấy danh sách Phân xưởng từ bảng LOCATIONS
         // ==========================================================
         public List<string> GetDanhSachPhanXuong()
         {
@@ -476,7 +567,6 @@ namespace BTL_Nhom6.Services
                 try
                 {
                     conn.Open();
-                    // Lấy LocationName từ bảng Locations
                     string sql = "SELECT LocationName FROM Locations ORDER BY LocationName";
 
                     MySqlCommand cmd = new MySqlCommand(sql, conn);
@@ -490,7 +580,6 @@ namespace BTL_Nhom6.Services
                 }
                 catch (Exception ex)
                 {
-                    // Báo lỗi nếu không lấy được danh sách phân xưởng
                     MessageBox.Show("Lỗi lấy danh sách Phân xưởng: " + ex.Message);
                 }
             }
@@ -498,7 +587,7 @@ namespace BTL_Nhom6.Services
         }
 
         // ==========================================================
-        // 11. [QUAN TRỌNG] Lấy Dữ liệu Báo Cáo (ĐÃ THÊM BÁO LỖI)
+        // 12. Lấy Dữ liệu Báo Cáo
         // ==========================================================
         public List<ChiPhiDTO> GetReportData(int? month = null, int? year = null)
         {
@@ -511,10 +600,6 @@ namespace BTL_Nhom6.Services
                     conn.Open();
 
                     StringBuilder queryBuilder = new StringBuilder();
-
-                    // CÂU SQL CHUẨN:
-                    // 1. JOIN Devices (qua DeviceCode)
-                    // 2. JOIN Locations (qua d.LocationID)
 
                     queryBuilder.Append(@"
                         SELECT * FROM (
@@ -565,9 +650,8 @@ namespace BTL_Nhom6.Services
                             LEFT JOIN Locations l ON d.LocationID = l.LocationID
                             WHERE (wo.TransportCost > 0 OR wo.OtherCost > 0)
                         ) AS T
-                        WHERE T.StatusID = 3 "); // CHỈ LẤY PHIẾU ĐÃ HOÀN THÀNH
+                        WHERE T.StatusID = 3 ");
 
-                    // Thêm điều kiện lọc thời gian
                     if (month.HasValue) queryBuilder.Append(" AND MONTH(T.Ngay) = @Month ");
                     if (year.HasValue) queryBuilder.Append(" AND YEAR(T.Ngay) = @Year ");
 
@@ -596,7 +680,6 @@ namespace BTL_Nhom6.Services
                 }
                 catch (Exception ex)
                 {
-                    // [QUAN TRỌNG] Hiện lỗi lên màn hình để biết tại sao không kết nối được
                     MessageBox.Show("Lỗi lấy dữ liệu báo cáo: " + ex.Message, "Lỗi SQL", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
