@@ -24,6 +24,9 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
         public string StatusName { get; set; }
         public DateTime? PurchaseDate { get; set; }
         public DateTime? WarrantyExpiry { get; set; }
+
+        // Dùng để Binding vào Visibility của nút Sửa/Xóa
+        public Visibility ActionVisibility { get; set; }
     }
 
     public partial class HSTB_va_QR : Window
@@ -37,6 +40,7 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
         // Danh sách gốc để tìm kiếm
         private List<DeviceDisplayModel> _fullDeviceList = new List<DeviceDisplayModel>();
 
+
         public HSTB_va_QR()
         {
             InitializeComponent();
@@ -49,7 +53,33 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
 
         private void HSTB_va_QR_Loaded(object sender, RoutedEventArgs e)
         {
+            ApplyPermissions(); // <--- Gọi hàm phân quyền
             LoadData();
+        }
+
+        // --- HÀM PHÂN QUYỀN GIAO DIỆN ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // Nếu là Khách hàng (ID = 11)
+            if (roleId == 11)
+            {
+                // Ẩn các tab nghiệp vụ nội bộ
+                if (btnTabTraCuu != null) btnTabTraCuu.Visibility = Visibility.Collapsed;
+                if (btnTabBaoHanh != null) btnTabBaoHanh.Visibility = Visibility.Collapsed;
+                if (btnTabBanGiao != null) btnTabBanGiao.Visibility = Visibility.Collapsed;
+                
+                // (Tùy chọn) Ẩn nút "Thêm thiết bị mới" nếu có trên Toolbar
+                // if (btnAddDevice != null) btnAddDevice.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                // Nếu là Nhân viên/Admin thì hiện lại (để an toàn)
+                if (btnTabTraCuu != null) btnTabTraCuu.Visibility = Visibility.Visible;
+                if (btnTabBaoHanh != null) btnTabBaoHanh.Visibility = Visibility.Visible;
+                if (btnTabBanGiao != null) btnTabBanGiao.Visibility = Visibility.Visible;
+            }
         }
 
         // Hàm tải dữ liệu và map tên (Join bảng thủ công bằng C#)
@@ -57,12 +87,29 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
         {
             try
             {
-                var devices = _deviceService.GetAllDevices();
-                var models = _modelService.GetModels(); // Giả sử hàm này lấy tất cả models
+                int roleId = UserSession.CurrentRoleID;
+                int userId = UserSession.CurrentUserID;
+
+                List<Device> devices;
+
+                // 1. PHÂN QUYỀN DỮ LIỆU (Khách hàng chỉ thấy của mình)
+                if (roleId == 11) // Khách hàng
+                {
+                    devices = _deviceService.GetDevicesByOwner(userId);
+                }
+                else // Admin, Quản lý, Nhân viên
+                {
+                    devices = _deviceService.GetAllDevices();
+                }
+
+                var models = _modelService.GetModels();
                 var statusList = _statusService.GetAllDeviceStatus();
                 var locations = _locationService.GetAllLocations();
 
-                // Dùng LINQ để join dữ liệu lấy tên hiển thị
+                // 2. PHÂN QUYỀN GIAO DIỆN (Nút Sửa/Xóa)
+                // Chỉ Admin (1) và Quản lý (2) mới thấy nút Sửa/Xóa
+                Visibility allowEdit = (roleId == 1 || roleId == 2) ? Visibility.Visible : Visibility.Collapsed;
+
                 _fullDeviceList = devices.Select(d => new DeviceDisplayModel
                 {
                     DeviceCode = d.DeviceCode,
@@ -70,16 +117,22 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
                     SerialNumber = d.SerialNumber,
                     PurchaseDate = d.PurchaseDate,
                     WarrantyExpiry = d.WarrantyExpiry,
-                    // Lấy tên Model từ ID
                     ModelName = models.FirstOrDefault(m => m.ModelID == d.ModelID)?.ModelName ?? "N/A",
-                    // Lấy tên Location từ ID
                     LocationName = locations.FirstOrDefault(l => l.LocationID == d.LocationID)?.LocationName ?? "N/A",
-                    // Lấy tên Status từ ID
-                    StatusName = statusList.FirstOrDefault(s => s.StatusID == d.StatusID)?.StatusName ?? "N/A"
+                    StatusName = statusList.FirstOrDefault(s => s.StatusID == d.StatusID)?.StatusName ?? "N/A",
+
+                    // Gán quyền hiển thị cho từng dòng
+                    ActionVisibility = allowEdit
                 }).ToList();
 
-                // Gán vào ListView
                 dgDevices.ItemsSource = _fullDeviceList;
+
+                // 3. ẨN NÚT "THÊM MỚI" TRÊN TOOLBAR (Nếu có)
+                if (roleId != 1 && roleId != 2)
+                {
+                    // Giả sử nút thêm tên là btnAddDevice (Bạn cần đặt x:Name trong XAML)
+                    if (btnAddDevice != null) btnAddDevice.Visibility = Visibility.Collapsed;
+                }
             }
             catch (Exception ex)
             {

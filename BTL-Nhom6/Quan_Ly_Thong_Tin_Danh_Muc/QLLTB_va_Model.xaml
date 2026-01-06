@@ -136,7 +136,7 @@
                                 <materialDesign:PackIcon Kind="Devices" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24" VerticalAlignment="Center"/>
                                 <TextBlock Text="Danh sách Loại thiết bị" FontSize="18" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <Button HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="32" Padding="12,0"
+                            <Button x:Name="btnAddCategory" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="32" Padding="12,0"
                                     Click="BtnAddCategory_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="Plus" Foreground="White"/>
@@ -210,7 +210,7 @@
                                          TextChanged="TxtSearchModel_TextChanged"
                                          Margin="0,0,16,0" 
                                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"/>
-                                <Button Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="32" Padding="12,0"
+                                <Button x:Name="btnAddModel" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="32" Padding="12,0"
                                         Click="BtnAddModel_Click">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="Plus" Foreground="White"/>

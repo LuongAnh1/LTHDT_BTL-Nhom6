@@ -63,13 +63,34 @@
                 <uc:WindowControlBar />
             </Grid>
 
-            <!-- 2. TABS NAVIGATION (ĐỒNG CẤP) -->
+            <!-- 2. TABS NAVIGATION -->
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Hồ sơ thiết bị &amp; QR" Style="{StaticResource ActiveTabButtonStyle}" Padding="0,8" Margin="0"/>
-                    <Button Content="Tra cứu tài sản" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_TraCuu_Click"/>
-                    <Button Content="Theo dõi bảo hành" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_BaoHanh_Click"/>
-                    <Button Content="Điều chuyển &amp; Bàn giao" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_BanGiao_Click"/>
+                    <!-- Tab này luôn hiện -->
+                    <Button Content="Hồ sơ thiết bị &amp; QR" 
+                Style="{StaticResource ActiveTabButtonStyle}" 
+                Padding="0,8" Margin="0"/>
+
+                    <!-- Tab Tra cứu (Cần ẩn) -->
+                    <Button x:Name="btnTabTraCuu"
+                Content="Tra cứu tài sản" 
+                Style="{StaticResource TabButtonStyle}" 
+                Padding="0,8" Margin="32,0,0,0" 
+                Click="Button_TraCuu_Click"/>
+
+                    <!-- Tab Bảo hành (Cần ẩn) -->
+                    <Button x:Name="btnTabBaoHanh"
+                Content="Theo dõi bảo hành" 
+                Style="{StaticResource TabButtonStyle}" 
+                Padding="0,8" Margin="32,0,0,0" 
+                Click="Button_BaoHanh_Click"/>
+
+                    <!-- Tab Bàn giao (Cần ẩn) -->
+                    <Button x:Name="btnTabBanGiao"
+                Content="Điều chuyển &amp; Bàn giao" 
+                Style="{StaticResource TabButtonStyle}" 
+                Padding="0,8" Margin="32,0,0,0" 
+                Click="Button_BanGiao_Click"/>
                 </StackPanel>
             </Border>
 
@@ -108,7 +129,7 @@
                                 <TextBlock Text="In mã QR hàng loạt" Foreground="White" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
-                        <Button Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="12,0" Click="BtnAdd_Click">
+                        <Button x:Name="btnAddDevice" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="12,0" Click="BtnAdd_Click">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="18" Height="18" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Thêm thiết bị mới" Foreground="White" VerticalAlignment="Center" FontWeight="Medium"/>
@@ -204,12 +225,12 @@
                                             <materialDesign:PackIcon Kind="Qrcode" Foreground="{StaticResource HighlightBlueBrush}" Width="16" Height="16"/>
                                         </Button>
                                         <!-- Sửa -->
-                                        <Button Style="{StaticResource IconActionButton}" ToolTip="Sửa" 
+                                        <Button Visibility="{Binding ActionVisibility}" Style="{StaticResource IconActionButton}" ToolTip="Sửa" 
                                 Click="BtnEdit_Click" Tag="{Binding DeviceCode}">
                                             <materialDesign:PackIcon Kind="Pencil" Foreground="{StaticResource HighlightBlueBrush}" Width="16" Height="16"/>
                                         </Button>
                                         <!-- Xóa -->
-                                        <Button Style="{StaticResource IconActionButton}" ToolTip="Xóa" 
+                                        <Button Visibility="{Binding ActionVisibility}" Style="{StaticResource IconActionButton}" ToolTip="Xóa" 
                                 Click="BtnDelete_Click" Tag="{Binding DeviceCode}">
                                             <materialDesign:PackIcon Kind="Delete" Foreground="{StaticResource DeleteIconBrush}" Width="16" Height="16"/>
                                         </Button>

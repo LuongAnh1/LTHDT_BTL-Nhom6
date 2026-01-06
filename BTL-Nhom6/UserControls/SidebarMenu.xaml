@@ -40,7 +40,8 @@
                                        CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
                                        Click="Button_Menu_Click"/>
 
-                    <local:SidebarItem Title="Quản lý thông tin danh mục" 
+                    <local:SidebarItem x:Name="btnQLTTDM"
+                                        Title="Quản lý thông tin danh mục" 
                                        Icon="Category" 
                                        NavTag="QLTTDM"
                                        CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
@@ -57,12 +58,14 @@
                                        NavTag="QLQTBT"
                                        CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
                                        Click="Button_Menu_Click"/>
-                    <local:SidebarItem Title="Quản lý kho vật tư" 
+                    <local:SidebarItem x:Name="btnQLKVT"
+                                        Title="Quản lý kho vật tư" 
                                        Icon="Restore" 
                                        NavTag="QLKVT"
                                        CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"
                                        Click="Button_Menu_Click"/>
-                    <local:SidebarItem Title="Báo cáo thống kê" 
+                    <local:SidebarItem x:Name="btnBCTK" 
+                                        Title="Báo cáo thống kê" 
                                         Icon="Form" 
                                         NavTag="BCTK"
                                         CurrentActiveTag="{Binding ElementName=ucSidebar, Path=CurrentItem}"

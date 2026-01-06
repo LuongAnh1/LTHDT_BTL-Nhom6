@@ -19,10 +19,47 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         private DeviceService _deviceService = new DeviceService();
 
 
+        // Biến kiểm tra quyền (để dùng lại nhiều chỗ)
+        private bool _canEdit = false;
+
         public QLVTPB()
         {
             InitializeComponent();
-            LoadData(); // Gọi hàm load dữ liệu khi mở form
+
+            // 1. Phân quyền trước khi load dữ liệu
+            ApplyPermissions();
+
+            LoadData();
+        }
+
+        // --- HÀM PHÂN QUYỀN ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // Quy định: Chỉ Admin (1) và Quản lý (2) mới được Thêm/Sửa/Xóa
+            if (roleId == 1 || roleId == 2)
+            {
+                _canEdit = true;
+            }
+            else
+            {
+                _canEdit = false; // Nhân viên thường, Khách hàng...
+            }
+
+            // Nếu không có quyền sửa -> Ẩn các nút thao tác
+            if (!_canEdit)
+            {
+                // 1. Ẩn nút Thêm mới (Cần đặt x:Name="btnAdd" trong XAML)
+                if (btnAdd != null) btnAdd.Visibility = Visibility.Collapsed;
+
+                // 2. Ẩn cột "HÀNH ĐỘNG" (Sửa/Xóa) trong DataGrid
+                // Giả sử cột Hành động là cột cuối cùng
+                if (dgLocations.Columns.Count > 0)
+                {
+                    dgLocations.Columns[dgLocations.Columns.Count - 1].Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         // Hàm lấy dữ liệu từ DB và đổ vào DataGrid
@@ -43,6 +80,7 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         //1. Sự kiện khi bấm nút Sửa
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
+            if (!_canEdit) return; // Chặn nếu không có quyền
             // Lấy nút bấm và dữ liệu dòng tương ứng
             Button btn = sender as Button;
             if (btn != null && btn.Tag is Location selectedLocation)
@@ -73,6 +111,7 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         //2. Sự kiện khi bấm nút Xóa
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
+            if (!_canEdit) return; // Chặn nếu không có quyền
             Button btn = sender as Button;
             if (btn == null || !(btn.Tag is Location selectedLocation))
                 return;
@@ -132,6 +171,7 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
+            if (!_canEdit) return; // Chặn nếu không có quyền
             // BƯỚC 1: TẠO HIỆU ỨNG MỜ
             BlurEffect blurObj = new BlurEffect();
             blurObj.Radius = 15;

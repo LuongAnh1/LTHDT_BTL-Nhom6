@@ -18,12 +18,46 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         // List lưu dữ liệu gốc để tìm kiếm mà không cần gọi lại DB liên tục
         private List<DeviceStatus> _originalList = new List<DeviceStatus>();
 
+        // Biến kiểm tra quyền (để dùng lại nhiều chỗ)
+        private bool _canEdit = false;
         public TDDLC()
         {
             InitializeComponent();
 
+            ApplyPermissions(); // Áp dụng phân quyền
+
             // Gọi hàm load dữ liệu khi mở form
             Loaded += TDDLC_Loaded;
+        }
+
+        // --- HÀM PHÂN QUYỀN ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // Quy định: Chỉ Admin (1) và Quản lý (2) mới được Thêm/Sửa/Xóa
+            if (roleId == 1 || roleId == 2)
+            {
+                _canEdit = true;
+            }
+            else
+            {
+                _canEdit = false; // Nhân viên thường, Khách hàng...
+            }
+
+            // Nếu không có quyền sửa -> Ẩn các nút thao tác
+            if (!_canEdit)
+            {
+                // 1. Ẩn nút Thêm mới (Cần đặt x:Name="btnAdd" trong XAML)
+                if (btnAddNew != null) btnAddNew.Visibility = Visibility.Collapsed;
+
+                // 2. Ẩn cột "HÀNH ĐỘNG" (Sửa/Xóa) trong DataGrid
+                // Giả sử cột Hành động là cột cuối cùng
+                if (dgDeviceStatus.Columns.Count > 0)
+                {
+                    dgDeviceStatus.Columns[dgDeviceStatus.Columns.Count - 1].Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         // 1. Sự kiện khi form load xong
