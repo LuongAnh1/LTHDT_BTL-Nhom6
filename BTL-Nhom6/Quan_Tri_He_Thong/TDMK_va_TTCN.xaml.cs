@@ -16,10 +16,36 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
         public TDMK_va_TTCN()
         {
             InitializeComponent();
+            ApplyPermissions(); // Hàm phân quyền
             // Đăng ký sự kiện Loaded để tải dữ liệu khi form mở lên
             this.Loaded += TDMK_va_TTCN_Loaded;
         }
 
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // --- TRƯỜNG HỢP: KHÁCH HÀNG (ID = 11) ---
+            if (roleId == 11)
+            {
+                // 1. Ẩn các tab quản trị
+                if (btnTabQLND != null) btnTabQLND.Visibility = Visibility.Collapsed;
+                if (btnTabSkill != null) btnTabSkill.Visibility = Visibility.Collapsed;
+                if (btnTabLog != null) btnTabLog.Visibility = Visibility.Collapsed;
+
+                // 2. Tab "Thay đổi mật khẩu" luôn hiện (Mặc định nó đã Visible rồi)
+            }
+
+            // --- TRƯỜNG HỢP: NHÂN VIÊN (ID = 3,4,5...) ---
+            else if (roleId != 1) // Không phải Admin
+            {
+                // Ví dụ: Nhân viên không được xem Nhật ký hệ thống
+                if (btnTabLog != null) btnTabLog.Visibility = Visibility.Collapsed;
+
+                // Nhân viên chỉ được xem thông tin cá nhân, không được quản lý người khác
+                if (btnTabQLND != null) btnTabQLND.Visibility = Visibility.Collapsed;
+            }
+        }
         private void TDMK_va_TTCN_Loaded(object sender, RoutedEventArgs e)
         {
             // Kiểm tra xem đã đăng nhập chưa (đề phòng)
@@ -56,7 +82,9 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
                         // txtRoleName.Text = user.RoleName; 
 
                         // Cách 2: Tạm thời check thủ công nếu Model chưa có RoleName
-                        txtRoleName.Text = (user.RoleID == 1) ? "Quản trị viên" : "Nhân viên";
+                        txtRoleName.Text = (user.RoleID == 1) ? "Quản trị viên" : 
+                            (user.RoleID == 11) ? "Khách Hàng":
+                            "Nhân viên";
                     }
 
                     // --- MAP DỮ LIỆU VÀO CÁC Ô CHO PHÉP SỬA ---
