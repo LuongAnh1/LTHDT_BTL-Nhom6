@@ -98,10 +98,32 @@
             <!-- TABS NAVIGATION -->
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,10,32,24">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Quản lý yêu cầu bảo trì" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="0" Click="Button_QLYCBT_Click"/>
-                    <Button Content="Điều phối công việc" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_DieuPhoi_Click"/>
-                    <Button Content="Cập nhật phiếu công việc" Style="{StaticResource ActiveTabButtonStyle}" Padding="0,8" Margin="32,0,0,0"/>
-                    <Button Content="Kê khai vật tư &amp; Nghiệm thu" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_NghiemThu_Click"/>
+
+                    <!-- Tab 1: Quản lý yêu cầu (Luôn hiện với mọi người) -->
+                    <Button Content="Quản lý yêu cầu bảo trì" 
+    Style="{StaticResource TabButtonStyle}" 
+    Padding="0,8" Margin="0" 
+    Click="Button_QLYCBT_Click"/>
+
+                    <!-- Tab 2: Điều phối (Cần ẩn với Nhân viên & Khách) -->
+                    <Button x:Name="btnTabDieuPhoi"
+    Content="Điều phối công việc" 
+    Style="{StaticResource TabButtonStyle}" 
+    Padding="0,8" Margin="32,0,0,0" 
+    Click="Button_DieuPhoi_Click"/>
+
+                    <!-- Tab 3: Cập nhật phiếu (Cần ẩn với Khách) -->
+                    <Button x:Name="btnTabCapNhat"
+    Content="Cập nhật phiếu công việc" 
+    Style="{StaticResource ActiveTabButtonStyle}" 
+    Padding="0,8" Margin="32,0,0,0" />
+
+                    <!-- Tab 4: Nghiệm thu (Tùy chọn, thường Khách cũng nên ẩn cái này) -->
+                    <Button x:Name="btnTabNghiemThu"
+    Content="Kê khai vật tư &amp; Nghiệm thu" 
+    Style="{StaticResource TabButtonStyle}" 
+    Padding="0,8" Margin="32,0,0,0" 
+    Click="Button_NghiemThu_Click"/>
                 </StackPanel>
             </Border>
 

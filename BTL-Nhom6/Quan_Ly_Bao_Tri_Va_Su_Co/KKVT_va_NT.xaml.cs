@@ -21,6 +21,9 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
         {
             InitializeComponent();
 
+            // Áp dụng phân quyền
+            ApplyPermissions();
+
             // Gán Source cho DataGrid
             dgVatTu.ItemsSource = _listVatTu;
 
@@ -28,6 +31,53 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
             LoadWorkOrders();
         }
 
+        // --- HÀM PHÂN QUYỀN MỚI ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // --- TRƯỜNG HỢP 1: KHÁCH HÀNG (ID = 11) ---
+            if (roleId == 11)
+            {
+                // 1. Khóa bảng nhập vật tư (DataGrid)
+                dgVatTu.IsReadOnly = true;
+
+                // 2. KHÓA VÙNG NHẬP CHI PHÍ (Gọi trực tiếp tên TextBox)
+                // Dùng IsReadOnly = true sẽ tốt hơn IsEnabled = false (vì chữ không bị mờ đi, dễ đọc)
+                if (txtNhanCong != null) txtNhanCong.IsReadOnly = true;
+                if (txtVanChuyen != null) txtVanChuyen.IsReadOnly = true;
+                if (txtMoTaKhac != null) txtMoTaKhac.IsReadOnly = true;
+                if (txtChiPhiKhac != null) txtChiPhiKhac.IsReadOnly = true;
+
+                // 3. Ẩn các nút hành động (Chỉ cho xem)
+                if (btnLuuTam != null) btnLuuTam.Visibility = Visibility.Collapsed;
+                if (btnHoanThanh != null) btnHoanThanh.Visibility = Visibility.Collapsed;
+                if (btnHuyBo != null) btnHuyBo.Visibility = Visibility.Collapsed;
+                // Khách hàng chỉ được xem/tạo yêu cầu
+                // Ẩn Điều phối
+                if (btnTabDieuPhoi != null) btnTabDieuPhoi.Visibility = Visibility.Collapsed;
+
+                // Ẩn Cập nhật phiếu công việc (Khách không làm việc này)
+                if (btnTabCapNhat != null) btnTabCapNhat.Visibility = Visibility.Collapsed;
+
+                if (dgVatTu.Columns.Count > 2)
+                {
+                    // Cách 1: Ẩn luôn cột nhập nếu không muốn họ thấy ô nhập
+                    // dgVatTu.Columns[2].Visibility = Visibility.Collapsed;
+
+                    // Cách 2: Vẫn hiện nhưng không cho sửa (Phức tạp hơn với TemplateColumn)
+                    // Đơn giản nhất là set IsHitTestVisible = false cho cả DataGrid
+                    dgVatTu.IsHitTestVisible = false; // Khách hàng chỉ nhìn, không click được vào bảng
+                }
+            }
+
+            // --- TRƯỜNG HỢP 2: NHÂN VIÊN (KTV, Thủ kho...) - ID khác 1, 2, 11 ---
+            else if (roleId != 1 && roleId != 2)
+            {
+                // Nhân viên KHÔNG được điều phối (Chỉ quản lý mới được phân việc)
+                if (btnTabDieuPhoi != null) btnTabDieuPhoi.Visibility = Visibility.Collapsed;
+            }
+        }
         private void LoadWorkOrders()
         {
             // Hàm GetWorkOrdersForAcceptance cần được định nghĩa trong WorkOrderService như hướng dẫn trước

@@ -13,9 +13,20 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
         public CNPCV()
         {
             InitializeComponent();
+            ApplyPermissions(); // Áp dụng phân quyền
             LoadData();
         }
 
+        // --- HÀM PHÂN QUYỀN MỚI ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+            if (roleId != 1 && roleId != 2)
+            {
+                // Nhân viên KHÔNG được điều phối (Chỉ quản lý mới được phân việc)
+                if (btnTabDieuPhoi != null) btnTabDieuPhoi.Visibility = Visibility.Collapsed;
+            }
+        }
         private void SidebarMenu_Loaded(object sender, RoutedEventArgs e)
         {
             // Logic sidebar (nếu cần)
