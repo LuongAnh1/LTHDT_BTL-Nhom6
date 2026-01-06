@@ -43,7 +43,7 @@ namespace BTL_Nhom6.UserControls
 
             string tag = item.NavTag;
 
-            // Các phần xử lý logic chuyển trang giữ nguyên như cũ
+            // Kiểm tra nếu đang ở trang đó rồi thì không load lại (trừ trường hợp muốn refresh)
             if (CurrentItem == tag) return;
 
             Window currentWindow = Window.GetWindow(this);
@@ -54,24 +54,54 @@ namespace BTL_Nhom6.UserControls
                 case "Home":
                     nextWindow = new Trang_Chu();
                     break;
+
                 case "QTHT":
-                    nextWindow = new QLND_va_PQ();
+                    // --- SỬA LOGIC ĐIỀU HƯỚNG DỰA TRÊN QUYỀN ---
+                    int roleId = UserSession.CurrentRoleID;
+
+                    if (roleId == 11) // Khách hàng
+                    {
+                        // Khách hàng vào QTHT -> Chuyển đến Thay đổi mật khẩu & TTCN
+                        nextWindow = new TDMK_va_TTCN();
+                    }
+                    else if (roleId != 1) // Nhân viên (Không phải Admin)
+                    {
+                        // Nhân viên (KTV, Thủ kho, Quản lý...) -> Chuyển đến Hồ sơ kỹ năng
+                        nextWindow = new QLHSKN();
+                    }
+                    else // Admin (RoleID = 1)
+                    {
+                        // Admin -> Vào trang Quản lý người dùng & Phân quyền đầy đủ
+                        nextWindow = new QLND_va_PQ();
+                    }
                     break;
+
                 case "QLTTDM":
                     nextWindow = new QLVTPB();
                     break;
+
                 case "QLTB":
                     nextWindow = new HSTB_va_QR();
                     break;
+
                 case "QLQTBT":
                     nextWindow = new QLYCBT();
                     break;
+
                 case "QLKVT":
+                    // Có thể thêm logic chặn Khách hàng vào kho nếu cần
+                    if (UserSession.CurrentRoleID == 11)
+                    {
+                        MessageBox.Show("Bạn không có quyền truy cập Kho vật tư.", "Thông báo");
+                        return;
+                    }
                     nextWindow = new DMVT_va_DM();
                     break;
+
                 case "BCTK":
                     nextWindow = new BCCPVT();
                     break;
+
                 default:
                     break;
             }

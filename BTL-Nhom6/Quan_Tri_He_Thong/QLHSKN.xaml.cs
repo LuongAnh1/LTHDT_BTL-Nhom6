@@ -15,6 +15,9 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
 {
     public partial class QLHSKN : Window
     {
+        public bool IsAdminOrManager { get; set; }
+
+        
         // Khai báo các Service
         private SkillService _skillService = new SkillService();
         private UserService _userService = new UserService(); // Tái sử dụng UserService có sẵn
@@ -26,8 +29,71 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
         public QLHSKN()
         {
             InitializeComponent();
+
+            // Xác định quyền ngay khi khởi tạo
+            int roleId = UserSession.CurrentRoleID;
+            IsAdminOrManager = (roleId == 1 || roleId == 2);
+
+            // Gán DataContext cho chính Window này để XAML có thể Binding biến IsAdminOrManager
+            this.DataContext = this;
+
+            ApplyPermissions();
             this.Loaded += QLHSKN_Loaded;
         }
+
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // --- TRƯỜNG HỢP: KHÁCH HÀNG (ID = 11) ---
+            if (roleId == 11)
+            {
+                // 1. Ẩn các tab quản trị
+                if (btnTabQLND != null) btnTabQLND.Visibility = Visibility.Collapsed;
+                if (btnTabSkill != null) btnTabSkill.Visibility = Visibility.Collapsed;
+                if (btnTabLog != null) btnTabLog.Visibility = Visibility.Collapsed;
+            }
+
+            // --- TRƯỜNG HỢP: NHÂN VIÊN (ID = 3,4,5...) ---
+            else if (roleId != 1) // Không phải Admin
+            {
+                // Nhân viên không được xem Nhật ký hệ thống
+                if (btnTabLog != null) btnTabLog.Visibility = Visibility.Collapsed;
+
+                // Nhân viên chỉ được xem thông tin cá nhân, không được quản lý người khác
+                if (btnTabQLND != null) btnTabQLND.Visibility = Visibility.Collapsed;
+
+                // ======================================================
+                // A. CỘT TRÁI (DANH SÁCH KỸ NĂNG) - KHÔNG ĐƯỢC THÊM/SỬA/XÓA
+                // ======================================================
+
+                // 1. Ẩn nút Thêm mới
+                if (btnAddSkill != null) btnAddSkill.Visibility = Visibility.Collapsed;
+
+                // 2. Vô hiệu hóa ListView bên trái (để không bấm được nút Sửa/Xóa bên trong)
+                // Cách này nhanh nhất: Toàn bộ danh sách sẽ mờ đi và không tương tác được
+                if (lvSkills != null) lvSkills.IsEnabled = false;
+
+                // ======================================================
+                // B. CỘT PHẢI (GÁN KỸ NĂNG) - CHỈ ĐƯỢC XEM, CÓ THỂ CUỘN
+                // ======================================================
+
+                // 1. Ẩn nút Lưu
+                if (btnSaveUserSkills != null) btnSaveUserSkills.Visibility = Visibility.Collapsed;
+
+                // 2. Vô hiệu hóa việc tick chọn và combobox, NHƯNG VẪN CHO PHÉP CUỘN (SCROLL)
+                // Thay vì disable cả ListView (sẽ không cuộn được), ta sẽ xử lý ở ItemTemplate trong XAML 
+                // hoặc dùng vòng lặp disable từng item (phức tạp).
+                // Cách tốt nhất là dùng "IsHitTestVisible" nhưng nó cũng chặn cuộn.
+
+                // GIẢI PHÁP: Disable các control con bên trong (CheckBox, ComboBox) thông qua Binding ở XAML
+                // (Xem phần cập nhật XAML bên dưới)
+
+                // 3. Khóa chọn người dùng (Chỉ xem được chính mình)
+                if (cboUsers != null) cboUsers.IsEnabled = false;
+            }
+        }
+
         // Sự kiện Loaded của Window
         private void QLHSKN_Loaded(object sender, RoutedEventArgs e)
         {
@@ -103,6 +169,12 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
         // Xử lý nút Xóa kỹ năng
         private void BtnDeleteSkill_Click(object sender, RoutedEventArgs e)
         {
+            // Kiểm tra quyền
+            if (UserSession.CurrentRoleID != 1 && UserSession.CurrentRoleID != 2)
+            {
+                MessageBox.Show("Bạn không có quyền thực hiện thao tác này.", "Thông báo");
+                return;
+            }
             if (MessageBox.Show("Xóa kỹ năng này?", "Confirm", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
 
             try
@@ -184,28 +256,34 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
                 MessageBox.Show("Lỗi cập nhật: " + ex.Message, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        
+
         // --- 2. XỬ LÝ CỘT PHẢI (GÁN KỸ NĂNG CHO USER) ---
         // Load danh sách User vào ComboBox
         private void LoadUsersComboBox()
         {
             try
             {
-                // 1. Lấy tất cả user từ service
                 var allUsers = _userService.GetAllUsers("", 0);
+                var filteredUsers = allUsers.Where(u => u.RoleGroup == "Nhân viên" && u.IsActive == true).ToList();
 
-                // 2. Lọc danh sách theo điều kiện:
-                // - RoleGroup là "Nhân viên"
-                // - IsActive bằng 1
-                var filteredUsers = allUsers.Where(u =>
-                                        u.RoleGroup == "Nhân viên" &&
-                                        u.IsActive == true
-                                    ).ToList();
-
-                // 3. Gán nguồn dữ liệu đã lọc vào ComboBox
                 cboUsers.ItemsSource = filteredUsers;
                 cboUsers.DisplayMemberPath = "FullName";
                 cboUsers.SelectedValuePath = "UserID";
+
+                // --- LOGIC MỚI: TỰ ĐỘNG CHỌN NGƯỜI DÙNG HIỆN TẠI ---
+                int currentUserId = UserSession.CurrentUserID;
+                int currentRoleId = UserSession.CurrentRoleID;
+
+                // Nếu là Nhân viên thường (Không phải Admin/Quản lý)
+                if (currentRoleId != 1 && currentRoleId != 2)
+                {
+                    // Tìm và chọn chính mình trong danh sách
+                    // (Lưu ý: cboUsers.SelectedValue mong đợi kiểu int vì SelectedValuePath="UserID")
+                    cboUsers.SelectedValue = currentUserId;
+
+                    // Gọi hàm load dữ liệu luôn (đề phòng sự kiện SelectionChanged không kích hoạt khi gán code)
+                    LoadTechnicianSkills(currentUserId);
+                }
             }
             catch (Exception ex)
             {

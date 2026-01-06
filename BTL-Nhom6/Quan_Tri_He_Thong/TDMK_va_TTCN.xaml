@@ -51,11 +51,27 @@
             <!-- 2.2. Tabs Navigation -->
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click"/>
-                    <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource TabButtonStyle}" Click="Button_QLHSKN_Click"/>
-                    <!-- Tab hiện tại đang Active -->
-                    <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource ActiveTabButtonStyle}"/>
-                    <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
+                    <!-- 1. Tab Quản lý người dùng -->
+                    <Button x:Name="btnTabQLND" 
+                            Content="Quản lý Người dùng &amp; Phân quyền" 
+                            Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click"/>
+
+                    <!-- 2. Tab Hồ sơ kỹ năng -->
+                    <Button x:Name="btnTabSkill" 
+                            Content="Quản lý Hồ sơ Kỹ năng" 
+                            Style="{StaticResource TabButtonStyle}" 
+                            Click="Button_QLHSKN_Click"/>
+
+                    <!-- 3. Tab Thay đổi mật khẩu -->
+                    <Button x:Name="btnTabProfile" 
+                            Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" 
+                            Style="{StaticResource ActiveTabButtonStyle}"/>
+
+                    <!-- 4. Tab Nhật ký -->
+                    <Button x:Name="btnTabLog" 
+                            Content="Nhật ký &amp; Sao lưu dữ liệu" 
+                            Style="{StaticResource TabButtonStyle}" 
+                            Click="Button_NK_va_SLDL_Click" Margin="0"/>
                 </StackPanel>
             </Border>
 

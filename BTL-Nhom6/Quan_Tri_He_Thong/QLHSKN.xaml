@@ -64,11 +64,27 @@
             <!-- 2. TABS -->
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,0,32,24">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Quản lý Người dùng &amp; Phân quyền" Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click" />
-                    <!-- Tab này đang Active -->
-                    <Button Content="Quản lý Hồ sơ Kỹ năng" Style="{StaticResource ActiveTabButtonStyle}"/>
-                    <Button Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" Style="{StaticResource TabButtonStyle}" Click="Button_TDMK_va_TTCN_Click"/>
-                    <Button Content="Nhật ký &amp; Sao lưu dữ liệu" Style="{StaticResource TabButtonStyle}" Click="Button_NK_va_SLDL_Click" Margin="0"/>
+                    <!-- 1. Tab Quản lý người dùng -->
+                    <Button x:Name="btnTabQLND" 
+                Content="Quản lý Người dùng &amp; Phân quyền" 
+                Style="{StaticResource TabButtonStyle}" Click="Button_QLND_va_PQ_Click"/>
+
+                    <!-- 2. Tab Hồ sơ kỹ năng -->
+                    <Button x:Name="btnTabSkill" 
+                Content="Quản lý Hồ sơ Kỹ năng" 
+                Style="{StaticResource ActiveTabButtonStyle}"/>
+
+                    <!-- 3. Tab Thay đổi mật khẩu -->
+                    <Button x:Name="btnTabProfile" 
+                Content="Thay đổi Mật khẩu &amp; Thông tin cá nhân" 
+                Style="{StaticResource TabButtonStyle}" 
+                Click="Button_TDMK_va_TTCN_Click"/>
+
+                    <!-- 4. Tab Nhật ký -->
+                    <Button x:Name="btnTabLog" 
+                Content="Nhật ký &amp; Sao lưu dữ liệu" 
+                Style="{StaticResource TabButtonStyle}" 
+                Click="Button_NK_va_SLDL_Click" Margin="0"/>
                 </StackPanel>
             </Border>
 
@@ -99,7 +115,7 @@
                             <materialDesign:PackIcon Kind="ClipboardList" Foreground="{StaticResource HighlightBlueBrush}" Width="24" Height="24"/>
                             <TextBlock Text="Danh sách kỹ năng" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="8,0,0,0"/>
                         </StackPanel>
-                        <Button Click="BtnAddSkill_Click" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="32" Padding="12,0">
+                        <Button x:Name="btnAddSkill" Click="BtnAddSkill_Click" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="32" Padding="12,0">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                 <TextBlock Text="Thêm kỹ năng mới" Foreground="White" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"/>
@@ -244,13 +260,16 @@
                                                     <ColumnDefinition Width="1.5*"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"/>
+                                                <CheckBox Grid.Column="0" 
+                                                          IsChecked="{Binding IsSelected}" 
+                                                          HorizontalAlignment="Center"
+                                                          IsEnabled="{Binding DataContext.IsAdminOrManager, RelativeSource={RelativeSource AncestorType=Window}}"/>
                                                 <TextBlock Grid.Column="1" Text="{Binding SkillName}" FontWeight="SemiBold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
 
                                                 <ComboBox Grid.Column="2" 
                                                           ItemsSource="{Binding LevelOptions}"
                                                           SelectedItem="{Binding Level}"
-                                                          IsEnabled="{Binding IsSelected}"
+                                                          IsEnabled="{Binding DataContext.IsAdminOrManager, RelativeSource={RelativeSource AncestorType=Window}}"
                                                           Style="{StaticResource MaterialDesignOutlinedComboBox}" 
                                                           Height="35" Padding="8,5" Background="{StaticResource AppBackgroundBrush}">
                                                 </ComboBox>
@@ -263,7 +282,7 @@
                             <!-- Footer Button -->
                             <StackPanel Grid.Row="2" Margin="0,16,0,0">
                                 <Separator Background="{StaticResource BorderLightBrush}" Margin="0,0,0,16"/>
-                                <Button Click="BtnSaveUserSkills_Click" HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderThickness="0" Height="40" Width="140">
+                                <Button x:Name="btnSaveUserSkills" Click="BtnSaveUserSkills_Click" HorizontalAlignment="Right" Background="{StaticResource SuccessGreenBrush}" BorderThickness="0" Height="40" Width="140">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Kind="ContentSave" Foreground="White" Width="18" Height="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="Lưu kỹ năng" Foreground="White" FontSize="14" FontWeight="Bold"/>
