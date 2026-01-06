@@ -69,13 +69,42 @@
             <Border Grid.Row="1" Margin="32,0,32,16" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1">
                 <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="Chi phí vật tư" Style="{StaticResource TabButtonStyle}" Click="Button_ChiPhiVatTu_Click"/>
-                        <Button Content="Hiệu suất bảo trì" Style="{StaticResource TabButtonStyle}" Click="Button_HieuSuatBaoTri_Click"/>
-                        <!-- Tab hiện tại -->
-                        <Button Content="Năng suất KTV" Style="{StaticResource ActiveTabButtonStyle}" Click="Button_NangSuatKTV_Click"/>
-                        <Button Content="Theo dõi bảo hành &amp; NCC" Style="{StaticResource TabButtonStyle}" Click="Button_BaoHanhNCC_Click"/>
-                        <Button Content="Tình trạng thiết bị" Style="{StaticResource TabButtonStyle}" Click="Button_TinhTrangThietBi_Click"/>
-                        <Button Content="Thống kê lỗi &amp; Sự cố" Style="{StaticResource TabButtonStyle}" Click="Button_ThongKeLoi_Click"/>
+
+                        <!-- 1. Chi phí vật tư (Cần ẩn) -->
+                        <Button x:Name="btnTabChiPhi"
+                    Content="Chi phí vật tư" 
+                    Style="{StaticResource TabButtonStyle}" 
+                    Click="Button_ChiPhiVatTu_Click"/>
+
+                        <!-- 2. Hiệu suất bảo trì (Cần ẩn) -->
+                        <Button x:Name="btnTabHieuSuat"
+                    Content="Hiệu suất bảo trì" 
+                    Style="{StaticResource TabButtonStyle}" 
+                    Click="Button_HieuSuatBaoTri_Click"/>
+
+                        <!-- 3. Năng suất KTV (HIỆN VỚI NHÂN VIÊN) -->
+                        <Button x:Name="btnTabNangSuat"
+                    Content="Năng suất KTV" 
+                    Style="{StaticResource ActiveTabButtonStyle}" 
+                    Click="Button_NangSuatKTV_Click"/>
+
+                        <!-- 4. Bảo hành & NCC (Cần ẩn) -->
+                        <Button x:Name="btnTabBaoHanh"
+                    Content="Theo dõi bảo hành &amp; NCC" 
+                    Style="{StaticResource TabButtonStyle}" 
+                    Click="Button_BaoHanhNCC_Click"/>
+
+                        <!-- 5. Tình trạng thiết bị (Cần ẩn) -->
+                        <Button x:Name="btnTabTinhTrang"
+                    Content="Tình trạng thiết bị" 
+                    Style="{StaticResource TabButtonStyle}" 
+                    Click="Button_TinhTrangThietBi_Click"/>
+
+                        <!-- 6. Thống kê lỗi (Cần ẩn) -->
+                        <Button x:Name="btnTabLoi"
+                    Content="Thống kê lỗi &amp; Sự cố" 
+                    Style="{StaticResource TabButtonStyle}" 
+                    Click="Button_ThongKeLoi_Click"/>
                     </StackPanel>
                 </ScrollViewer>
             </Border>
@@ -98,7 +127,7 @@
                                     <materialDesign:PackIcon Kind="FilterVariant" Width="20" Height="20" Foreground="{StaticResource PrimaryBlueBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                     <TextBlock Text="Bộ lọc dữ liệu" FontWeight="Bold" FontSize="16" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                 </StackPanel>
-                                <Button HorizontalAlignment="Right" Content="Xuất báo cáo"
+                                <Button x:Name="BtnXuatBaoCao" HorizontalAlignment="Right" Content="Xuất báo cáo"
                                      Click="BtnXuatBaoCao_Click"
                                      Style="{StaticResource MaterialDesignFlatButton}"
                                      Background="#EFF6FF" Foreground="{StaticResource PrimaryBlueBrush}"

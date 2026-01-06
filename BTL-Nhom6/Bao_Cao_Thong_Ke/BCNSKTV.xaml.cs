@@ -30,6 +30,7 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
         public BCNSKTV()
         {
             InitializeComponent();
+            ApplyPermissions(); // Áp dụng phân quyền khi khởi tạo
             DataContext = this;
 
             _reportService = new ReportService();
@@ -40,6 +41,24 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
             LoadGridData();
         }
 
+        // --- HÀM PHÂN QUYỀN MỚI ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            if (roleId != 1 && roleId != 2)
+            {
+                // Nhân viên KHÔNG được xuất báo cáo 
+                if (BtnXuatBaoCao != null) BtnXuatBaoCao.Visibility = Visibility.Collapsed;
+
+                // Ẩn tất cả các tab thống kê quản trị
+                if (btnTabChiPhi != null) btnTabChiPhi.Visibility = Visibility.Collapsed;
+                if (btnTabHieuSuat != null) btnTabHieuSuat.Visibility = Visibility.Collapsed;
+                if (btnTabBaoHanh != null) btnTabBaoHanh.Visibility = Visibility.Collapsed;
+                if (btnTabTinhTrang != null) btnTabTinhTrang.Visibility = Visibility.Collapsed;
+                if (btnTabLoi != null) btnTabLoi.Visibility = Visibility.Collapsed;
+            }
+        }
         private void LoadComboBoxData()
         {
             var locations = _reportService.GetLocations();

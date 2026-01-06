@@ -118,7 +118,10 @@ namespace BTL_Nhom6.UserControls
 
                 case "BCTK":
                     if (UserSession.CurrentRoleID == 11) return; // Nếu là KHÁCH HÀNG thì không cho vào
-                    nextWindow = new BCCPVT();
+                    if (roleId != 1 && roleId != 2)
+                        nextWindow = new BCNSKTV();
+                    else
+                        nextWindow = new BCCPVT();
                     break;
 
                 default:
