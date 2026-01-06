@@ -157,7 +157,7 @@
                                 <TextBlock Text="Danh sách thiết bị sắp hết hạn bảo hành" FontSize="18" FontWeight="Bold" 
                                            VerticalAlignment="Center" Foreground="{StaticResource TextPrimaryBrush}"/>
 
-                                <Button HorizontalAlignment="Right" Background="{StaticResource HtmlGreen}" BorderThickness="0" Height="40" materialDesign:ButtonAssist.CornerRadius="4" Click="Button_XuatBaoCao_Click">
+                                <Button x:Name="Button_XuatBaoCao" HorizontalAlignment="Right" Background="{StaticResource HtmlGreen}" BorderThickness="0" Height="40" materialDesign:ButtonAssist.CornerRadius="4" Click="Button_XuatBaoCao_Click">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Foreground="White" Kind="FileDownloadOutline" Width="18" Height="18" Margin="0,0,8,0"/>
                                         <TextBlock Foreground="White" Text="Xuất báo cáo" FontWeight="SemiBold"/>

@@ -21,13 +21,37 @@ namespace BTL_Nhom6.Quan_Ly_Thiet_Bi
         private readonly SupplierService _supplierService;
         private List<Device> _originalList; // Lưu danh sách gốc để lọc
 
+        private bool _canEdit = false; // Biến kiểm tra quyền sửa
         public TDBH()
         {
             InitializeComponent();
+            ApplyPermissions(); // Áp dụng phân quyền khi khởi tạo
             _deviceService = new DeviceService();
             _supplierService = new SupplierService();
         }
 
+        // --- HÀM PHÂN QUYỀN ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // Quy định: Chỉ Admin (1) và Quản lý (2) mới được Thêm/Sửa/Xóa
+            if (roleId == 1 || roleId == 2)
+            {
+                _canEdit = true;
+            }
+            else
+            {
+                _canEdit = false; // Nhân viên thường, Khách hàng...
+            }
+
+            // Nếu không có quyền sửa -> Ẩn các nút thao tác
+            if (!_canEdit)
+            {
+                // 1. Ẩn nút xuất báo cáo 
+                if (Button_XuatBaoCao != null) Button_XuatBaoCao.Visibility = Visibility.Collapsed;
+            }
+        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadSuppliers();
