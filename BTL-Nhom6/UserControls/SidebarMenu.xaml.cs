@@ -81,7 +81,7 @@ namespace BTL_Nhom6.UserControls
 
             Window currentWindow = Window.GetWindow(this);
             Window nextWindow = null;
-
+            int roleId = UserSession.CurrentRoleID;
             switch (tag)
             {
                 case "Home":
@@ -90,14 +90,14 @@ namespace BTL_Nhom6.UserControls
 
                 case "QTHT":
                     // Logic điều hướng thông minh đã làm ở bước trước
-                    int roleId = UserSession.CurrentRoleID;
                     if (roleId == 11) nextWindow = new TDMK_va_TTCN();
-                    else if (roleId != 1) nextWindow = new QLHSKN();
+                    else if (roleId != 1 && roleId != 2) nextWindow = new QLHSKN();
                     else nextWindow = new QLND_va_PQ();
                     break;
 
                 case "QLTTDM":
-                    if (UserSession.CurrentRoleID == 11) return; // Nếu là KHÁCH HÀNG thì không cho vào
+
+                    if (roleId == 11) return; // Nếu là KHÁCH HÀNG thì không cho vào
                     nextWindow = new QLVTPB();
                     break;
 
@@ -112,12 +112,16 @@ namespace BTL_Nhom6.UserControls
                 case "QLKVT":
                     // Chặn ở tầng Code (bảo mật lớp 2) đề phòng UI chưa ẩn kịp
                     if (UserSession.CurrentRoleID == 11) return; // Nếu là KHÁCH HÀNG thì không cho vào
+
                     nextWindow = new DMVT_va_DM();
                     break;
 
                 case "BCTK":
                     if (UserSession.CurrentRoleID == 11) return; // Nếu là KHÁCH HÀNG thì không cho vào
-                    nextWindow = new BCCPVT();
+                    if (roleId != 1 && roleId != 2)
+                        nextWindow = new BCNSKTV();
+                    else
+                        nextWindow = new BCCPVT();
                     break;
 
                 default:

@@ -86,13 +86,34 @@
             <!-- TABS NAVIGATION -->
             <Border Grid.Row="1" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="0,0,0,1" Margin="32,10,32,24">
                 <StackPanel Orientation="Horizontal">
-                    <Button Content="Quản lý yêu cầu bảo trì" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="0" Click="Button_QLYCBT_Click"/>
-                    <Button Content="Điều phối công việc" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_DieuPhoi_Click"/>
-                    <Button Content="Cập nhật phiếu công việc" Style="{StaticResource TabButtonStyle}" Padding="0,8" Margin="32,0,0,0" Click="Button_CapNhat_Click"/>
-                    <Button Content="Kê khai vật tư &amp; Nghiệm thu" Style="{StaticResource ActiveTabButtonStyle}" Padding="0,8" Margin="32,0,0,0"/>
+
+                    <!-- Tab 1: Quản lý yêu cầu (Luôn hiện với mọi người) -->
+                    <Button Content="Quản lý yêu cầu bảo trì" 
+    Style="{StaticResource TabButtonStyle}" 
+    Padding="0,8" Margin="0" 
+    Click="Button_QLYCBT_Click"/>
+
+                    <!-- Tab 2: Điều phối (Cần ẩn với Nhân viên & Khách) -->
+                    <Button x:Name="btnTabDieuPhoi"
+    Content="Điều phối công việc" 
+    Style="{StaticResource TabButtonStyle}" 
+    Padding="0,8" Margin="32,0,0,0" 
+    Click="Button_DieuPhoi_Click"/>
+
+                    <!-- Tab 3: Cập nhật phiếu (Cần ẩn với Khách) -->
+                    <Button x:Name="btnTabCapNhat"
+    Content="Cập nhật phiếu công việc" 
+    Style="{StaticResource TabButtonStyle}" 
+    Padding="0,8" Margin="32,0,0,0" 
+    Click="Button_CapNhat_Click"/>
+
+                    <!-- Tab 4: Nghiệm thu (Tùy chọn, thường Khách cũng nên ẩn cái này) -->
+                    <Button x:Name="btnTabNghiemThu"
+    Content="Kê khai vật tư &amp; Nghiệm thu" 
+    Style="{StaticResource ActiveTabButtonStyle}" 
+    Padding="0,8" Margin="32,0,0,0" />
                 </StackPanel>
             </Border>
-
             <!-- MAIN FORM SCROLL -->
             <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,20">
                 <StackPanel Margin="32,0,32,0">
@@ -230,7 +251,7 @@
                         <!-- LEFT: Chi phí khác -->
                         <Border Grid.Column="0" Background="White" CornerRadius="8" BorderBrush="{StaticResource BorderLightBrush}" BorderThickness="1" Padding="24">
                             <StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <StackPanel x:Name="pnlChiPhiInput" Orientation="Horizontal" Margin="0,0,0,20">
                                     <materialDesign:PackIcon Kind="CashMultiple" Foreground="{StaticResource PrimaryBlueBrush}" Width="24" Height="24" Margin="0,0,12,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Chi phí phát sinh (Nếu có)" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" VerticalAlignment="Center"/>
                                 </StackPanel>
@@ -264,8 +285,8 @@
                                              Margin="0,0,0,20"/>
 
                                     <!-- Row 2: Vận chuyển -->
-                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Vận chuyển:" 
-               VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                                    <TextBlock  Grid.Row="1" Grid.Column="0" Text="Vận chuyển:" 
+                                                VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,0,20"/>
 
                                     <TextBox x:Name="txtVanChuyen" 
                                              Grid.Row="1" Grid.Column="1" 
@@ -343,13 +364,13 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
                             <!-- Hủy bỏ -->
-                            <Button Content="Hủy bỏ" Click="Button_HuyBo_Click" 
+                            <Button x:Name="btnHuyBo" Content="Hủy bỏ" Click="Button_HuyBo_Click" 
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                                     BorderBrush="{StaticResource BorderMediumBrush}" Foreground="{StaticResource TextSecondaryBrush}"
                                     Height="45" Width="120" Margin="0,0,16,0"/>
 
                             <!-- Lưu tạm -->
-                            <Button Content="Lưu tạm"
+                            <Button x:Name="btnLuuTam" Content="Lưu tạm"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
                                     Background="{StaticResource PrimaryBlueBrush}" BorderBrush="{StaticResource PrimaryBlueBrush}"
                                     Height="45" Width="120" Margin="0,0,16,0"
@@ -357,7 +378,7 @@
                                     Click="Button_LuuTam_Click"/>
 
                             <!-- Hoàn thành & Đóng phiếu -->
-                            <Button Content="Hoàn thành &amp; Đóng phiếu"
+                            <Button x:Name="btnHoanThanh" Content="Hoàn thành &amp; Đóng phiếu"
                                     Style="{StaticResource MaterialDesignRaisedButton}"
                                     Background="#2E7D32" BorderBrush="#2E7D32"
                                     Height="45" Padding="24,0" FontWeight="Bold"

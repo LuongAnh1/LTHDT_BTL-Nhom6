@@ -17,13 +17,51 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
         public QLYCBT()
         {
             InitializeComponent();
+            ApplyPermissions(); // Áp dụng phân quyền
             LoadData(); // Load dữ liệu khi mở form
         }
 
+        // --- HÀM PHÂN QUYỀN MỚI ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // --- TRƯỜNG HỢP 1: KHÁCH HÀNG (ID = 11) ---
+            if (roleId == 11)
+            {
+                // Khách hàng chỉ được xem/tạo yêu cầu
+                // Ẩn Điều phối
+                if (btnTabDieuPhoi != null) btnTabDieuPhoi.Visibility = Visibility.Collapsed;
+
+                // Ẩn Cập nhật phiếu công việc (Khách không làm việc này)
+                if (btnTabCapNhat != null) btnTabCapNhat.Visibility = Visibility.Collapsed;
+
+                // Ẩn cột hành động (Đã làm ở bước trước)
+                if (colHanhDong != null) colHanhDong.Visibility = Visibility.Collapsed;
+            }
+
+            // --- TRƯỜNG HỢP 2: NHÂN VIÊN (KTV, Thủ kho...) - ID khác 1, 2, 11 ---
+            else if (roleId != 1 && roleId != 2)
+            {
+                // Nhân viên KHÔNG được điều phối (Chỉ quản lý mới được phân việc)
+                if (btnTabDieuPhoi != null) btnTabDieuPhoi.Visibility = Visibility.Collapsed;
+
+                // Nhân viên VẪN THẤY "Cập nhật phiếu công việc" để báo cáo tiến độ
+                // Nhân viên VẪN THẤY "Nghiệm thu" để kê khai vật tư
+
+                // Ẩn cột hành động Xóa yêu cầu (Đã làm ở bước trước)
+                if (colHanhDong != null) colHanhDong.Visibility = Visibility.Collapsed;
+            }
+
+            // --- TRƯỜNG HỢP 3: ADMIN (1) & QUẢN LÝ (2) ---
+            // Mặc định thấy tất cả, không cần code gì thêm.
+        }
+
         // Hàm tải dữ liệu từ Database
+        // Trong file QLYCBT.xaml.cs
+
         private void LoadData()
         {
-            // Nếu DataGrid chưa được khởi tạo (khi chạy InitializeComponent), thì dừng lại.
             if (dgYeuCauBaoTri == null) return;
 
             try
@@ -38,10 +76,19 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
                 // 2. Lấy từ khóa tìm kiếm
                 string keyword = txtSearch != null ? txtSearch.Text : "";
 
-                // 3. Gọi Service để lấy dữ liệu thật từ SQL
-                List<MaintenanceRequest> listRequests = _service.GetRequests(statusFilter, keyword);
+                // 3. XÁC ĐỊNH NGƯỜI DÙNG ĐANG ĐĂNG NHẬP
+                int? userIdToFilter = null; // Mặc định là null (Xem tất cả)
 
-                // 4. Đổ dữ liệu vào DataGrid
+                // Nếu là Khách hàng (RoleID = 11) -> Chỉ lấy dữ liệu của chính họ
+                if (UserSession.CurrentRoleID == 11)
+                {
+                    userIdToFilter = UserSession.CurrentUserID;
+                }
+
+                // 4. Gọi Service (Truyền thêm userIdToFilter)
+                List<MaintenanceRequest> listRequests = _service.GetRequests(statusFilter, keyword, userIdToFilter);
+
+                // 5. Đổ dữ liệu vào DataGrid
                 dgYeuCauBaoTri.ItemsSource = listRequests;
             }
             catch (Exception ex)
