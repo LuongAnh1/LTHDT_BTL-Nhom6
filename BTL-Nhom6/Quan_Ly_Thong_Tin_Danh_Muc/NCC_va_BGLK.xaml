@@ -143,7 +143,7 @@
                                 </Border>
                             </StackPanel>
 
-                            <Button Click="btnAddNewSupplier_Click" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="16,0">
+                            <Button x:Name="btnAddSupplier" Click="btnAddNewSupplier_Click" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="16,0">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="18" Height="18" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Thêm NCC" Foreground="White" FontWeight="Medium"/>
@@ -219,7 +219,7 @@
                                 </Border>
                             </StackPanel>
 
-                            <Button HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="16,0" Click="btnAddQuote_Click">
+                            <Button x:Name="bntAddQote" HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="16,0" Click="btnAddQuote_Click">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="18" Height="18" Margin="0,0,6,0" VerticalAlignment="Center"/>
                                     <TextBlock Text="Thêm báo giá" Foreground="White" FontWeight="Medium"/>

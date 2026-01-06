@@ -163,7 +163,8 @@
                     </StackPanel>
 
                     <!-- Nút Thêm Mới: Thêm Click -->
-                    <Button HorizontalAlignment="Right" 
+                    <Button x:Name="btnAddNew"
+                            HorizontalAlignment="Right" 
                             Background="{StaticResource PrimaryBlueBrush}" 
                             BorderThickness="0" Height="36" 
                             Padding="16,0"

@@ -20,10 +20,51 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         private List<Supplier> _listSuppliers = new List<Supplier>();
         private List<SupplierQuoteDTO> _listQuotes = new List<SupplierQuoteDTO>();
 
+        // Biến kiểm tra quyền (để dùng lại nhiều chỗ)
+        private bool _canEdit = false;
+
         public NCC_va_BGLK()
         {
             InitializeComponent();
+
+            ApplyPermissions(); // Áp dụng phân quyền khi khởi tạo
+
             Loaded += QLNCC_Loaded;
+        }
+
+        // --- HÀM PHÂN QUYỀN ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // Quy định: Chỉ Admin (1) và Quản lý (2) mới được Thêm/Sửa/Xóa
+            if (roleId == 1 || roleId == 2)
+            {
+                _canEdit = true;
+            }
+            else
+            {
+                _canEdit = false; // Nhân viên thường, Khách hàng...
+            }
+
+            // Nếu không có quyền sửa -> Ẩn các nút thao tác
+            if (!_canEdit)
+            {
+                // 1. Ẩn nút Thêm mới (Cần đặt x:Name="btnAdd" trong XAML)
+                if (btnAddSupplier != null) btnAddSupplier.Visibility = Visibility.Collapsed;
+                if (bntAddQote != null) bntAddQote.Visibility = Visibility.Collapsed;
+
+                // 2. Ẩn cột "HÀNH ĐỘNG" (Sửa/Xóa) trong DataGrid
+                // Giả sử cột Hành động là cột cuối cùng
+                if (dgSuppliers.Columns.Count > 0)
+                {
+                    dgSuppliers.Columns[dgSuppliers.Columns.Count - 1].Visibility = Visibility.Collapsed;
+                }
+                if (dgQuotes.Columns.Count > 0)
+                {
+                    dgQuotes.Columns[dgQuotes.Columns.Count - 1].Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         private void QLNCC_Loaded(object sender, RoutedEventArgs e)
