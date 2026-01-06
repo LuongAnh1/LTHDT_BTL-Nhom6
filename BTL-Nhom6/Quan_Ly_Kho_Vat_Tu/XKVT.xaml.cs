@@ -12,12 +12,40 @@ namespace BTL_Nhom6.Quan_Ly_Kho_Vat_Tu
     {
         private readonly ExportService _service = new ExportService();
 
+        private bool _canEdit = false; // Biến kiểm soát quyền Thêm/Sửa/Xóa
         public XKVT()
         {
             InitializeComponent();
+            ApplyPermissions(); // Áp dụng phân quyền
             LoadData();
         }
+        
+        // --- HÀM PHÂN QUYỀN ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
 
+            // Quy định: Chỉ Admin (1) và Quản lý (2) mới được Thêm/Sửa/Xóa
+            if (roleId == 1 || roleId == 2)
+            {
+                _canEdit = true;
+            }
+            else
+            {
+                _canEdit = false; // Nhân viên thường, Khách hàng...
+            }
+
+            // Nếu không có quyền sửa -> Ẩn các nút thao tác
+            if (!_canEdit)
+            {
+                // Ẩn nút Tab Nhập kho
+                if (btnTabNhapKho != null)
+                {
+                    btnTabNhapKho.Visibility = Visibility.Collapsed;
+                }
+
+            }
+        }
         private void LoadData()
         {
             string keyword = txtSearch.Text.Trim();

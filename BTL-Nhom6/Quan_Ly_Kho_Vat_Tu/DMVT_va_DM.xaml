@@ -72,7 +72,8 @@
                             Padding="0,8" Margin="0" 
                             Click="Button_DanhMuc_Click"/>
 
-                    <Button Content="Nhập kho" 
+                    <Button x:Name="btnTabNhapKho"
+                            Content="Nhập kho" 
                             Style="{StaticResource TabButtonStyle}" 
                             Padding="0,8" Margin="32,0,0,0" 
                             Click="Button_NhapKho_Click"/>
@@ -136,7 +137,8 @@
                     </StackPanel>
 
                     <!-- Add Button -->
-                    <Button Click="Button_ThemMoi_Click" HorizontalAlignment="Right" 
+                    <Button x:Name="Button_ThemMoi"
+                            Click="Button_ThemMoi_Click" HorizontalAlignment="Right" 
                             Background="{StaticResource PrimaryBlueBrush}" 
                             BorderThickness="0" Height="36" Padding="16,0"
                             materialDesign:ButtonAssist.CornerRadius="4">
