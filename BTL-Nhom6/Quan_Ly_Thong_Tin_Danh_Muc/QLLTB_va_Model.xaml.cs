@@ -16,11 +16,49 @@ namespace BTL_Nhom6.Quan_Ly_Thong_Tin_Danh_Muc
         // Biến lưu ID loại đang chọn (để khi thêm model mới thì tự điền loại này)
         private int _selectedCategoryId = 0;
 
+        // Biến kiểm tra quyền (để dùng lại nhiều chỗ)
+        private bool _canEdit = false;
         public QLLTB_va_Model()
         {
             InitializeComponent();
+            ApplyPermissions(); // Áp dụng phân quyền
             LoadCategories();
             LoadModels(); // Load tất cả model lúc đầu
+        }
+
+        // --- HÀM PHÂN QUYỀN ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // Quy định: Chỉ Admin (1) và Quản lý (2) mới được Thêm/Sửa/Xóa
+            if (roleId == 1 || roleId == 2)
+            {
+                _canEdit = true;
+            }
+            else
+            {
+                _canEdit = false; // Nhân viên thường, Khách hàng...
+            }
+
+            // Nếu không có quyền sửa -> Ẩn các nút thao tác
+            if (!_canEdit)
+            {
+                // 1. Ẩn nút Thêm mới 
+                if (btnAddCategory != null) btnAddCategory.Visibility = Visibility.Collapsed;
+                if (btnAddModel != null) btnAddModel.Visibility = Visibility.Collapsed;
+
+                // 2. Ẩn cột "HÀNH ĐỘNG" (Sửa/Xóa) trong DataGrid
+                // Giả sử cột Hành động là cột cuối cùng
+                if (dgCategories.Columns.Count > 0)
+                {
+                    dgCategories.Columns[dgCategories.Columns.Count - 1].Visibility = Visibility.Collapsed;
+                }
+                if (dgModels.Columns.Count > 0)
+                {
+                    dgModels.Columns[dgModels.Columns.Count - 1].Visibility = Visibility.Collapsed;
+                }
+            }
         }
 
         // 1. Tải danh sách Loại (Bảng trên)

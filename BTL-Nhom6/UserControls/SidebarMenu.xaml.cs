@@ -17,7 +17,42 @@ namespace BTL_Nhom6.UserControls
         public SidebarMenu()
         {
             InitializeComponent();
+
+            // Gọi hàm phân quyền khi Control được tải xong
+            this.Loaded += SidebarMenu_Loaded;
         }
+
+        // ============================================================
+        // HÀM PHÂN QUYỀN HIỂN THỊ MENU
+        // ============================================================
+        private void SidebarMenu_Loaded(object sender, RoutedEventArgs e)
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // Nếu là KHÁCH HÀNG (ID = 11)
+            if (roleId == 11)
+            {
+                // Ẩn Quản lý thông tin danh mục
+                if (btnQLTTDM != null) btnQLTTDM.Visibility = Visibility.Collapsed;
+
+                // Ẩn Quản lý kho vật tư
+                if (btnQLKVT != null) btnQLKVT.Visibility = Visibility.Collapsed;
+
+                // Ẩn Báo cáo thống kê
+                if (btnBCTK != null) btnBCTK.Visibility = Visibility.Collapsed;
+
+                // (Tùy chọn) Ẩn thêm Quản trị hệ thống nếu muốn
+                // if (btnQTHT != null) btnQTHT.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                // Nếu là Nhân viên/Admin thì hiện lại (đề phòng trường hợp đăng xuất rồi đăng nhập lại user khác)
+                if (btnQLTTDM != null) btnQLTTDM.Visibility = Visibility.Visible;
+                if (btnQLKVT != null) btnQLKVT.Visibility = Visibility.Visible;
+                if (btnBCTK != null) btnBCTK.Visibility = Visibility.Visible;
+            }
+        }
+
 
         // ============================================================
         // 1. DEPENDENCY PROPERTY: CurrentItem
@@ -37,41 +72,58 @@ namespace BTL_Nhom6.UserControls
         // ============================================================
         private void Button_Menu_Click(object sender, RoutedEventArgs e)
         {
-            // 1. Ép kiểu sender về SidebarItem
             var item = sender as SidebarItem;
             if (item == null || string.IsNullOrEmpty(item.NavTag)) return;
 
             string tag = item.NavTag;
 
-            // Các phần xử lý logic chuyển trang giữ nguyên như cũ
             if (CurrentItem == tag) return;
 
             Window currentWindow = Window.GetWindow(this);
             Window nextWindow = null;
-
+            int roleId = UserSession.CurrentRoleID;
             switch (tag)
             {
                 case "Home":
                     nextWindow = new Trang_Chu();
                     break;
+
                 case "QTHT":
-                    nextWindow = new QLND_va_PQ();
+                    // Logic điều hướng thông minh đã làm ở bước trước
+                    if (roleId == 11) nextWindow = new TDMK_va_TTCN();
+                    else if (roleId != 1 && roleId != 2) nextWindow = new QLHSKN();
+                    else nextWindow = new QLND_va_PQ();
                     break;
+
                 case "QLTTDM":
+
+                    if (roleId == 11) return; // Nếu là KHÁCH HÀNG thì không cho vào
                     nextWindow = new QLVTPB();
                     break;
+
                 case "QLTB":
                     nextWindow = new HSTB_va_QR();
                     break;
+
                 case "QLQTBT":
                     nextWindow = new QLYCBT();
                     break;
+
                 case "QLKVT":
+                    // Chặn ở tầng Code (bảo mật lớp 2) đề phòng UI chưa ẩn kịp
+                    if (UserSession.CurrentRoleID == 11) return; // Nếu là KHÁCH HÀNG thì không cho vào
+
                     nextWindow = new DMVT_va_DM();
                     break;
+
                 case "BCTK":
-                    nextWindow = new BCCPVT();
+                    if (UserSession.CurrentRoleID == 11) return; // Nếu là KHÁCH HÀNG thì không cho vào
+                    if (roleId != 1 && roleId != 2)
+                        nextWindow = new BCNSKTV();
+                    else
+                        nextWindow = new BCCPVT();
                     break;
+
                 default:
                     break;
             }
@@ -82,17 +134,14 @@ namespace BTL_Nhom6.UserControls
             }
         }
 
-        // ============================================================
-        // 3. SỰ KIỆN ĐĂNG XUẤT
-        // ============================================================
         private void Button_Logout_Click(object sender, RoutedEventArgs e)
         {
             Window currentWindow = Window.GetWindow(this);
 
-            // Khởi tạo màn hình Đăng Nhập
-            // Đảm bảo class Dang_Nhap tồn tại trong namespace BTL_Nhom6
-            Dang_Nhap loginWindow = new Dang_Nhap();
+            // Xóa session khi đăng xuất
+            UserSession.Clear();
 
+            Dang_Nhap loginWindow = new Dang_Nhap();
             NavigationHelper.Navigate(currentWindow, loginWindow);
         }
     }

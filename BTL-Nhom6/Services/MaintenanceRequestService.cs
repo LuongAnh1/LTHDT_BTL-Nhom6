@@ -17,7 +17,11 @@ namespace BTL_Nhom6.Services
         // 1. Lấy danh sách yêu cầu (Kèm Filter và Search)
         // statusFilter: "All", "Pending", "Approved"...
         // keyword: Tìm theo tên thiết bị hoặc mô tả lỗi
-        public List<MaintenanceRequest> GetRequests(string statusFilter = "Trạng thái", string keyword = "")
+        // Trong file MaintenanceRequestService.cs
+
+        // Trong file MaintenanceRequestService.cs
+
+        public List<MaintenanceRequest> GetRequests(string statusFilter = "Trạng thái", string keyword = "", int? userId = null)
         {
             List<MaintenanceRequest> list = new List<MaintenanceRequest>();
 
@@ -25,19 +29,24 @@ namespace BTL_Nhom6.Services
             {
                 conn.Open();
 
-                // [SỬA SQL] Thêm JOIN bảng WorkOrders (wo) và Users (u_tech) để lấy tên KTV
+                // [SQL]
                 string sql = @"
-                        SELECT r.*, 
-                               d.DeviceName, 
-                               u_req.FullName AS RequesterName,
-                               u_tech.FullName AS TechnicianName
-                        FROM MaintenanceRequests r
-                        LEFT JOIN Devices d ON r.DeviceCode = d.DeviceCode
-                        LEFT JOIN Users u_req ON r.RequestedBy = u_req.UserID
-                        -- Join để lấy kỹ thuật viên đang phụ trách (nếu có)
-                        LEFT JOIN WorkOrders wo ON r.RequestID = wo.RequestID
-                        LEFT JOIN Users u_tech ON wo.TechnicianID = u_tech.UserID
-                        WHERE 1=1 ";
+                SELECT r.*, 
+                       d.DeviceName, 
+                       u_req.FullName AS RequesterName,
+                       u_tech.FullName AS TechnicianName
+                FROM MaintenanceRequests r
+                LEFT JOIN Devices d ON r.DeviceCode = d.DeviceCode
+                LEFT JOIN Users u_req ON r.RequestedBy = u_req.UserID
+                LEFT JOIN WorkOrders wo ON r.RequestID = wo.RequestID
+                LEFT JOIN Users u_tech ON wo.TechnicianID = u_tech.UserID
+                WHERE 1=1 ";
+
+                // --- BƯỚC 0: Filter theo User ID ---
+                if (userId.HasValue)
+                {
+                    sql += " AND r.RequestedBy = @UID ";
+                }
 
                 // --- BƯỚC 1: Filter Trạng thái ---
                 string dbStatus = "";
@@ -57,6 +66,7 @@ namespace BTL_Nhom6.Services
                 sql += " ORDER BY r.RequestDate DESC";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
+                if (userId.HasValue) cmd.Parameters.AddWithValue("@UID", userId.Value);
                 if (!string.IsNullOrEmpty(dbStatus)) cmd.Parameters.AddWithValue("@Status", dbStatus);
                 if (!string.IsNullOrEmpty(keyword)) cmd.Parameters.AddWithValue("@Keyword", "%" + keyword + "%");
 
@@ -64,7 +74,7 @@ namespace BTL_Nhom6.Services
                 {
                     while (reader.Read())
                     {
-                        list.Add(new MaintenanceRequest
+                        var req = new MaintenanceRequest
                         {
                             RequestID = Convert.ToInt32(reader["RequestID"]),
                             DeviceCode = reader["DeviceCode"].ToString(),
@@ -75,13 +85,14 @@ namespace BTL_Nhom6.Services
                             Status = reader["Status"].ToString(),
                             ProblemDescription = reader["ProblemDescription"].ToString(),
 
-                            // Map dữ liệu JOIN
+                            // --- SỬA Ở ĐÂY: Gán vào RequesterName và TechnicianName ---
+                            // (Thay vì gán vào NguoiYeuCau/NguoiXuLy đang bị lỗi Read-only)
                             DeviceName = reader["DeviceName"] != DBNull.Value ? reader["DeviceName"].ToString() : "Unknown",
                             RequesterName = reader["RequesterName"] != DBNull.Value ? reader["RequesterName"].ToString() : "Unknown",
-
-                            // [MỚI] Map tên kỹ thuật viên
                             TechnicianName = reader["TechnicianName"] != DBNull.Value ? reader["TechnicianName"].ToString() : ""
-                        });
+                        };
+
+                        list.Add(req);
                     }
                 }
             }

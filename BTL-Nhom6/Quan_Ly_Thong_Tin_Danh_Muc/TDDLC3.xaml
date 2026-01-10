@@ -160,7 +160,8 @@
                     </StackPanel>
 
                     <!-- Nút Thêm Mới -->
-                    <Button Click="btnAddNew_Click"
+                    <Button x:Name="btnAddNew"
+                        Click="btnAddNew_Click"
             HorizontalAlignment="Right" Background="{StaticResource PrimaryBlueBrush}" BorderThickness="0" Height="36" Padding="16,0" materialDesign:ButtonAssist.CornerRadius="6">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Plus" Foreground="White" Width="18" Height="18" Margin="0,0,6,0" VerticalAlignment="Center"/>

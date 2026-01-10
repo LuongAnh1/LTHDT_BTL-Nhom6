@@ -515,5 +515,35 @@ namespace BTL_Nhom6.Services
             }
             return list;
         }
+
+        // 13. Lấy danh sách thiết bị theo Chủ sở hữu (UserID)
+        public List<Device> GetDevicesByOwner(int userId)
+        {
+            List<Device> list = new List<Device>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                // Join với bảng DeviceAssignments để lấy thiết bị của User này
+                string sql = @"SELECT d.* 
+                       FROM Devices d
+                       JOIN DeviceAssignments da ON d.DeviceCode = da.DeviceCode
+                       WHERE da.UserID = @UID 
+                       -- Tùy chọn: Chỉ lấy thiết bị đang mượn (chưa trả)
+                       -- AND da.ReturnDate IS NULL 
+                       GROUP BY d.DeviceCode"; // Group by để tránh trùng nếu mượn nhiều lần
+
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@UID", userId);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(MapReaderToDevice(reader));
+                    }
+                }
+            }
+            return list;
+        }
     }
 }
