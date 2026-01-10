@@ -192,17 +192,27 @@ namespace BTL_Nhom6.Bao_Cao_Thong_Ke
 
         private void UpdateDataGrid(List<ChiPhiDTO> data)
         {
-            var listChiPhiKhac = data.Where(x => x.LoaiChiPhi != null && x.LoaiChiPhi.ToLower().Contains("khác")).ToList();
-            if (listChiPhiKhac.Any())
+            if (data == null) data = new List<ChiPhiDTO>();
+
+            // BƯỚC 1: TÍNH TỔNG TIỀN (Tính hết: Nhân công + Vật tư + Khác)
+            // Biến 'data' chứa toàn bộ dữ liệu đã lọc theo Năm/Phân Xưởng
+            if (data.Any())
             {
-                decimal total = listChiPhiKhac.Sum(x => x.SoTien);
+                decimal total = data.Sum(x => x.SoTien);
                 TongTienHienThi = total.ToString("N0");
             }
             else
             {
                 TongTienHienThi = "0";
             }
-            DanhSachChiPhi = new ObservableCollection<ChiPhiDTO>(listChiPhiKhac);
+
+            // BƯỚC 2: HIỂN THỊ BẢNG (Chỉ hiển thị dòng "Chi phí khác")
+            // Lọc lại một lần nữa chỉ để lấy ra các khoản phát sinh đưa vào Grid
+            var listChiPhiPhatSinh = data
+                .Where(x => x.LoaiChiPhi != null && x.LoaiChiPhi.ToLower().Contains("khác"))
+                .ToList();
+
+            DanhSachChiPhi = new ObservableCollection<ChiPhiDTO>(listChiPhiPhatSinh);
         }
 
         private void DrawChart(List<ChiPhiDTO> data)
