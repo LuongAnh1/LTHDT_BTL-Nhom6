@@ -128,7 +128,7 @@
                 Padding="0,8" Margin="0" 
                 Click="Button_DanhMuc_Click"/>
 
-                    <Button Content="Nhập kho" 
+                    <Button  x:Name="btnTabNhapKho" Content="Nhập kho" 
                 Style="{StaticResource TabButtonStyle}" 
                 Padding="0,8" Margin="32,0,0,0" 
                 Click="Button_NhapKho_Click"/>

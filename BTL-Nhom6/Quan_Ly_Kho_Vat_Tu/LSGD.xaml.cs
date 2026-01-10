@@ -11,9 +11,13 @@ namespace BTL_Nhom6.Quan_Ly_Kho_Vat_Tu
     {
         private readonly HistoryService _service = new HistoryService();
 
+        private bool _canEdit = false; // Biến kiểm soát quyền Thêm/Sửa/Xóa
+
         public LSGD()
         {
             InitializeComponent();
+
+            ApplyPermissions();
 
             // Mặc định load dữ liệu tháng hiện tại
             var now = DateTime.Now;
@@ -21,6 +25,32 @@ namespace BTL_Nhom6.Quan_Ly_Kho_Vat_Tu
             dpDenNgay.SelectedDate = now;
 
             LoadData();
+        }
+
+        // --- HÀM PHÂN QUYỀN ---
+        private void ApplyPermissions()
+        {
+            int roleId = UserSession.CurrentRoleID;
+
+            // Quy định: Chỉ Admin (1) và Quản lý (2) mới được Thêm/Sửa/Xóa
+            if (roleId == 1 || roleId == 2)
+            {
+                _canEdit = true;
+            }
+            else
+            {
+                _canEdit = false; // Nhân viên thường, Khách hàng...
+            }
+            // Nếu không có quyền sửa -> Ẩn các nút thao tác
+            if (!_canEdit)
+            {
+                // Ẩn nút Tab Nhập kho
+                if (btnTabNhapKho != null)
+                {
+                    btnTabNhapKho.Visibility = Visibility.Collapsed;
+                }
+
+            }
         }
 
         private void LoadData()
