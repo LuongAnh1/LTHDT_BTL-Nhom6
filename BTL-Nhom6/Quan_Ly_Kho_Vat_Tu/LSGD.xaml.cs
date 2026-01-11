@@ -19,9 +19,9 @@ namespace BTL_Nhom6.Quan_Ly_Kho_Vat_Tu
 
             ApplyPermissions();
 
-            // Mặc định load dữ liệu tháng hiện tại
+            // SỬA TẠI ĐÂY: Lùi ngày bắt đầu về năm 2023 hoặc 2000 để thấy dữ liệu mẫu
             var now = DateTime.Now;
-            dpTuNgay.SelectedDate = new DateTime(now.Year, now.Month, 1);
+            dpTuNgay.SelectedDate = new DateTime(2023, 1, 1); // <--- Sửa dòng này
             dpDenNgay.SelectedDate = now;
 
             LoadData();

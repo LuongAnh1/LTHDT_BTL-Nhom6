@@ -19,8 +19,8 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
 
         
         // Khai báo các Service
-        private SkillService _skillService = new SkillService();
-        private UserService _userService = new UserService(); // Tái sử dụng UserService có sẵn
+        private SkillService _skillService;
+        private UserService _userService; // Tái sử dụng UserService có sẵn
 
         // List dữ liệu
         // Lưu ý: Dùng List cũng được, nhưng ObservableCollection tốt hơn nếu muốn UI tự cập nhật realtime mà không cần gán lại ItemsSource
@@ -28,6 +28,8 @@ namespace BTL_Nhom6.Quan_Tri_He_Thong
 
         public QLHSKN()
         {
+            _skillService = new SkillService();
+            _userService = new UserService();
             InitializeComponent();
 
             // Xác định quyền ngay khi khởi tạo
