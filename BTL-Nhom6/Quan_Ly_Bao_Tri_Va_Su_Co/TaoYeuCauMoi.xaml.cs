@@ -92,7 +92,7 @@ namespace BTL_Nhom6.Quan_Ly_Bao_Tri_Va_Su_Co
 
                 // Lấy User ID đang đăng nhập (Giả sử bạn có class lưu session)
                 // Nếu chưa có, tạm thời điền cứng số 1
-                req.RequestedBy = 1; // Thay bằng: UserSession.CurrentUser.UserID
+                req.RequestedBy = UserSession.CurrentUserID;
 
                 // 3. Gọi Service lưu
                 bool result = _service.CreateRequest(req, _selectedImagePaths);

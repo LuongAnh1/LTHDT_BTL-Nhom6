@@ -242,7 +242,7 @@ namespace BTL_Nhom6.Services
                                JOIN Devices d ON wo.DeviceCode = d.DeviceCode
                                JOIN Users u ON wo.TechnicianID = u.UserID
                                JOIN WorkOrderStatus stt ON wo.StatusID = stt.StatusID
-                               WHERE wo.StatusID != 3 
+                               WHERE wo.StatusID IN (2, 3)
                                ORDER BY wo.WorkOrderID DESC";
 
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
